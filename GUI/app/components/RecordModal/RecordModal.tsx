@@ -8,19 +8,18 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import {APP_CWD } from '../../utils/general';
-import { spawn } from 'child_process';
 import { Tag, TagType, Action } from '../../models/Action.model';
-import { getVideoFramesAndTime } from '../../utils/eyes/frameStream';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
 import LocalDB from '../../utils/localDB.core'
 import ServiceStore from '../../services /store';
 import { User } from '../../models/User.model';
 import { removeContainerByName } from '../../utils/IHost';
+import styles from './RecordModal.css'
+
 const serviceStore = new ServiceStore();
 const localDB = new LocalDB();
 
-const SCREENSHOTS_TEMP_DIR_PATH = `${APP_CWD}tempScreenShotDir`
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 const state = {
   imageArray:[],
@@ -47,7 +46,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-let saveThis = null 
+let saveThis:any = null 
 
 export default function FullScreenDialog(props:any) {
   const [liveViewPort, setLiveViewPort] = React.useState(null)
@@ -57,7 +56,7 @@ export default function FullScreenDialog(props:any) {
   const [screen, setScreen] = React.useState('validate');
   const [tagsPresent, setTags] = React.useState(null);
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
-  const { open, ioFilePath, videoFilePath, totalRecordTime, recorderContainer } = props;
+  const { open, totalRecordTime, recorderContainer } = props;
   const classes = useStyles();
   state["totalRecordTime"] = totalRecordTime
   const handleClose = (recordAgain = false) => {
@@ -84,28 +83,7 @@ export default function FullScreenDialog(props:any) {
 
   const handleDynamicSnapshotModalSave = ({tag, coords}) => {
      tag["dynamic"] = {coords}
-
-    //save coords in tag choosen
   }
-
-  const snap = async () => {
-    const video = document.querySelector('video')
-    let canvas = document.createElement('canvas');
-    let canvasContainer = document.createElement('div');
-    canvas.style.width = "320px"
-    canvas.style.height = "240px"
-    canvasContainer.appendChild(canvas);
-    document.getElementsByClassName("screenshots-container")[0].appendChild(canvasContainer);
-    canvas.width = 1024;
-    canvas.height = 768;
-    let canvasContext = canvas.getContext("2d");
-    canvasContext.drawImage(video, 0, 0);
-    const snapShotURl = canvas.toDataURL('image/jpeg');
-    // const videoFrameAsImageData = await convertURIToImageData(snapShotURl)
-    state.imageArray.push(snapShotURl)
-    console.log("state",state)
-  }
-
 
   const startAutoTagging = async () : Promise<Tag[]> => {
      let { timeStamps , recordStartDate} = recorderContainer.autoTaggerData;
@@ -156,6 +134,51 @@ export default function FullScreenDialog(props:any) {
       setDynamicSnapshotOpen(true)
   }
 
+  async function saveTags(tags:any, ioActions:any) {
+    const Users:any = await localDB.getModelArrayByName(localDB.MODELS.User);
+    const Actions:any = await localDB.getModelArrayByName(localDB.MODELS.Action);
+    const currentUser = serviceStore.get('currentUser')
+    if(currentUser) {
+      const actionName = serviceStore.get('actionName')
+      const startUrl = serviceStore.get('startUrl')
+      const indexOfPickedUser = Users.findIndex(user => user.id === currentUser.id)
+      const actionToInsert:Action = {
+        id:localDB.createRandomId(),
+        name: actionName,
+        ioActions,
+        tags,
+        startUrl
+      }
+      Actions.push(actionToInsert);
+      Users[indexOfPickedUser].actionsIds.push(actionToInsert.id)
+      localDB.saveModel(localDB.MODELS.Action, Actions)
+      localDB.saveModel(localDB.MODELS.User, Users)
+    } else {
+      const userName = serviceStore.get('userName')
+      const actionName = serviceStore.get('actionName')
+      const startUrl = serviceStore.get('startUrl')
+      const userToInsert:User = {
+        name:userName,
+        accountsIds:[],
+        actionsIds:[]
+      }
+      const actionToInsert:Action = {
+        id:localDB.createRandomId(),
+        name: actionName,
+        ioActions,
+        tags,
+        startUrl
+      }
+      userToInsert.actionsIds.push(actionToInsert.id)
+      Actions.push(actionToInsert);
+      Users.push(userToInsert)
+      localDB.saveModel(localDB.MODELS.Action, Actions)
+      localDB.saveModel(localDB.MODELS.User, Users)
+    }
+    serviceStore.upsert('currentUser', null)
+    serviceStore.upsert('userName',null)
+  }
+
   return (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -171,22 +194,22 @@ export default function FullScreenDialog(props:any) {
             </Button>
           </Toolbar>
         </AppBar>
-        <div className="modal-content-container">
+        <div className={styles["modal-content-container"]}>
            <div className="guide-label-record">
              Is this what you recorded ?
            </div>
-           <div className="video-container">
+           <div className={styles["video-container"]}>
            <video id="video-playback-player" width="768" height="610" controls>
            <source src={videoPlayerOutputSrc} type="video/mp4" />
            </video>
            </div>
            {
              screen === SCREENS.validate ?
-             <div className="modal-verifaction-buttons-controls">
+             <div className={styles["modal-verifaction-buttons-controls"]}>
              <Button size="small" variant="outlined" color="secondary"  onClick={()=>{
                    handleClose(true)
                  }}>record again</Button>
-                 <div className="yes-button">
+                 <div className={styles["yes-button"]}>
   
                  <Button  size="small" variant="outlined" color="primary" onClick={()=>{
                    yes()
@@ -196,7 +219,7 @@ export default function FullScreenDialog(props:any) {
            }
            {
              screen === SCREENS.setTagsMaxTimeoutScreen ? 
-             <div className="screen-setMaxTimeout-container">
+             <div className={styles["screen-setMaxTimeout-container"]}>
                {
                  tagsPresent.map((tag)=>{
                    return <div style={{display:'flex'}}>
@@ -212,7 +235,7 @@ export default function FullScreenDialog(props:any) {
                }
              </div> : null
            }
-           <div className="record-modal-save-btn-container">
+           <div className={styles["record-modal-save-btn-container"]}>
            <Button  size="small" variant="outlined" color="primary" onClick={()=>{
                    saveTags ? saveTags(saveThis.tags, saveThis.ioActions) : null
                    saveThis = null
@@ -226,58 +249,5 @@ export default function FullScreenDialog(props:any) {
     </div>
   );
 }
-//TODO need to open DynamicSNapashotMOdal on click and pass tag.originalSnapshotURI
 
-async function saveTags(tags:any, ioActions:any) {
-  const Users:any = await localDB.getModelArrayByName(localDB.MODELS.User);
-  const Actions:any = await localDB.getModelArrayByName(localDB.MODELS.Action);
-  const currentUser = serviceStore.get('currentUser')
-  if(currentUser) {
-    const actionName = serviceStore.get('actionName')
-    const startUrl = serviceStore.get('startUrl')
-    const indexOfPickedUser = Users.findIndex(user => user.id === currentUser.id)
-    const actionToInsert:Action = {
-      id:localDB.createRandomId(),
-      name: actionName,
-      ioActions,
-      tags,
-      startUrl
-    }
-    Actions.push(actionToInsert);
-    Users[indexOfPickedUser].actionsIds.push(actionToInsert.id)
-    localDB.saveModel(localDB.MODELS.Action, Actions)
-    localDB.saveModel(localDB.MODELS.User, Users)
-  } else {
-    const userName = serviceStore.get('userName')
-    const actionName = serviceStore.get('actionName')
-    const startUrl = serviceStore.get('startUrl')
-    const userToInsert:User = {
-      name:userName,
-      accountsIds:[],
-      actionsIds:[]
-    }
-    const actionToInsert:Action = {
-      id:localDB.createRandomId(),
-      name: actionName,
-      ioActions,
-      tags,
-      startUrl
-    }
-    userToInsert.actionsIds.push(actionToInsert.id)
-    Actions.push(actionToInsert);
-    Users.push(userToInsert)
-    localDB.saveModel(localDB.MODELS.Action, Actions)
-    localDB.saveModel(localDB.MODELS.User, Users)
-  }
-  serviceStore.upsert('currentUser', null)
-  serviceStore.upsert('userName',null)
-}
 
-async function takeMultipleScreenShotsFromVideo(command:any) {
-    return new Promise((resolve, reject) => {
-        const someCMD = spawn(command, { shell: true})
-        someCMD.on("exit",async () =>{
-            resolve();
-        })
-    })
-}

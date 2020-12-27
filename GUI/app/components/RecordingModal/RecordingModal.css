@@ -1,0 +1,30 @@
+.modal-content-container {
+    display: block;
+    margin: 0 auto;
+    top: 20px;
+    position: relative;
+}
+
+.buttons-container {
+    position: relative;
+    bottom:10px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    width:225px;
+    height: 100px;
+}
+
+.recoreder-control-button {
+    margin: 5px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+}
+
+.blank-container {
+    position: relative;
+}

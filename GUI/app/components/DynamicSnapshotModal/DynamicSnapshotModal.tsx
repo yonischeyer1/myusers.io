@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,8 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-// import { IMAGE_HASH_BITS, convertURIToImageData } from '../../utils/testIoFile';
-
+import styles from './DynamicSnapshotModal.css'
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -68,10 +67,6 @@ export default function FullScreenDialog(props:any) {
     const {handleDynamicSnapshotModalClose} = props;
     handleDynamicSnapshotModalClose(false);
   };
-
-  const handleRecordingModalClose = () =>{
-     setOpenRecordingModal(false)
-  }
 
 
   const handleUndo = (e:any) => {
@@ -156,14 +151,6 @@ if(!runOnce && open && dataURI) {
   handleClear(null);
 }
 
-// useEffect(()=>{
-//   console.log("runOnce",runOnce)
-//   if(!runOnce && dataURI) {
-//     runOnce = true;
-//     start()
-//   }
-// })
- 
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -179,7 +166,7 @@ if(!runOnce && open && dataURI) {
               </Button>
             </Toolbar>
           </AppBar>
-        <div className="modal-content-container">
+        <div className={styles["modal-content-container"]}>
         <div style={{float:"left"}}>
             <canvas id="jPolygon" width="227" height="227"  onMouseUp={stopdrawing} 
              onMouseMove={mousemoving} onMouseDown={point_it} 

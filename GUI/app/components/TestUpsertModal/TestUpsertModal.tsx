@@ -7,21 +7,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import {APP_CWD } from '../../utils/general';
 import { TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import ServiceStore from '../../services /store';
 import LocalDB, { MODELS } from '../../utils/localDB.core';
 import { Test, TEST_STATUS } from '../../models/Test.model';
-import { AnyARecord } from 'dns';
-// import { IMAGE_HASH_BITS, convertURIToImageData } from '../../utils/testIoFile';
-const localDB = new LocalDB();
-const serviceStore = new ServiceStore();
+import styles from './TestUpsertModal.css'
 
-const state = {
-  imageArray:[],
-  totalRecordTime:null,
-  screen: "validate"
-}
+const localDB = new LocalDB();
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -114,15 +106,15 @@ export default function FullScreenDialog(props:any) {
               </Button>
             </Toolbar>
           </AppBar>
-          <div className="modal-content-container">
-             <div className="test-name-container">
+          <div className={styles["modal-content-container"]}>
+             <div className={styles["test-name-container"]}>
             <TextField disabled={false} 
              onChange={( e => setTestName(e.target.value)) } 
              label="Test name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>
          <div className={classes.userActionSelectContainer}>
-         <div className="pick-user-combobox-container">     
+         <div className={styles["pick-user-combobox-container"]}>     
         <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
           <Select
@@ -147,7 +139,7 @@ export default function FullScreenDialog(props:any) {
           </Select>
         </FormControl>
              </div>
-             <div className="pick-action-combobox-container">
+             <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
           <Select
@@ -168,15 +160,15 @@ export default function FullScreenDialog(props:any) {
             </div>
         </div>     
 
-        <div className="pick-schedule-container">
+        <div className={styles["pick-schedule-container"]}>
              
         </div>
-        <div className="pick-user-finish-action-container">
+        <div className={styles["pick-user-finish-action-container"]}>
           <br/> <br/>
               &nbsp; Pick Action to run on test finish:
               <br/><br/>
              <div className={classes.userActionSelectContainer}>
-         <div className="pick-user-combobox-container">     
+         <div className={styles["pick-user-combobox-container"]}>     
         <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
           <Select
@@ -200,7 +192,7 @@ export default function FullScreenDialog(props:any) {
           </Select>
         </FormControl>
              </div>
-             <div className="pick-action-combobox-container">
+             <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
           <Select
@@ -223,7 +215,7 @@ export default function FullScreenDialog(props:any) {
         </div>    
         </div>
         <br/><br/>
-         <div className="done-cancel-btns">
+         <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
          &nbsp;&nbsp;
          <Button size="small" variant="outlined" color="primary" onClick={save}>Done</Button>

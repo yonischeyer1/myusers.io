@@ -1,6 +1,6 @@
 import React from 'react';
 import RFB from '@novnc/novnc/core/rfb';
-
+import styles from './VncViewer.css'
 export default class VncViewerComponent extends React.Component {
 rfb:any;
 constructor(props: any) {
@@ -108,7 +108,7 @@ if(mode === "player") {
 }
 
 return (
-  <div id="vnc-view-container"  data-tid="container">
+  <div className={styles["vnc-view-container"]}  data-tid="container">
     <div id={"screen-" + mode} style={disableClicks ? {pointerEvents:"none"}: {}}></div> </div>
    );
   }

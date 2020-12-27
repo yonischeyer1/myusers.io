@@ -1,14 +1,32 @@
-.container {
+.tests-menu-container {
+  position: relative;
+  width: 60%;
+}
+.test-row {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  align-items: center;
+  margin-right: 80px;
+}
+.test-name-container {
+  position: relative;
+}
+.test-status-container {
+  position: relative;
+}
+.test-due-date-container {
+  position: relative;
+}
+.play-button-container {
   position: absolute;
-  top: 30%;
-  left: 10px;
-  text-align: center;
+  right: 0;
 }
-
-.container h2 {
-  font-size: 5rem;
-}
-
-.container a {
-  font-size: 1.4rem;
+.add-test-floating-btn {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 15px;
 }

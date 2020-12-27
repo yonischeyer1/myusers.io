@@ -2,10 +2,7 @@ import { genaratePortNumber, runDockerImage, getDockerContainerIdByName, copyFil
 import { startVideoRecording, startChormium, startVnc, convertVideoFile, removeFileFromContainer, stopContainerProcess, getPidByName, waitUnitlCoreStopsByProcessName, startHandsSparkServer } from "./IContainer";
 import IHands from "./Ihands";
 import IEyes from "./IEyes";
-import ServiceStore from "../services /store";
 import { APP_CWD } from "./general";
-const serviceStore = new ServiceStore();
-const fs = require('fs')
 export const IMAGE_NAME = 'ioroboto'
 let instance:any = null;
 export const CONTAINER_MODE = {
@@ -260,36 +257,4 @@ export default class Container {
     }
 }
 
-//TODO:
-// times -> screenshots in folder -> to dataURIs -> to tags ?
-
-// tag = { dataURI, dataURIHash, distances} 
-
-
-async function autoTagAndSave() {
-
-}
-
-// async function takeScreenShotFromVideo(time:any, test_image:any, videoFilePath:any) {
-//     return new Promise((resolve, reject) => {
-//         const videoPlayerOutputSrc = `${APP_CWD}player.mp4`
-//         console.log("exit takeScreenShotFromVideo")
-//         const command_new = `ffmpeg -i player.mp4 -map 0:v -ss 8.3 -frames:v 1 frame_1.png -map 0:v -ss 2.2 -frames:v 1 frame_2.png`
-//         const command = `ffmpeg -y -ss ${time} -i ${videoFilePath} -frames:v 1 out1.jpg`; //time format 01:23:45
-//         const someCMD = spawn(command, { shell: true})
-//         someCMD.on("exit",async () =>{
-//             someCMD.kill()
-//             let frame = await sharp(`${process.cwd()}/out1.jpg`).resize(227, 227).toBuffer();
-//             frame = Buffer.from(frame, 'binary').toString('base64')
-//             frame = 'data:image/jpeg;base64,' + frame
-//             const frameAsImageData = await convertURIToImageData(frame);
-//             const find = await convertURIToImageData(test_image)
-//             const hash1 = imghash.hashRaw(find.getContext('2d').getImageData(0,0,227,227),32)
-//             const hash = imghash.hashRaw(frameAsImageData.getContext('2d').getImageData(0,0,227,227),32);
-//             const dist = leven(hash1, hash)
-//             //TODO : pass to the end of perdict and keep dist value under 124 for a good match (maybe)
-//             resolve(dist);
-//         })
-//     })
-// }
 

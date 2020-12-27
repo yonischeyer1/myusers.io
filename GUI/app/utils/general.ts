@@ -1,6 +1,5 @@
 import { Transform } from "stream";
 
-// const bcrypt = require('bcrypt');
 
 let appPath = require('electron').remote.app.getAppPath()
 if(appPath.indexOf("app.asar") > -1) {
@@ -24,15 +23,6 @@ export const sleep = (timeInMs:number) => {
   })
 }
 
-export const convertStringToHash = (image : any) => {
-    // return new Promise((resolve,reject)=>{
-    //   bcrypt.genSalt(10, function(err:any, salt:any) {
-    //     bcrypt.hash(image, salt, function(err:any, hash:any) {
-    //        resolve(hash);
-    //     });
-    //   });
-    // })
-}
 
 export function getRandomArbitrary(min:number, max:number) {
   return Math.ceil(Math.random() * (max - min) + min);

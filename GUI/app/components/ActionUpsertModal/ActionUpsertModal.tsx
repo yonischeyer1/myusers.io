@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,54 +7,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import {APP_CWD } from '../../utils/general';
-import { TextField, FormControl, InputLabel, Select, MenuItem, Tabs, Tab, Box, Fab } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import RecordingModal from '../RecordingModal/RecordingModal'
 import ServiceStore from '../../services /store';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
 import LocalDB from '../../utils/localDB.core';
-// import { IMAGE_HASH_BITS, convertURIToImageData } from '../../utils/testIoFile';
+import styles from './ActionUpsertModal.css';
 
 const serviceStore = new ServiceStore();
 const localDB = new LocalDB();
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: any;
-    value: any;
-}
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-
-function a11yProps(index: any) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
-
-const state = {
-  imageArray:[],
-  totalRecordTime:null,
-  screen: "validate"
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -96,8 +57,6 @@ const Transition = React.forwardRef(function Transition(
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
-  const [tabIndex, setTabIndex] = React.useState(0);
-  const [actionName, setActionName] = React.useState("");
   const [openRecordingModal, setOpenRecordingModal] = React.useState(false)
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
@@ -155,28 +114,27 @@ export default function FullScreenDialog(props:any) {
               </Button>
             </Toolbar>
           </AppBar>
-        <div className="modal-content-container">
-          <div className="test-name-container">
+        <div className={styles["modal-content-container"]}>
+          <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
              onChange={handleActionNameChange} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
         </div>
              <br/>
         <div style={{display:"flex", alignItems:"center"}}>
-        <div className="recoreder-control-button">
+        <div className={styles["recoreder-control-button"]}>
                <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
                    setOpenRecordingModal(true)
-                //    this.startRecording();
                }}>record</Button>
         </div>
-        <div className="live-snapshot-controls">
+        <div className={styles["live-snapshot-controls"]}>
         <Button size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
-                //    this.startRecording();
+
         }}>ADD Live snapshot +</Button>
         </div>
         </div>
         <br/><br/>
-         <div className="done-cancel-btns">
+         <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
          &nbsp;&nbsp;
          <Button size="small" variant="outlined" color="primary" onClick={()=>{
@@ -185,7 +143,7 @@ export default function FullScreenDialog(props:any) {
          </div>
          {
            !pickedAction ? null : 
-           <div className="tags-editor-container">
+           <div className={styles["tags-editor-container"]}>
               {
                  pickedAction.tags.map((tag)=>{
                   return <div style={{display:'flex'}}>

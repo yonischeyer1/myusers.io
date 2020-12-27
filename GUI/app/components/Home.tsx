@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -6,11 +6,6 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
-// import IoRecorderComponent from './IoRecorder/IoRecorder.component'
-// import Container,{CONTAINER_MODE} from '../utils/Container.controller'
-// import { buildDockerImage, isDockerImageBuilt } from '../utils/IHost';
-// import { IMAGE_NAME } from '../utils/Container.controller';
-import { getTestsEffect } from '../effects/tests.effects';
 import { Fab, Button } from '@material-ui/core';
 import TestUpsertModal from './TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from './UserUpsertModal/userUpsertModal'
@@ -19,13 +14,10 @@ import LocalDB, { MODELS } from '../utils/localDB.core';
 import PlayerLiveViewModal from './PlayerLiveViewModal/PlayerLiveView.component'
 import {TEST_STATUS} from '../models/Test.model'
 import ServiceStore from '../services /store';
-//import Users from './Users/Users';
-const appPath = require('electron').remote.app.getAppPath()
+import styles from './Home.css'
 
 const serviceStore = new ServiceStore();
 const localDB = new LocalDB();
-// const IoPlayerComponent = React.lazy(() => import('./IoPlayer/IoPlayer.component'));
-// const IoRecorderComponent = React.lazy(() => import('./IoRecorder/IoRecorder.component'));
 interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
@@ -151,20 +143,20 @@ export default function SimpleTabs(props:any) {
         <TabPanel value={tabIndex} index={tabIndex}>
         <Suspense fallback={<div>Loading...</div>}>
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
-             <div className="tests-menu-container">
+             <div className={styles["tests-menu-container"]}>
                 {
                   !tests ? null : tests.map((test:any)=> {
-                    return (<div className="test-row">
-                       <div className="test-name-container">
+                    return (<div className={styles["test-row"]}>
+                       <div className={styles["test-name-container"]}>
                         name: {test.name}
                        </div>
-                       <div className="test-status-container">  
+                       <div className={styles["test-status-container"]}>  
                          status : {test.status}
                        </div>
-                       <div className="test-due-date-container">
+                       <div className={styles["test-due-date-container"]}>
                          dueDate: {test.dueDate}
                        </div>
-                       <div className="play-button-container">
+                       <div className={styles["play-button-container"]}>
                        <Button size="small" variant="outlined" color="primary" 
                        onClick={(e)=>{
                          playTest(e, test)
@@ -176,11 +168,11 @@ export default function SimpleTabs(props:any) {
              </div>
           </div>
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
-          <div className="tests-menu-container">
+          <div className={styles["tests-menu-container"]}>
                 {
                   !users ? null : users.map((user:any)=> {
-                    return (<div className="test-row">
-                       <div className="test-name-container" onClick={()=>{handleUserClick(user)}}>
+                    return (<div className={styles["test-row"]}>
+                       <div className={styles["test-name-container"]} onClick={()=>{handleUserClick(user)}}>
                          {user.name}
                        </div>
                     </div>)
@@ -190,7 +182,7 @@ export default function SimpleTabs(props:any) {
           </div>
           </Suspense>
         </TabPanel>
-        <div className="add-test-floating-btn">
+        <div className={styles["add-test-floating-btn"]}>
           
         <Fab color="primary" aria-label="add" onClick={(e)=>{
           if(tabIndex === 0) {

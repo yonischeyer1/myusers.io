@@ -1,0 +1,24 @@
+.modal-content-container {
+    display: block;
+    margin: 0 auto;
+    top: 20px;
+    position: relative;
+}           
+.test-name-container{
+  position: relative;
+}
+.pick-user-combobox-container{
+    position: relative;
+}
+.pick-action-combobox-container{
+    position: relative;
+}
+.pick-schedule-container{
+    position: relative;
+}
+.pick-user-finish-action-container{
+    position: relative;
+}
+.done-cancel-btns{
+    position: relative;
+}

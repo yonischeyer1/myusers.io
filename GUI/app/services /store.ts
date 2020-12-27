@@ -9,10 +9,10 @@ export default class ServiceStore {
         return this;
     }
     get(key:string) {
-        return this._store[key]
+        return typeof this._store[key] === 'object' ? JSON.parse(JSON.stringify(this._store[key])) : this._store[key]
     }
     upsert(key:string, value:any) {
-        this._store[key] = value
+        this._store[key] =  typeof value === 'object' ?  JSON.parse(JSON.stringify(value)) : value
     }
     remove(key:string) {
         delete this._store[key]

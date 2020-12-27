@@ -7,14 +7,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import {APP_CWD } from '../../utils/general';
 import AccountUpsertModal from '../AccountUpsertModal/AccountUpsertModal'
 import ActionUpsertModal from '../ActionUpsertModal/ActionUpsertModal'
-import { TextField, FormControl, InputLabel, Select, MenuItem, Tabs, Tab, Box, Fab } from '@material-ui/core';
+import { TextField, Tabs, Tab, Box, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import LocalDB, { MODELS } from '../../utils/localDB.core'
 import ServiceStore from '../../services /store';
-// import { IMAGE_HASH_BITS, convertURIToImageData } from '../../utils/testIoFile';
+import styles from './UserUpsertModal.css'
 
 const serviceStore = new ServiceStore();
 
@@ -53,11 +52,6 @@ function a11yProps(index: any) {
     };
   }
 
-const state = {
-  imageArray:[],
-  totalRecordTime:null,
-  screen: "validate"
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,14 +93,6 @@ const Transition = React.forwardRef(function Transition(
 
 let actions:any;
 let accounts:any;
-let loadDbOnceFlag = false;
-// setTimeout(()=>{
-//   (async ()=> {
-//     //TODO filter out by currentUserPicked
-//     actions = await (new LocalDB().getModelArrayByName(MODELS.Action))
-//     accounts = await (new LocalDB().getModelArrayByName(MODELS.Account))
-//   })()
-// },5000)
 
 let setAcountFunc:any = null
 let setActionFunc:any = null
@@ -128,7 +114,6 @@ async function loadActionAndAccountsByUser(currentUserPicked:any) {
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
-  //const [actions, setActions] = React.useState();
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openUpsertAccountModal, setOpenUpsertAccountModal] = React.useState(false)
   const [openUpsertActionModal, setOpenUpsertActionModal] = React.useState(false)
@@ -202,9 +187,9 @@ export default function FullScreenDialog(props:any) {
               </Button>
             </Toolbar>
           </AppBar>
-          <div className="modal-content-container">
+          <div className={styles["modal-content-container"]}>
         </div>
-        <div className="add-test-floating-btn">
+        <div className={styles["add-test-floating-btn"]}>
           <Fab color="primary" aria-label="add" onClick={(e)=>{
           if(tabIndex === 0) {
             setOpenUpsertAccountModal(!openUpsertAccountModal)
@@ -216,7 +201,7 @@ export default function FullScreenDialog(props:any) {
         </Fab>
         </div>
         <br/>
-          <div className="test-name-container">
+          <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
              value={userNameTextFieldValue}
              onChange={handleUserNameChange} 

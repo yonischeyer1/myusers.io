@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,23 +7,21 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import {APP_CWD } from '../../utils/general';
-import { TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress } from '@material-ui/core';
+import { TextField, CircularProgress } from '@material-ui/core';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
-import fs from 'fs'
 import moment from 'moment'
 import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
-import { getImageLowestDistanceInVideo } from '../../utils/eye';
 import RecordModal from '../RecordModal/RecordModal'
 import ServiceStore from '../../services /store';
 import LocalDB from '../../utils/localDB.core';
 import { User } from '../../models/User.model';
 import { Account } from '../../models/Account.model';
 import { removeContainerByName } from '../../utils/IHost';
-const localDB = new LocalDB();
-// import { IMAGE_HASH_BITS, convertURIToImageData } from '../../utils/testIoFile';
+import styles from './RecordingModal.css'
 
+const localDB = new LocalDB();
 const serviceStore = new ServiceStore()
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
@@ -109,15 +107,6 @@ export default function FullScreenDialog(props:any) {
    },2000)
    }
 
-   const openSaveDialog = async (pathOfIoFile:string) => {
-    const { dialog } = require('electron').remote;
-    let newLocation = await dialog.showSaveDialog({'title':"Save IO file",defaultPath:`${(new Date()).toISOString()}.io.json`});
-    if(newLocation.filePath) {
-      fs.rename(pathOfIoFile, newLocation.filePath, ()=>{
-      
-      })
-    }
-   }
    const handleModalClosing = async (state?:any, recordAgain?:any) => {
     if(recordAgain) {
       setState(Object.assign(state,{openModal:false}))
@@ -216,30 +205,30 @@ export default function FullScreenDialog(props:any) {
            <div style={{color:"black",display:"flex",width:"100%",height:"auto"}}>
              {
                serviceStore.get('isLoginMode') ?              
-               <div className="buttons-container">
+               <div className={styles["buttons-container"]}>
                   <div className="recoreder-control-button"> 
                   <Button size="small" variant="outlined"  color="primary" disabled={false} onClick={()=>{
                        startLogin();
                       }}>login</Button> 
                   </div>
-                <div className="recoreder-control-button"> 
+                <div className={styles["recoreder-control-button"]}> 
                <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
                     finishLogin();
                    }}>Finish</Button>      
                </div>
                </div> : 
-                 <div className="buttons-container">
-                 <div className="recoreder-control-button">
+                 <div className={styles["buttons-container"]}>
+                 <div className={styles["recoreder-control-button"]}>
                     <Button size="small" variant="outlined" color="secondary" disabled={state.recordButtonDisable} onClick={()=>{
                      startRecording();
                      }}>record</Button> 
                  </div>
-                 <div className="recoreder-control-button">
+                 <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={()=>{
                    stopRecording();
                  }}>stop</Button>
                  </div>
-                 <div className="recoreder-control-button">
+                 <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={()=>{
                    abort();
                  }}>abort</Button>
@@ -253,11 +242,11 @@ export default function FullScreenDialog(props:any) {
                label="URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              }
                  {
-                 state.loading ? <div className="loading-container"><CircularProgress 
+                 state.loading ? <div className={styles["loading-container"]}><CircularProgress 
                  style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
                 </div> :
                      state.record ?  <VncViewerComponent stopRecord={state.stopRecord} mode="recorder" port={state.port}/> :
-                   <div className="blank-container">
+                   <div className={styles["blank-container"]}>
                    </div>
                  }
               </div>
