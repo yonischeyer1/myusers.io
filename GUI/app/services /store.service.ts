@@ -17,5 +17,4 @@ export default class ServiceStore {
     remove(key:string) {
         delete this._store[key]
     }
-
 }

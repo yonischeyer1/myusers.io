@@ -12,7 +12,7 @@ import { TransitionProps } from '@material-ui/core/transitions';
 import { TextField, FormControl } from '@material-ui/core';
 
 //** Others **
-import ServiceStore from '../../services /store';
+import ServiceStore from '../../services /store.service';
 import RecordingModal from '../RecordingModal/RecordingModal'
 import styles from './AccountUpsertModal.css';
 

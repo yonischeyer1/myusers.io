@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
+import Root from './components/Root';
 import './app.global.css';
 import { buildDockerImage, isDockerImageBuilt } from './utils/IHost';
 import { IMAGE_NAME } from './utils/Container.controller';

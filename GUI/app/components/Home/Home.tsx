@@ -7,13 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
 import { Fab, Button } from '@material-ui/core';
-import TestUpsertModal from './TestUpsertModal/TestUpsertModal'
-import UserUpsertModal from './UserUpsertModal/userUpsertModal'
-import Container, { CONTAINER_MODE } from '../utils/Container.controller';
-import LocalDB, { MODELS } from '../utils/localDB.core';
-import PlayerLiveViewModal from './PlayerLiveViewModal/PlayerLiveView.component'
-import {TEST_STATUS} from '../models/Test.model'
-import ServiceStore from '../services /store';
+import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
+import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
+import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
+import LocalDB, { MODELS } from '../../utils/localDB.core';
+import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
+import {TEST_STATUS} from '../../models/Test.model'
+import ServiceStore from '../../services /store.service';
 import styles from './Home.css'
 
 const serviceStore = new ServiceStore();

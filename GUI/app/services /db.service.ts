@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs'
-import { APP_CWD } from './general';
+import { APP_CWD } from '../utils/general';
 
 const DB_FOLDER_PATH = `${APP_CWD}DB`
 

@@ -9,7 +9,7 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { TextField } from '@material-ui/core';
 import RecordingModal from '../RecordingModal/RecordingModal'
-import ServiceStore from '../../services /store';
+import ServiceStore from '../../services /store.service';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
 import LocalDB from '../../utils/localDB.core';
 import styles from './ActionUpsertModal.css';
