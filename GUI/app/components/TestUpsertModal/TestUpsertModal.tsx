@@ -8,13 +8,12 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import LocalDB, { MODELS } from '../../utils/localDB.core';
 import { Test, TEST_STATUS } from '../../models/Test.model';
 import styles from './TestUpsertModal.css'
 
 import ServiceStore from '../../services /store.service'
 
-const localDB = new LocalDB();
+const serviceStore = new ServiceStore();
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,15 +50,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-let users:any;
-let userActions:any;
-let userActionsFinal:any;
-setTimeout(()=>{
-  (async ()=> {
-    users = await (new LocalDB().getModelArrayByName(MODELS.User))
-    console.log(users)
-  })()
-},5000)
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
@@ -71,13 +61,48 @@ export default function FullScreenDialog(props:any) {
   const [pickedUserActionsFinal, setPickedUserActionsFinal] = React.useState(null);
   const [pickedUserActionFinal, setPickedUserActionFinal] = React.useState("");
   const { open } = props;
-  const handleClose = () => {
+  const users = serviceStore.readDocs('users');
+  const actions = serviceStore.readDocs('actions');
+
+  const handleClose = (e:any) => {
     const {handleUpsertTestModalClose} = props;
     handleUpsertTestModalClose(false);
   };
 
+  const handleUserPick = async (e:any) => {
+    const menuItemSelected = e.target.value;
+    const user:any = users[menuItemSelected];
+    let userActions = []
+    for(const userActionId of user.actionsIds) {
+      userActions.push(actions[userActionId])
+    }
+    setPickedUser(user.id)
+    setPickedUserActions(userActions)
+  }
+
+  const handleActionPick = async (e:any) => {
+    const pickedAction = e.target.value
+    setPickedUserAction(pickedAction)
+  }
+
+  const handleUserPickFinal = async (e:any) => {
+    const menuItemSelected = e.target.value
+    const user = users.find( (user:any) => user.id === menuItemSelected)
+    const actions:any = await (new LocalDB().getModelArrayByName(MODELS.Action))
+    userActionsFinal = actions.filter((action:any) => user.actionsIds.find((actionId: any) => actionId === action.id ))
+    setPickedUserFinal(user.id)
+    setPickedUserActionsFinal(userActionsFinal)
+  }
+
+  const handleActionPickFinal = async (e:any) => {
+    const pickedAction = e.target.value
+    setPickedUserActionFinal(pickedAction)
+  }
+
+  
+
   const save = async (e:any) => {
-    const Tests:any = await localDB.getModelArrayByName(MODELS.Test)
+    const tests = serviceStore.readDocs('tests')
     const test:Test = {
       name:testName,
       userId:pickedUserId,
@@ -89,8 +114,9 @@ export default function FullScreenDialog(props:any) {
       },
       status:TEST_STATUS.IDLE
     }
-    Tests.push(test);
-    localDB.saveModel(MODELS.Test, Tests)
+    const newTestID = serviceStore.createDoc('tests', test)
+    tests[newTestID] = test;
+    serviceStore.updateDocs('tests', tests)
   }
 
   return (
@@ -101,9 +127,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={classes.title}>
               Test Upsert 
             </Typography>
-            <Button color="inherit" onClick={()=>{
-                handleClose(false)
-              }}>
+            <Button color="inherit" onClick={handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -123,18 +147,9 @@ export default function FullScreenDialog(props:any) {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={pickedUserId}
-            onChange={async(e)=>{
-              const menuItemSelected = e.target.value
-              const user = users.find( (user:any) => user.id === menuItemSelected)
-              const actions:any = await (new LocalDB().getModelArrayByName(MODELS.Action))
-              userActions = actions.filter((action:any) => user.actionsIds.find((actionId: any) => actionId === action.id ))
-              setPickedUser(user.id)
-              setPickedUserActions(userActions)
-              //on pick get id of user selected
-              //use id to get user actions  
-            }}>
+            onChange={handleUserPick}>
             {
-              !users ? null : users.map((user:any)=>{
+              !users ? null : Object.values(users).map((user:any)=>{
                 return <MenuItem value={user.id}>{user.name}</MenuItem>
               })
             }
@@ -148,10 +163,7 @@ export default function FullScreenDialog(props:any) {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={pickedUserAction}
-            onChange={(e:any)=>{
-              const pickedAction = e.target.value
-              setPickedUserAction(pickedAction)
-            }}>
+            onChange={handleActionPick}>
             {
               !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
                 return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
@@ -177,17 +189,10 @@ export default function FullScreenDialog(props:any) {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={pickedUserIdFinal}
-            onChange={async (e)=>{
-              const menuItemSelected = e.target.value
-              const user = users.find( (user:any) => user.id === menuItemSelected)
-              const actions:any = await (new LocalDB().getModelArrayByName(MODELS.Action))
-              userActionsFinal = actions.filter((action:any) => user.actionsIds.find((actionId: any) => actionId === action.id ))
-              setPickedUserFinal(user.id)
-              setPickedUserActionsFinal(userActionsFinal)
-            }}
+            onChange={handleUserPickFinal}
           >
             {
-              !users ? null : users.map((user:any)=>{
+              !users ? null : Object.values(users).map((user:any)=>{
                 return <MenuItem value={user.id}>{user.name}</MenuItem>
               })
             }
@@ -197,17 +202,11 @@ export default function FullScreenDialog(props:any) {
              <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={classes.formControl}>
           <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+          <Select labelId="demo-simple-select-label" id="demo-simple-select"
             value={pickedUserActionFinal}
-            onChange={(e)=>{
-              const pickedAction = e.target.value
-              setPickedUserActionFinal(pickedAction)
-            }}
-          >
+            onChange={handleActionPickFinal}>
             {
-              !pickedUserActionsFinal ? null : pickedUserActionsFinal.map((userAction:any)=>{
+              !pickedUserActionsFinal ? null : Object.values(pickedUserActionsFinal).map((userAction:any)=>{
                 return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
               })
             }

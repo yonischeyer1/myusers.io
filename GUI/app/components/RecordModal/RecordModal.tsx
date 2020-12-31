@@ -17,7 +17,6 @@ import { removeContainerByName } from '../../utils/IHost';
 import styles from './RecordModal.css'
 
 const serviceStore = new ServiceStore();
-const localDB = new LocalDB();
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 const state = {
@@ -85,8 +84,7 @@ export default function FullScreenDialog(props:any) {
   }
 
   const startAutoTagging = async () : Promise<Tag[]> => {
-     let { timeStamps , recordStartDate} = recorderContainer.autoTaggerData;
-     console.log("timeStamps",timeStamps)
+     let { timeStamps } = recorderContainer.autoTaggerData;
      const tags: Tag[] = [];
      for(let bbb = 0; bbb < timeStamps; bbb++) {
        tags.push({
@@ -101,12 +99,10 @@ export default function FullScreenDialog(props:any) {
      return tags;
   }
 
-  const yes = async (e:any) => {
+  const userValidatedIoActions = async (e:any) => {
     const tags = await startAutoTagging();
     const action = {
       tagHashFillFlag:true,
-      id:localDB.createRandomId(),
-      name: "fine",
       ioActions:recorderContainer._ioActions,
       tags
     }
@@ -187,7 +183,7 @@ export default function FullScreenDialog(props:any) {
              <div className={styles["modal-verifaction-buttons-controls"]}>
              <Button size="small" variant="outlined" color="secondary"  onClick={handleClose}>record again</Button>
                  <div className={styles["yes-button"]}>
-                 <Button  size="small" variant="outlined" color="primary" onClick={yes}>yes</Button>
+                 <Button  size="small" variant="outlined" color="primary" onClick={userValidatedIoActions}>yes</Button>
                  </div>
                </div> : null
            }
