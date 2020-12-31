@@ -69,13 +69,18 @@ export default function FullScreenDialog(props:any) {
     handleUpsertTestModalClose(false);
   };
 
-  const handleUserPick = async (e:any) => {
+  const getUserActions = (e:any) => {
     const menuItemSelected = e.target.value;
     const user:any = users[menuItemSelected];
     let userActions = []
     for(const userActionId of user.actionsIds) {
       userActions.push(actions[userActionId])
     }
+    return {userActions, user};
+  }
+
+  const handleUserPick = (e:any) => {
+    const {userActions, user} = getUserActions(e);
     setPickedUser(user.id)
     setPickedUserActions(userActions)
   }
@@ -86,12 +91,9 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleUserPickFinal = async (e:any) => {
-    const menuItemSelected = e.target.value
-    const user = users.find( (user:any) => user.id === menuItemSelected)
-    const actions:any = await (new LocalDB().getModelArrayByName(MODELS.Action))
-    userActionsFinal = actions.filter((action:any) => user.actionsIds.find((actionId: any) => actionId === action.id ))
+    const {userActions, user} = getUserActions(e);
     setPickedUserFinal(user.id)
-    setPickedUserActionsFinal(userActionsFinal)
+    setPickedUserActionsFinal(userActions)
   }
 
   const handleActionPickFinal = async (e:any) => {

@@ -11,7 +11,6 @@ import AccountUpsertModal from '../AccountUpsertModal/AccountUpsertModal'
 import ActionUpsertModal from '../ActionUpsertModal/ActionUpsertModal'
 import { TextField, Tabs, Tab, Box, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import LocalDB, { MODELS } from '../../utils/localDB.core'
 import ServiceStore from '../../services /store.service'
 import styles from './UserUpsertModal.css'
 
@@ -91,24 +90,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-let actions:any;
-let accounts:any;
-
-let setAcountFunc:any = null
-let setActionFunc:any = null
-
-async function loadActionAndAccountsByUser(currentUserPicked:any) {
-  actions = await (new LocalDB().getModelArrayByName(MODELS.Action))
-  if(actions && actions.length > 0) {
-    actions = actions.filter(action => currentUserPicked.actionsIds.find(actionId => action.id === actionId))
-    setActionFunc(actions)
-  }
-  accounts = await (new LocalDB().getModelArrayByName(MODELS.Account))
-  if(accounts && accounts.length > 0) {
-    accounts = accounts.filter(account => currentUserPicked.accountsIds.find(accountId => account.id === accountId)) 
-    setAcountFunc(accounts)
-  }
-}
 
 
 
@@ -123,17 +104,10 @@ export default function FullScreenDialog(props:any) {
 
   const [pickedAction, setPickedAction] = React.useState(null)
 
-  setAcountFunc = setAccountsView;
-  setActionFunc = setActionsView
 
   const { open, currentUserPicked } = props;
-
-  if(open && currentUserPicked && !accounts && !actions) {
-    (async ()=>{
-      await loadActionAndAccountsByUser(currentUserPicked)
-    })()
-  }
-
+  const accounts = serviceStore.readDocs('accounts')
+  const actions = serviceStore.readDocs('actions')
 
   const handleUpsertAccountModalClose = (e:any) =>{
     setOpenUpsertAccountModal(false)
@@ -143,10 +117,7 @@ export default function FullScreenDialog(props:any) {
     setOpenUpsertActionModal(false)
   }
 
-  const handleClose = (recordAgain = false) => {
-    actions = null 
-    accounts = null
-    setAcountFunc(null)
+  const handleClose = (e:any) => {
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };
@@ -158,7 +129,7 @@ export default function FullScreenDialog(props:any) {
   const handleUserNameChange = (e:any) => {
     const userNameKey = "userName"
     const newUserName = e.target.value
-    serviceStore.upsert(userNameKey, newUserName);
+    serviceStore.upsertAppStateValue(userNameKey, newUserName);
   }
 
   const editAction = (action:any) => {
@@ -166,11 +137,15 @@ export default function FullScreenDialog(props:any) {
      setPickedAction(action)
   }
 
-  useEffect(()=>{
-    console.log("Upserer USer modal state",actions)
-  })
+  const handleFloatingButtonClick = (e:any) => {
+    if(tabIndex === 0) {
+      setOpenUpsertAccountModal(!openUpsertAccountModal)
+    } else {
+      setOpenUpsertActionModal(!openUpsertActionModal)
+    }
+  }
 
-  let userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.get('userName') 
+  let userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName') 
 
   return (
     <div>
@@ -180,9 +155,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={classes.title}>
               {currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user'}
             </Typography>
-            <Button color="inherit" onClick={()=>{
-                handleClose(false)
-              }}>
+            <Button color="inherit" onClick={handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -190,13 +163,7 @@ export default function FullScreenDialog(props:any) {
           <div className={styles["modal-content-container"]}>
         </div>
         <div className={styles["add-test-floating-btn"]}>
-          <Fab color="primary" aria-label="add" onClick={(e)=>{
-          if(tabIndex === 0) {
-            setOpenUpsertAccountModal(!openUpsertAccountModal)
-          } else {
-            setOpenUpsertActionModal(!openUpsertActionModal)
-          }
-        }}>
+          <Fab color="primary" aria-label="add" onClick={handleFloatingButtonClick}>
           <AddIcon />
         </Fab>
         </div>
@@ -219,7 +186,7 @@ export default function FullScreenDialog(props:any) {
         <Suspense fallback={<div>Loading...</div>}>
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
           {
-              !accountsView ? null : accountsView.map((account:any)=>{
+              !accounts ? null : accounts.map((account:any)=>{
                 return <div>
                   Account Name: {account.name}
                   </div>
@@ -228,7 +195,7 @@ export default function FullScreenDialog(props:any) {
           </div>
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
             {
-              !actionsView ? null : actionsView.map((action:any)=>{
+              !actions ? null : actions.map((action:any)=>{
                 return <div>
                   <div>
                   Action Name: {action.name}
