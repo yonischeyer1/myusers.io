@@ -1,6 +1,7 @@
 import React from 'react';
 import RFB from '@novnc/novnc/core/rfb';
 import styles from './VncViewer.css'
+import ServiceStore from '../../services /store.service'
 export default class VncViewerComponent extends React.Component {
 rfb:any;
 constructor(props: any) {

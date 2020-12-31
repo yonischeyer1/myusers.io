@@ -75,14 +75,19 @@ export default function FullScreenDialog(props:any) {
 
   const handleAccountNameChange = (e:any) => {
     const key = "accountName"
-    const newActionName = e.target.value
-    serviceStore.upsert(key,newActionName)
+    const newAccountName = e.target.value
+    serviceStore.upsertAppStateValue(key, newAccountName)
   }
 
   const handleLoginUrlChange = (e:any) => {
     const key = "loginURL"
-    const newActionName = e.target.value
-    serviceStore.upsert(key,newActionName)
+    const newLoginUrl = e.target.value
+    serviceStore.upsertAppStateValue(key, newLoginUrl)
+  }
+
+  const handleLoginClick = (e:any) => {
+    serviceStore.upsertAppStateValue('isLoginMode', true)
+    setOpenRecordingMoal(true)  
   }
 
    //** HTML */
@@ -112,10 +117,7 @@ export default function FullScreenDialog(props:any) {
          </div>
          <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={classes.formControl}>
-             <Button size="small" variant="outlined" color="primary" onClick={()=>{
-                  serviceStore.upsert('isLoginMode', true)
-                  setOpenRecordingMoal(true)  
-                }}>Login</Button>
+             <Button size="small" variant="outlined" color="primary" onClick={handleLoginClick}>Login</Button>
         </FormControl>
        </div>
             <br/><br/>

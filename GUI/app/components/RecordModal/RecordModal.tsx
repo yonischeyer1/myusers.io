@@ -11,8 +11,7 @@ import {APP_CWD } from '../../utils/general';
 import { Tag, TagType, Action } from '../../models/Action.model';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
-import LocalDB from '../../utils/localDB.core'
-import ServiceStore from '../../services /store';
+import ServiceStore from '../../services /store.service'
 import { User } from '../../models/User.model';
 import { removeContainerByName } from '../../utils/IHost';
 import styles from './RecordModal.css'
@@ -59,9 +58,9 @@ export default function FullScreenDialog(props:any) {
   const { open, totalRecordTime, recorderContainer } = props;
   const classes = useStyles();
   state["totalRecordTime"] = totalRecordTime
-  const handleClose = (recordAgain = false) => {
+  const handleClose = (e:any) => {
     const {handleModalClose} = props;
-    handleModalClose(state, recordAgain);
+    handleModalClose(state, false);
   };
 
   const handleLivePreviewModalClose = (e:any) => {
@@ -102,7 +101,7 @@ export default function FullScreenDialog(props:any) {
      return tags;
   }
 
-  const yes = async () => {
+  const yes = async (e:any) => {
     const tags = await startAutoTagging();
     const action = {
       tagHashFillFlag:true,
@@ -120,7 +119,6 @@ export default function FullScreenDialog(props:any) {
       setLiveViewPort(recorderContainer._port)
       setLiveViewPortModalOpen(true)
     })
-    console.log("actionWithDists.tags",actionWithDists.tags)
     saveThis = {tags: actionWithDists.tags, ioActions:actionWithDists.ioActions} 
     await removeContainerByName(recorderContainer._containerName)
     setTags(actionWithDists.tags);
@@ -128,55 +126,38 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleTagImageClick = (tag:any) => {
-      console.log("tag",tag)
-      const {originalReferenceSnapshotURI} = tag;
       setdynamicSnapshotModalData(tag)
       setDynamicSnapshotOpen(true)
   }
 
   async function saveTags(tags:any, ioActions:any) {
-    const Users:any = await localDB.getModelArrayByName(localDB.MODELS.User);
-    const Actions:any = await localDB.getModelArrayByName(localDB.MODELS.Action);
-    const currentUser = serviceStore.get('currentUser')
+    const users = serviceStore.readDocs('users');
+    const currentUser = serviceStore.getAppStateValue('currentUser')
+    const actionName = serviceStore.getAppStateValue('actionName')
+    const startUrl = serviceStore.getAppStateValue('startUrl')
+    const actionToInsert:Action = {
+      name: actionName,
+      ioActions,
+      tags,
+      startUrl
+    }
+    const newActionId = serviceStore.createDoc('actions', actionToInsert)
     if(currentUser) {
-      const actionName = serviceStore.get('actionName')
-      const startUrl = serviceStore.get('startUrl')
-      const indexOfPickedUser = Users.findIndex(user => user.id === currentUser.id)
-      const actionToInsert:Action = {
-        id:localDB.createRandomId(),
-        name: actionName,
-        ioActions,
-        tags,
-        startUrl
-      }
-      Actions.push(actionToInsert);
-      Users[indexOfPickedUser].actionsIds.push(actionToInsert.id)
-      localDB.saveModel(localDB.MODELS.Action, Actions)
-      localDB.saveModel(localDB.MODELS.User, Users)
+      users[currentUser.id].actionsIds.push(newActionId);
+      serviceStore.updateDocs('users', users)
     } else {
-      const userName = serviceStore.get('userName')
-      const actionName = serviceStore.get('actionName')
-      const startUrl = serviceStore.get('startUrl')
+      const userName = serviceStore.getAppStateValue('userName')
       const userToInsert:User = {
         name:userName,
         accountsIds:[],
         actionsIds:[]
       }
-      const actionToInsert:Action = {
-        id:localDB.createRandomId(),
-        name: actionName,
-        ioActions,
-        tags,
-        startUrl
-      }
-      userToInsert.actionsIds.push(actionToInsert.id)
-      Actions.push(actionToInsert);
-      Users.push(userToInsert)
-      localDB.saveModel(localDB.MODELS.Action, Actions)
-      localDB.saveModel(localDB.MODELS.User, Users)
+      userToInsert.actionsIds.push(newActionId)
+      serviceStore.createDoc('users', userToInsert);
+
     }
-    serviceStore.upsert('currentUser', null)
-    serviceStore.upsert('userName',null)
+    serviceStore.upsertAppStateValue('currentUser', null)
+    serviceStore.upsertAppStateValue('userName',null)
   }
 
   return (
@@ -187,9 +168,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={classes.title}>
               Validate & Save 
             </Typography>
-            <Button color="inherit" onClick={()=>{
-              handleClose(false)
-            }}>
+            <Button color="inherit" onClick={handleClose}>
               Save
             </Button>
           </Toolbar>
@@ -206,14 +185,9 @@ export default function FullScreenDialog(props:any) {
            {
              screen === SCREENS.validate ?
              <div className={styles["modal-verifaction-buttons-controls"]}>
-             <Button size="small" variant="outlined" color="secondary"  onClick={()=>{
-                   handleClose(true)
-                 }}>record again</Button>
+             <Button size="small" variant="outlined" color="secondary"  onClick={handleClose}>record again</Button>
                  <div className={styles["yes-button"]}>
-  
-                 <Button  size="small" variant="outlined" color="primary" onClick={()=>{
-                   yes()
-                 }}>yes</Button>
+                 <Button  size="small" variant="outlined" color="primary" onClick={yes}>yes</Button>
                  </div>
                </div> : null
            }

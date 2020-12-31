@@ -9,6 +9,7 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
 import styles from './PlayerLiveViewModal.css'
+import ServiceStore from './services /store.service'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,7 +52,7 @@ const Transition = React.forwardRef(function Transition(
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const { open, port } = props;
-  const handleClose = () => {
+  const handleClose = (e:any) => {
     const {handleLivePreviewModalClose} = props;
     handleLivePreviewModalClose(false);
   };
@@ -64,9 +65,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={classes.title}>
              Player Live view 
             </Typography>
-            <Button color="inherit" onClick={()=>{
-                handleClose(false)
-              }}>
+            <Button color="inherit" onClick={handleClose}>
                 Close
               </Button>
             </Toolbar>

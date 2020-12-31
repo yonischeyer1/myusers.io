@@ -12,7 +12,7 @@ import ActionUpsertModal from '../ActionUpsertModal/ActionUpsertModal'
 import { TextField, Tabs, Tab, Box, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import LocalDB, { MODELS } from '../../utils/localDB.core'
-import ServiceStore from '../../services /store';
+import ServiceStore from '../../services /store.service'
 import styles from './UserUpsertModal.css'
 
 const serviceStore = new ServiceStore();

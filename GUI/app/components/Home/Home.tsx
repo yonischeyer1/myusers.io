@@ -10,14 +10,12 @@ import { Fab, Button } from '@material-ui/core';
 import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
 import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
-import LocalDB, { MODELS } from '../../utils/localDB.core';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import {TEST_STATUS} from '../../models/Test.model'
-import ServiceStore from '../../services /store.service';
+import ServiceStore from '../../services /store.service'
 import styles from './Home.css'
 
 const serviceStore = new ServiceStore();
-const localDB = new LocalDB();
 interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
@@ -58,15 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-let tests:any;
-let users:any;
-setInterval(()=>{
-  (async()=>{
-    const [t,u] = await Promise.all([localDB.getModelArrayByName(MODELS.Test),localDB.getModelArrayByName(MODELS.User)])
-    tests = t;
-    users = u;
-  })()
-}, 2500)
 
 export default function SimpleTabs(props:any) {
   const classes = useStyles();
@@ -76,7 +65,9 @@ export default function SimpleTabs(props:any) {
   const [liveViewPort, setLiveViewPort] = React.useState(null)
   const [liveViewPortModalOpen, setLiveViewPortModalOpen] = React.useState(false)
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
-
+  const tests = serviceStore.readDocs('tests');
+  const users = serviceStore.readDocs('users');
+  
   const handleUpsertTestModalClose = (e:any) =>{
     setOpenUpsertTestModal(false)
   }
@@ -93,18 +84,21 @@ export default function SimpleTabs(props:any) {
     setTabIndex(newValue);
   };
 
-  const playTest = async (e:any, test:any) => {
+  const handleLiveViewClick = (test:any) => {
+    setLiveViewPort(test['playingContainerInstance']._port)
+    setLiveViewPortModalOpen(true)
+  }
+
+  const playTest = async (test:any) => {
     await changeTestStatus(test, TEST_STATUS.PLAYING)
-    const users:any = await localDB.getModelArrayByName(MODELS.User)
-    const user:any = users.find(userItem => userItem.id === test.userId)
-    const actions:any = await localDB.getModelArrayByName(MODELS.Action)
-    const action:any = actions.find(actionItem => actionItem.id === test.actionId)
+    const users = serviceStore.readDocs('users');
+    const actions = serviceStore.readDocs('actions');
+    const user = users[test.userId];
+    const action = actions[test.actionId]
     const playingContainerInstance = new Container(CONTAINER_MODE.player);
     await playingContainerInstance.init(action.startUrl, user.name);
-    setLiveViewPort(playingContainerInstance._port)
-    setLiveViewPortModalOpen(true)
+    test['playingContainerInstance'] = playingContainerInstance;
     const testResp:any = await (await playingContainerInstance.play(true, action)).json()
-    console.log("testResp",testResp)
     if(testResp.success) {
       await changeTestStatus(test, TEST_STATUS.SUCCESS)
     } else {
@@ -116,18 +110,25 @@ export default function SimpleTabs(props:any) {
 
   const changeTestStatus = async (test:any, status:any) => {
     test.status = status;
-    const Tests:any = await localDB.getModelArrayByName(MODELS.Test)
-    const onlyIds = Tests.map( testItem => testItem.id)
-    const choosenIdIndex = onlyIds.indexOf(test.id)
-    Tests[choosenIdIndex] = test;
-    localDB.saveModel(MODELS.Test, Tests);
+    tests[test.id] = test;
+    serviceStore.updateDocs('tests', tests);
   }
 
   const handleUserClick = async (user:any) => {
-    serviceStore.upsert('currentUser', user)
+    serviceStore.upsertAppStateValue('currentUser', user)
     setCurrentUserPicked(user)
     setOpenUpsertUserModal(true)
     //TODO: open upsert user Modal with user 
+  }
+
+  const handleFloatingButtonClick = (e:any) => {
+    if(tabIndex === 0) {
+      setOpenUpsertTestModal(!openUpsertTestModal)
+    } else {
+      setCurrentUserPicked(null)
+      serviceStore.upsertAppStateValue('userName', null)
+      setOpenUpsertUserModal(!openUpsertUserModal)
+    }
   }
 
 
@@ -145,7 +146,7 @@ export default function SimpleTabs(props:any) {
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
              <div className={styles["tests-menu-container"]}>
                 {
-                  !tests ? null : tests.map((test:any)=> {
+                  !tests ? null : Object.values(tests).map((test:any)=> {
                     return (<div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]}>
                         name: {test.name}
@@ -158,9 +159,11 @@ export default function SimpleTabs(props:any) {
                        </div>
                        <div className={styles["play-button-container"]}>
                        <Button size="small" variant="outlined" color="primary" 
-                       onClick={(e)=>{
-                         playTest(e, test)
-                         }}>Play</Button>
+                       onClick={(e:any)=>{playTest(test)}}>Play</Button>
+                       </div>
+                       <div className={styles["play-button-container"]}>
+                       <Button disabled={!!test['playingContainerInstance']} size="small" variant="outlined" color="primary" 
+                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
                        </div>
                     </div>)
                   }) 
@@ -170,9 +173,10 @@ export default function SimpleTabs(props:any) {
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
           <div className={styles["tests-menu-container"]}>
                 {
-                  !users ? null : users.map((user:any)=> {
+                  !users ? null :  Object.values(users).map((user:any)=> {
                     return (<div className={styles["test-row"]}>
-                       <div className={styles["test-name-container"]} onClick={()=>{handleUserClick(user)}}>
+                       <div className={styles["test-name-container"]} 
+                       onClick={(e:any)=>{handleUserClick(user)}}>
                          {user.name}
                        </div>
                     </div>)
@@ -184,15 +188,7 @@ export default function SimpleTabs(props:any) {
         </TabPanel>
         <div className={styles["add-test-floating-btn"]}>
           
-        <Fab color="primary" aria-label="add" onClick={(e)=>{
-          if(tabIndex === 0) {
-            setOpenUpsertTestModal(!openUpsertTestModal)
-          } else {
-            setCurrentUserPicked(null)
-            serviceStore.upsert('userName', null)
-            setOpenUpsertUserModal(!openUpsertUserModal)
-          }
-        }}>
+        <Fab color="primary" aria-label="add" onClick={handleFloatingButtonClick}>
          <AddIcon />
         </Fab>
         </div>

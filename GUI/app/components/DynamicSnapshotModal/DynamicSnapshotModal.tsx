@@ -9,7 +9,6 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styles from './DynamicSnapshotModal.css'
 
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
@@ -62,7 +61,7 @@ export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const [brushSize, setBrushSize] = React.useState(DEFAULT_BRUSH_SIZE);
   const { open, dataURI } = props;
-  const handleClose = () => {
+  const handleClose = (e:any) => {
     runOnce = false;
     const {handleDynamicSnapshotModalClose} = props;
     handleDynamicSnapshotModalClose(false);
@@ -159,9 +158,7 @@ if(!runOnce && open && dataURI) {
             <Typography variant="h6" className={classes.title}>
               Static Masking wizard 
             </Typography>
-            <Button color="inherit" onClick={()=>{
-                handleClose()
-              }}>
+            <Button color="inherit" onClick={handleClose}>
                 Close
               </Button>
             </Toolbar>

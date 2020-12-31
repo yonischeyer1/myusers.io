@@ -11,11 +11,9 @@ import { TextField } from '@material-ui/core';
 import RecordingModal from '../RecordingModal/RecordingModal'
 import ServiceStore from '../../services /store.service';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
-import LocalDB from '../../utils/localDB.core';
 import styles from './ActionUpsertModal.css';
 
 const serviceStore = new ServiceStore();
-const localDB = new LocalDB();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,13 +59,22 @@ export default function FullScreenDialog(props:any) {
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
   const { open, pickedAction } = props;
-  const handleClose = () => {
+
+  const handleClose = (e:any) => {
     const {handleUpsertActionModalClose} = props;
     handleUpsertActionModalClose(false);
   };
 
   const handleRecordingModalClose = () =>{
      setOpenRecordingModal(false)
+  }
+
+  const handleRecordBtnClick = (e:any) => {
+    setOpenRecordingModal(true)
+  }
+
+  const handleAddLiveSnapshotClick = (e:any) => {
+
   }
 
 
@@ -82,21 +89,18 @@ export default function FullScreenDialog(props:any) {
   const handleActionNameChange = (e:any) => {
     const key = "actionName"
     const newActionName = e.target.value
-    serviceStore.upsert(key,newActionName)
+    serviceStore.upsertAppStateValue(key, newActionName)
   }
 
   const handleTagImageClick = (tag:any) => {
-    console.log("tag",tag)
-    const {originalReferenceSnapshotURI} = tag;
     setdynamicSnapshotModalData(tag)
     setDynamicSnapshotOpen(true)
  } 
 
- const saveAction = async () => {
-   const Actions:any = await localDB.getModelArrayByName(localDB.MODELS.Action);
-   const indexOfPickedAction = Actions.findIndex(action => action.id === pickedAction.id)
-   Actions[indexOfPickedAction].tags = pickedAction.tags
-   localDB.saveModel(localDB.MODELS.Action, Actions)
+ const saveCurrentActionTags = async (e:any) => {
+   const actions = serviceStore.readDocs('actions')
+   actions[pickedAction.id].tags = pickedAction.tags;
+   serviceStore.updateDocs('actions', actions);
  }
 
   return (
@@ -107,9 +111,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={classes.title}>
               Action Upsert 
             </Typography>
-            <Button color="inherit" onClick={()=>{
-                handleClose()
-              }}>
+            <Button color="inherit" onClick={handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -123,23 +125,17 @@ export default function FullScreenDialog(props:any) {
              <br/>
         <div style={{display:"flex", alignItems:"center"}}>
         <div className={styles["recoreder-control-button"]}>
-               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
-                   setOpenRecordingModal(true)
-               }}>record</Button>
+               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={handleRecordBtnClick}>record</Button>
         </div>
         <div className={styles["live-snapshot-controls"]}>
-        <Button size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
-
-        }}>ADD Live snapshot +</Button>
+        <Button size="small" variant="outlined" color="primary" disabled={false} onClick={handleAddLiveSnapshotClick}>ADD Live snapshot +</Button>
         </div>
         </div>
         <br/><br/>
          <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
          &nbsp;&nbsp;
-         <Button size="small" variant="outlined" color="primary" onClick={()=>{
-           saveAction()
-         }}>Save</Button>
+         <Button size="small" variant="outlined" color="primary" onClick={saveCurrentActionTags}>Save</Button>
          </div>
          {
            !pickedAction ? null : 
