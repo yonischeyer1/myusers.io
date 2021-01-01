@@ -61,8 +61,13 @@ export default function FullScreenDialog(props:any) {
   const [pickedUserActionsFinal, setPickedUserActionsFinal] = React.useState(null);
   const [pickedUserActionFinal, setPickedUserActionFinal] = React.useState("");
   const { open } = props;
-  const users = serviceStore.readDocs('users');
-  const actions = serviceStore.readDocs('actions');
+  let users = []
+  let actions = []
+
+  if(open) {
+    users = serviceStore.readDocs('users');
+    actions = serviceStore.readDocs('actions');
+  }
 
   const handleClose = (e:any) => {
     const {handleUpsertTestModalClose} = props;
@@ -104,7 +109,6 @@ export default function FullScreenDialog(props:any) {
   
 
   const save = async (e:any) => {
-    const tests = serviceStore.readDocs('tests')
     const test:Test = {
       name:testName,
       userId:pickedUserId,
@@ -116,12 +120,11 @@ export default function FullScreenDialog(props:any) {
       },
       status:TEST_STATUS.IDLE
     }
-    const newTestID = serviceStore.createDoc('tests', test)
-    tests[newTestID] = test;
-    serviceStore.updateDocs('tests', tests)
+    debugger
+    serviceStore.createDoc('tests', test);
   }
 
-  return (
+  return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
@@ -226,5 +229,5 @@ export default function FullScreenDialog(props:any) {
         </div>
       </Dialog>
     </div>
-  );
+  ) : <div></div>
 }

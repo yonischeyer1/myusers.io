@@ -103,7 +103,7 @@ export default function FullScreenDialog(props:any) {
    serviceStore.updateDocs('actions', actions);
  }
 
-  return (
+  return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
@@ -171,5 +171,5 @@ export default function FullScreenDialog(props:any) {
      <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={openRecordingModal}/>
       </Dialog>
     </div>
-  );
+  ) : <div></div>
 }

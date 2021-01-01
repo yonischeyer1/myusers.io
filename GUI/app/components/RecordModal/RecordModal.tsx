@@ -156,7 +156,7 @@ export default function FullScreenDialog(props:any) {
     serviceStore.upsertAppStateValue('userName',null)
   }
 
-  return (
+  return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
@@ -217,7 +217,7 @@ export default function FullScreenDialog(props:any) {
         handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
       <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={false} port={liveViewPort}/>
     </div>
-  );
+  ) : <div></div>
 }
 
 

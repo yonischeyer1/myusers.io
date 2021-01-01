@@ -103,6 +103,7 @@ export default function FullScreenDialog(props:any) {
   const { open, currentUserPicked } = props;
   let accounts = []
   let actions = []
+  let userNameTextFieldValue = null;
   if(open) {
      accounts = serviceStore.readDocs('accounts')
      actions = serviceStore.readDocs('actions')
@@ -124,7 +125,8 @@ export default function FullScreenDialog(props:any) {
     } else {
       accounts = []
       actions = []
-    } 
+    }
+    userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
   }
 
   const handleUpsertAccountModalClose = (e:any) =>{
@@ -163,9 +165,8 @@ export default function FullScreenDialog(props:any) {
     }
   }
 
-  let userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName') 
 
-  return (
+  return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
@@ -238,5 +239,5 @@ export default function FullScreenDialog(props:any) {
       <ActionUpsertModal handleUpsertActionModalClose={handleUpsertActionModalClose} open={openUpsertActionModal} pickedAction={pickedAction}/>
       </Dialog>
     </div>
-  );
+  ) : <div></div>
 }

@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-
 export default function SimpleTabs(props:any) {
   const classes = useStyles();
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -65,6 +64,7 @@ export default function SimpleTabs(props:any) {
   const [liveViewPort, setLiveViewPort] = React.useState(null)
   const [liveViewPortModalOpen, setLiveViewPortModalOpen] = React.useState(false)
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
+  const [portsPlaying, setPortsPlaying] = React.useState({})
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
@@ -84,7 +84,7 @@ export default function SimpleTabs(props:any) {
   };
 
   const handleLiveViewClick = (test:any) => {
-    setLiveViewPort(test['playingContainerInstance']._port)
+    setLiveViewPort(portsPlaying[test.id])
     setLiveViewPortModalOpen(true)
   }
 
@@ -95,19 +95,21 @@ export default function SimpleTabs(props:any) {
     const action = actions[test.actionId]
     const playingContainerInstance = new Container(CONTAINER_MODE.player);
     await playingContainerInstance.init(action.startUrl, user.name);
-    test['playingContainerInstance'] = playingContainerInstance;
+    setPortsPlaying({...portsPlaying, [test.id]:playingContainerInstance._port})
     const testResp:any = await (await playingContainerInstance.play(true, action)).json()
     if(testResp.success) {
       await changeTestStatus(test, TEST_STATUS.SUCCESS)
     } else {
       await changeTestStatus(test, TEST_STATUS.FAIL)
-  
       //pop up troubleshoot menu 
     }
+
+    setPortsPlaying({...portsPlaying, [test.id]:false})
+
   }
 
   const changeTestStatus = async (test:any, status:any) => {
-    debugger
+    console.log("changeTestStatus")
     test.status = status;
     tests[test.id] = test;
     serviceStore.updateDocs('tests', tests);
@@ -159,7 +161,7 @@ export default function SimpleTabs(props:any) {
                          dueDate: {test.dueDate}
                        </div>
                        <div className={styles["test-due-date-container"]}>
-                       <Button disabled={!test['playingContainerInstance']} size="small" variant="outlined" color="primary" 
+                       <Button disabled={!portsPlaying[test.id]} size="small" variant="outlined" color="primary" 
                        onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
                        </div>
                        <div className={styles["play-button-container"]}>

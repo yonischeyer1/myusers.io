@@ -91,7 +91,7 @@ export default function FullScreenDialog(props:any) {
   }
 
    //** HTML */
-  return (
+  return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
@@ -130,5 +130,5 @@ export default function FullScreenDialog(props:any) {
       </Dialog>
       <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={openRecordingModal}/>
     </div>
-  );
+  ) : <div></div>
 }

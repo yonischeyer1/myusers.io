@@ -48,6 +48,7 @@ export default class ServiceStore {
         this._myEmitter.emit(`state-${key}`)
     }
     createDoc(collectionName:any, newDoc:any) {
+        console.log("createDoc")
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
         copyOfDoc["id"] = crypto.randomBytes(20).toString('hex');// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;
@@ -59,6 +60,7 @@ export default class ServiceStore {
         return JSON.parse(JSON.stringify(this._store.DB[collectionName]));
     }
     updateDocs(collectionName:any, updatedCollection:any) {
+        console.log("updateDocs")
         this._store.DB[collectionName] = updatedCollection;
         this._myEmitter.emit(`DB-update-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
