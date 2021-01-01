@@ -194,7 +194,6 @@ export default class Container {
                 this._containerProcess.video.pid = videoPid;
                 if(this._mode === CONTAINER_MODE.recorder) {
                     const pressActionsCount = await (await this._ihands.startRecorderPlayerKeyboardMouse(action.ioActions)).json()
-                    debugger
                     this.autoTaggerData.recordStartDate =  recordStartDate
                     this.autoTaggerData.timeStamps = pressActionsCount;
                 } else {

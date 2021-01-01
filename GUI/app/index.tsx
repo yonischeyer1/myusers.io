@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', () =>
     const isImageBuilt = await isDockerImageBuilt(IMAGE_NAME);
     if(!isImageBuilt){
       await buildDockerImage(IMAGE_NAME);
-      await (new ServiceStore().init())
      }
+     await (new ServiceStore().init())
      render(
       <AppContainer>
         <Root />

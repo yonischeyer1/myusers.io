@@ -95,19 +95,35 @@ const Transition = React.forwardRef(function Transition(
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
+
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openUpsertAccountModal, setOpenUpsertAccountModal] = React.useState(false)
   const [openUpsertActionModal, setOpenUpsertActionModal] = React.useState(false)
-   
-  const [accountsView, setAccountsView] = React.useState(null);
-  const [actionsView, setActionsView] = React.useState(null);
-
   const [pickedAction, setPickedAction] = React.useState(null)
-
-
   const { open, currentUserPicked } = props;
-  const accounts = serviceStore.readDocs('accounts')
-  const actions = serviceStore.readDocs('actions')
+
+  let accounts = serviceStore.readDocs('accounts')
+  let actions = serviceStore.readDocs('actions')
+
+  if(currentUserPicked) {
+    if(currentUserPicked.accountsIds.length > 0) {
+      let temp = []
+      for(const acccountId of currentUserPicked.accountsIds) {
+        temp.push(accounts[acccountId])
+      }
+      accounts = temp
+    }
+    if(currentUserPicked.actionsIds.length > 0) { 
+      let temp = []
+      for(const actionId of currentUserPicked.actionsIds) {
+        temp.push(accounts[actionId])
+      }
+      actions = temp
+    }
+  } else {
+    accounts = []
+    actions = []
+  }
 
   const handleUpsertAccountModalClose = (e:any) =>{
     setOpenUpsertAccountModal(false)

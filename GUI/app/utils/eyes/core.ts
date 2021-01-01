@@ -13,7 +13,6 @@ export async function getHashesDistance(hash1:any, hash2:any) {
 }
 
 export async function tagMostSimillarFrameInVideo (snapshotPath:any, framesTime:any) {
-    debugger
     const snapshotHashToFind = await imageToHash(snapshotPath)
     const {frames, time } = framesTime
     const fps = Math.floor(frames.length / Math.floor(time))

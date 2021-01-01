@@ -32,8 +32,8 @@ export default class ServiceStore {
     }
     async init() {
          const loadPromises = MY_COLLECTIONS.map(collectionName => this.load(collectionName))
-         const [accounts, actions, users, tests, settings]: any = await Promise.all(loadPromises).catch(e => console.error(e));
-         this._store.DB = {accounts, actions, users, tests, settings}
+         const [accounts, actions, tests, users, settings]: any = await Promise.all(loadPromises).catch(e => console.error(e));
+         this._store.DB = {accounts, actions, tests, users, settings}
          return;
     }
     getEventEmitter() {
@@ -48,7 +48,6 @@ export default class ServiceStore {
         this._myEmitter.emit(`state-${key}`)
     }
     createDoc(collectionName:any, newDoc:any) {
-        debugger
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
         copyOfDoc["id"] = crypto.randomBytes(20).toString('hex');// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;

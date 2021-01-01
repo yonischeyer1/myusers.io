@@ -67,7 +67,6 @@ export default function SimpleTabs(props:any) {
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
-  
   const handleUpsertTestModalClose = (e:any) =>{
     setOpenUpsertTestModal(false)
   }
