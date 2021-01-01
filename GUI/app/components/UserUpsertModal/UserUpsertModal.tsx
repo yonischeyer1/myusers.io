@@ -101,28 +101,30 @@ export default function FullScreenDialog(props:any) {
   const [openUpsertActionModal, setOpenUpsertActionModal] = React.useState(false)
   const [pickedAction, setPickedAction] = React.useState(null)
   const { open, currentUserPicked } = props;
-
-  let accounts = serviceStore.readDocs('accounts')
-  let actions = serviceStore.readDocs('actions')
-
-  if(currentUserPicked) {
-    if(currentUserPicked.accountsIds.length > 0) {
-      let temp = []
-      for(const acccountId of currentUserPicked.accountsIds) {
-        temp.push(accounts[acccountId])
+  let accounts = []
+  let actions = []
+  if(open) {
+     accounts = serviceStore.readDocs('accounts')
+     actions = serviceStore.readDocs('actions')
+    if(currentUserPicked) {
+      if(currentUserPicked.accountsIds.length > 0) {
+        let temp = []
+        for(const acccountId of currentUserPicked.accountsIds) {
+          temp.push(accounts[acccountId])
+        }
+        accounts = temp
       }
-      accounts = temp
-    }
-    if(currentUserPicked.actionsIds.length > 0) { 
-      let temp = []
-      for(const actionId of currentUserPicked.actionsIds) {
-        temp.push(accounts[actionId])
+      if(currentUserPicked.actionsIds.length > 0) { 
+        let temp = []
+        for(const actionId of currentUserPicked.actionsIds) {
+          temp.push(actions[actionId])
+        }
+        actions = temp
       }
-      actions = temp
-    }
-  } else {
-    accounts = []
-    actions = []
+    } else {
+      accounts = []
+      actions = []
+    } 
   }
 
   const handleUpsertAccountModalClose = (e:any) =>{

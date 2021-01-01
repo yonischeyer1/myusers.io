@@ -107,6 +107,7 @@ export default function SimpleTabs(props:any) {
   }
 
   const changeTestStatus = async (test:any, status:any) => {
+    debugger
     test.status = status;
     tests[test.id] = test;
     serviceStore.updateDocs('tests', tests);
@@ -157,13 +158,13 @@ export default function SimpleTabs(props:any) {
                        <div className={styles["test-due-date-container"]}>
                          dueDate: {test.dueDate}
                        </div>
+                       <div className={styles["test-due-date-container"]}>
+                       <Button disabled={!test['playingContainerInstance']} size="small" variant="outlined" color="primary" 
+                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
+                       </div>
                        <div className={styles["play-button-container"]}>
                        <Button size="small" variant="outlined" color="primary" 
                        onClick={(e:any)=>{playTest(test)}}>Play</Button>
-                       </div>
-                       <div className={styles["play-button-container"]}>
-                       <Button disabled={!!test['playingContainerInstance']} size="small" variant="outlined" color="primary" 
-                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
                        </div>
                     </div>)
                   }) 
