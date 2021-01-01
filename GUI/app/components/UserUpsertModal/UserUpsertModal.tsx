@@ -186,7 +186,9 @@ export default function FullScreenDialog(props:any) {
         <Suspense fallback={<div>Loading...</div>}>
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
           {
-              !accounts ? null : accounts.map((account:any)=>{
+              !accounts ||  Object.values(accounts).length === 0 ? <div>
+                   You have 0 Accounts
+              </div> : Object.values(accounts).map((account:any)=>{
                 return <div>
                   Account Name: {account.name}
                   </div>
@@ -195,7 +197,9 @@ export default function FullScreenDialog(props:any) {
           </div>
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
             {
-              !actions ? null : actions.map((action:any)=>{
+              !actions ||  Object.values(actions).length === 0 ? <div>
+                You have 0 Actions
+              </div> : Object.values(actions).map((action:any)=>{
                 return <div>
                   <div>
                   Action Name: {action.name}

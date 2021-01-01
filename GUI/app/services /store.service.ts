@@ -13,13 +13,13 @@ const MY_COLLECTIONS = ['accounts','actions','tests','users','settings']
 export default class ServiceStore {
     _store:any = {
         DB: {
-           accounts:null,
-           actions:null,
-           tests:null,
-           users:null,
-           settings:null 
+           accounts:{},
+           actions:{},
+           tests:{},
+           users:{},
+           settings:{} 
         },
-        appState: null
+        appState: {}
     }
     _myEmitter:any
     constructor() {
@@ -40,18 +40,19 @@ export default class ServiceStore {
         return this._myEmitter;
     }
     getAppStateValue(key:string) {
-        return this._store.appState[key];
+        return typeof this._store.appState[key] === "object" ? JSON.parse(JSON.stringify(this._store.appState[key])) : this._store.appState[key];
     }
     upsertAppStateValue(key:string, value:any) {
         const copyOfValue = typeof value === "object" ? JSON.parse(JSON.stringify(value)) : value
         this._store.appState[key] = copyOfValue;
-        this._myEmitter(`state-${key}`)
+        this._myEmitter.emit(`state-${key}`)
     }
     createDoc(collectionName:any, newDoc:any) {
+        debugger
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
         copyOfDoc["id"] = crypto.randomBytes(20).toString('hex');// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;
-        this._myEmitter(`DB-create-${collectionName}`)
+        this._myEmitter.emit(`DB-create-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
         return copyOfDoc["id"];
     }
@@ -60,12 +61,12 @@ export default class ServiceStore {
     }
     updateDocs(collectionName:any, updatedCollection:any) {
         this._store.DB[collectionName] = updatedCollection;
-        this._myEmitter(`DB-update-${collectionName}`)
+        this._myEmitter.emit(`DB-update-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
     }
     deleteDoc(collectionName:any, value:any) {
         delete this._store.DB[collectionName][value.id]
-        this._myEmitter(`DB-delete-${collectionName}`)
+        this._myEmitter.emit(`DB-delete-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
     }
     save(collectionName:any, docs:any) {

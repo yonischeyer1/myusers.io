@@ -91,7 +91,6 @@ export default function SimpleTabs(props:any) {
 
   const playTest = async (test:any) => {
     await changeTestStatus(test, TEST_STATUS.PLAYING)
-    const users = serviceStore.readDocs('users');
     const actions = serviceStore.readDocs('actions');
     const user = users[test.userId];
     const action = actions[test.actionId]
@@ -146,7 +145,9 @@ export default function SimpleTabs(props:any) {
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
              <div className={styles["tests-menu-container"]}>
                 {
-                  !tests ? null : Object.values(tests).map((test:any)=> {
+                  !tests || Object.values(tests).length === 0 ? <div> 
+                          You have 0 Tests
+                     </div>: Object.values(tests).map((test:any)=> {
                     return (<div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]}>
                         name: {test.name}
@@ -173,7 +174,9 @@ export default function SimpleTabs(props:any) {
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
           <div className={styles["tests-menu-container"]}>
                 {
-                  !users ? null :  Object.values(users).map((user:any)=> {
+                  !users || Object.values(users).length === 0 ? <div>
+                    You have 0 Users
+                  </div> :  Object.values(users).map((user:any)=> {
                     return (<div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]} 
                        onClick={(e:any)=>{handleUserClick(user)}}>

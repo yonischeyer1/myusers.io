@@ -219,7 +219,7 @@ export default function FullScreenDialog(props:any) {
         </div>
         <br/><br/>
          <div className={styles["done-cancel-btns"]}>
-         <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
+         <Button size="small" variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>
          &nbsp;&nbsp;
          <Button size="small" variant="outlined" color="primary" onClick={save}>Done</Button>
          </div>

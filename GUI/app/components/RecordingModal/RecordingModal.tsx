@@ -53,7 +53,7 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
+let checkOnceisLoginModeFlag = false
 export default function FullScreenDialog(props:any) {
   const [state, setState] = React.useState({
     record: false,
@@ -74,7 +74,30 @@ export default function FullScreenDialog(props:any) {
   });
   const classes = useStyles();
   const { open } = props;
-  const handleClose = (e:any) => {
+
+
+  const startLogin = async (e:any) => {
+    const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
+    const loginURL = serviceStore.getAppStateValue('loginURL')
+    const loginContainer = new Container(CONTAINER_MODE.login);
+    await loginContainer.init()
+    loginContainer.loadingFunction = setLoadingState;
+    await loginContainer.login(loginURL, userName)
+    setState({...state,record:true, port:loginContainer._port,
+      recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
+ }
+
+  if(serviceStore.getAppStateValue('isLoginMode') && !checkOnceisLoginModeFlag) {
+    checkOnceisLoginModeFlag = true;
+     startLogin(null);
+  }
+
+  const handleClose = async (e:any) => {
+    const loginContainer:any = state.recorderContainer;
+    if(loginContainer) {
+      await removeContainerByName(loginContainer._containerName)
+    }
+    serviceStore.upsertAppStateValue('isLoginMode', false)
     const {handleRecordingModalClose} = props;
     handleRecordingModalClose(false);
   };
@@ -119,17 +142,6 @@ export default function FullScreenDialog(props:any) {
     setState(Object.assign(state,{loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true}))
     // await recorderContainer.abort();
     setState(Object.assign(state,{loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false}))
-   }
-
-   const startLogin = async (e:any) => {
-      const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
-      const loginURL = serviceStore.getAppStateValue('loginURL')
-      const loginContainer = new Container(CONTAINER_MODE.login);
-      await loginContainer.init()
-      loginContainer.loadingFunction = setLoadingState;
-      await loginContainer.login(loginURL, userName)
-      setState({...state,record:true, port:loginContainer._port,
-        recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
    }
 
    const finishLogin = async (e:any) => {
@@ -195,9 +207,6 @@ export default function FullScreenDialog(props:any) {
              {
                serviceStore.getAppStateValue('isLoginMode') ?              
                <div className={styles["buttons-container"]}>
-                  <div className="recoreder-control-button"> 
-                  <Button size="small" variant="outlined"  color="primary" disabled={false} onClick={startLogin}>login</Button> 
-                  </div>
                 <div className={styles["recoreder-control-button"]}> 
                <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={finishLogin}>Finish</Button>      
                </div>
