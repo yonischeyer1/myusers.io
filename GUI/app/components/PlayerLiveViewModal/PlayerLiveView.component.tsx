@@ -51,7 +51,7 @@ const Transition = React.forwardRef(function Transition(
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
-  const { open, port } = props;
+  const { open, port, stopPlaying } = props;
   const handleClose = (e:any) => {
     const {handleLivePreviewModalClose} = props;
     handleLivePreviewModalClose(false);
@@ -71,7 +71,7 @@ export default function FullScreenDialog(props:any) {
             </Toolbar>
           </AppBar>
         <div className={styles["modal-content-container"]}>
-         <VncViewerComponent stopRecord={false} mode="player" port={port}/> 
+         <VncViewerComponent stopRecord={stopPlaying} mode="player" port={port}/> 
        </div>
       </Dialog>
     </div>

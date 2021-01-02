@@ -65,6 +65,7 @@ export default function SimpleTabs(props:any) {
   const [liveViewPortModalOpen, setLiveViewPortModalOpen] = React.useState(false)
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
   const [portsPlaying, setPortsPlaying] = React.useState({})
+  const [stopLiveView, setStopLiveView] = React.useState(true)
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
@@ -77,6 +78,7 @@ export default function SimpleTabs(props:any) {
 
   const handleLivePreviewModalClose = (e:any) => {
     setLiveViewPortModalOpen(false)
+    setStopLiveView(true)
   }
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -85,6 +87,7 @@ export default function SimpleTabs(props:any) {
 
   const handleLiveViewClick = (test:any) => {
     setLiveViewPort(portsPlaying[test.id])
+    setStopLiveView(false)
     setLiveViewPortModalOpen(true)
   }
 
@@ -105,11 +108,9 @@ export default function SimpleTabs(props:any) {
     }
 
     setPortsPlaying({...portsPlaying, [test.id]:false})
-
   }
 
   const changeTestStatus = async (test:any, status:any) => {
-    console.log("changeTestStatus")
     test.status = status;
     tests[test.id] = test;
     serviceStore.updateDocs('tests', tests);
@@ -197,7 +198,7 @@ export default function SimpleTabs(props:any) {
          <AddIcon />
         </Fab>
         </div>
-        <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={false} port={liveViewPort}/>
+        <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={stopLiveView} port={liveViewPort}/>
         <TestUpsertModal handleUpsertTestModalClose={handleUpsertTestModalClose} open={openUpsertTestModal}/>
         <UserUpsertModal currentUserPicked={currentUserPicked} handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
       </div>
