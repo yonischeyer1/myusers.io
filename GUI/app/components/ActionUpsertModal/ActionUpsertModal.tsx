@@ -145,12 +145,12 @@ export default function FullScreenDialog(props:any) {
                   return <div style={{display:'flex'}}>
                     <div>
                     <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
+                    </div>
                     {
                       tag.dynamic && tag.dynamic.drawURI ? <div>
                         <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
                       </div> : null
                     }
-                    </div>
                     <div>
                       insert time in seconds
                      <input value={tag.maxWaitTimeUntilFail} onChange={(e)=>{

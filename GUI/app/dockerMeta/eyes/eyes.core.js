@@ -141,7 +141,7 @@ async function drawOnImageAndReturnHashNODEJS(imageDataURI, coordinates) {
      myctx.moveTo(x,y);
      myctx.fillStyle="red";
      myctx.strokeStyle = "red";
-     myctx.fillRect(x-2,y-2,cord.brushSize,cord.brushSize);
+     myctx.fillRect(x-2,y-2, cord.brushSize,cord.brushSize);
      myctx.moveTo(x,y);
     }
     myctx.stroke();
