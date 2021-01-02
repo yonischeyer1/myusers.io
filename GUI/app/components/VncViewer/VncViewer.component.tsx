@@ -93,7 +93,7 @@ return new Promise((resolve, reject)=>{
 }
 
 stopRecording() {
-    this.rfb.sendKey(65307)
+    //this.rfb.sendKey(65307)
     this.rfb.disconnect();
 }
 

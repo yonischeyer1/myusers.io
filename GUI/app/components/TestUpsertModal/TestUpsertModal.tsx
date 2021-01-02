@@ -120,7 +120,6 @@ export default function FullScreenDialog(props:any) {
       },
       status:TEST_STATUS.IDLE
     }
-    debugger
     serviceStore.createDoc('tests', test);
   }
 

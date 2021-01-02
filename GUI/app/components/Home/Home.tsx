@@ -77,8 +77,10 @@ export default function SimpleTabs(props:any) {
   }
 
   const handleLivePreviewModalClose = (e:any) => {
-    setLiveViewPortModalOpen(false)
     setStopLiveView(true)
+    setTimeout(()=>{
+      setLiveViewPortModalOpen(false)
+    }, 300)
   }
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
