@@ -1,6 +1,6 @@
 .tests-menu-container {
   position: relative;
-  width: 60%;
+  width: 80%;
 }
 .test-row {
   display: flex;
@@ -19,8 +19,7 @@
   position: relative;
 }
 .play-button-container {
-  position: absolute;
-  right: 0;
+  position: relative;
 }
 .add-test-floating-btn {
   display: flex;

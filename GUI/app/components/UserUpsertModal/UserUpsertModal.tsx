@@ -206,10 +206,22 @@ export default function FullScreenDialog(props:any) {
           <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
           {
               !accounts ||  Object.values(accounts).length === 0 ? <div>
-                   You have 0 Accounts
+                   User have 0 Accounts
               </div> : Object.values(accounts).map((account:any)=>{
-                return <div>
+                
+                return <div className={styles["user-upsert-row"]}> <div>
                   Account Name: {account.name}
+                  </div>
+                  <div>
+                    <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
+                      editAction(action);
+                    }}>Edit</Button>     
+                    </div>
+                    <div>
+                    <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
+                      editAction(action);
+                    }}>Delete</Button>     
+                    </div>
                   </div>
               })
           }
@@ -217,9 +229,9 @@ export default function FullScreenDialog(props:any) {
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
             {
               !actions ||  Object.values(actions).length === 0 ? <div>
-                You have 0 Actions
+                User have 0 Actions
               </div> : Object.values(actions).map((action:any)=>{
-                return <div>
+                return <div className={styles["user-upsert-row"]}>
                   <div>
                   Action Name: {action.name}
                     </div>
@@ -227,6 +239,11 @@ export default function FullScreenDialog(props:any) {
                     <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
                       editAction(action);
                     }}>Edit</Button>     
+                    </div>
+                    <div>
+                    <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
+                      editAction(action);
+                    }}>Delete</Button>     
                     </div>
                   </div>
               })

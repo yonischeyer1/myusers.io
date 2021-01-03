@@ -164,12 +164,20 @@ export default function SimpleTabs(props:any) {
                          dueDate: {test.dueDate}
                        </div>
                        <div className={styles["test-due-date-container"]}>
-                       <Button disabled={!portsPlaying[test.id]} size="small" variant="outlined" color="primary" 
-                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
+                       <Button disabled={false} size="small" variant="outlined" color="primary" 
+                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Edit</Button>
                        </div>
                        <div className={styles["play-button-container"]}>
                        <Button size="small" variant="outlined" color="primary" 
                        onClick={(e:any)=>{playTest(test)}}>Play</Button>
+                       </div>
+                       <div className={styles["test-due-date-container"]}>
+                       <Button disabled={!portsPlaying[test.id]} size="small" variant="outlined" color="primary" 
+                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
+                       </div>
+                       <div className={styles["test-due-date-container"]}>
+                       <Button disabled={false} size="small" variant="outlined" color="secondary" 
+                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Delete</Button>
                        </div>
                     </div>)
                   }) 
@@ -183,9 +191,14 @@ export default function SimpleTabs(props:any) {
                     You have 0 Users
                   </div> :  Object.values(users).map((user:any)=> {
                     return (<div className={styles["test-row"]}>
-                       <div className={styles["test-name-container"]} 
-                       onClick={(e:any)=>{handleUserClick(user)}}>
-                         {user.name}
+                       <div className={styles["test-name-container"]}>
+                         name : {user.name}
+                       </div>
+                       <div>
+                         <Button size="small" variant="outlined" color="primary" onClick={(e:any)=>{handleUserClick(user)}}>Edit</Button>
+                       </div>
+                       <div>
+                         <Button size="small" variant="outlined" color="secondary">Delete</Button>
                        </div>
                     </div>)
                   }) 
