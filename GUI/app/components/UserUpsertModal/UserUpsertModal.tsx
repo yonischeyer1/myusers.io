@@ -224,7 +224,7 @@ export default function FullScreenDialog(props:any) {
         </AppBar>
         <TabPanel value={tabIndex} index={tabIndex}>
         <Suspense fallback={<div>Loading...</div>}>
-          <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
+          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 0 ? 'flex' : 'none'}}> 
           {
               !accounts ||  Object.values(accounts).length === 0 ? <div>
                    User have 0 Accounts
@@ -247,13 +247,13 @@ export default function FullScreenDialog(props:any) {
               })
           }
           </div>
-          <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
+          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 1 ? 'flex' : 'none'}}>
             {
               !actions ||  Object.values(actions).length === 0 ? <div>
                 User have 0 Actions
               </div> : Object.values(actions).map((action:any)=>{
                 return <div className={styles["user-upsert-row"]}>
-                  <div>
+                  <div className={styles["user-upsert-row-item-name"]}>
                   Action Name: {action.name}
                     </div>
                     <div>

@@ -18,8 +18,19 @@
 
 .user-upsert-row {
     display: flex;
-    justify-content: space-around;
     margin-top: 20px;
     align-items: center;
-    margin-right: 80px;
-  }
+}
+.user-upsert-row > div {
+    color: black;
+    width: 15%;
+}
+
+.user-upsert-row-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+.user-upsert-row-item-name {
+    width: 33% !important;
+}

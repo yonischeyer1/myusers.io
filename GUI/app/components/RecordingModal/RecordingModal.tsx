@@ -201,9 +201,9 @@ export default function FullScreenDialog(props:any) {
               </Button>
             </Toolbar>
           </AppBar>
-       <div className="modal-content-container">
+       <div className={styles["modal-content-container"]}>
        <div>
-         <br/><br/>
+         <br/>
            <div style={{color:"black",display:"flex",width:"100%",height:"auto", justifyContent:"center"}}>
              {
                serviceStore.getAppStateValue('isLoginMode') ?              
