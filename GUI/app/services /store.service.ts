@@ -52,8 +52,8 @@ export default class ServiceStore {
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
         copyOfDoc["id"] = crypto.randomBytes(20).toString('hex');// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;
-        this._myEmitter.emit(`DB-create-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
+        this._myEmitter.emit(`DB-reread-${collectionName}`)
         return copyOfDoc["id"];
     }
     readDocs(collectionName:any) {
@@ -62,13 +62,13 @@ export default class ServiceStore {
     updateDocs(collectionName:any, updatedCollection:any) {
         console.log("updateDocs")
         this._store.DB[collectionName] = updatedCollection;
-        this._myEmitter.emit(`DB-update-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
+        this._myEmitter.emit(`DB-reread-${collectionName}`)
     }
     deleteDoc(collectionName:any, value:any) {
         delete this._store.DB[collectionName][value.id]
-        this._myEmitter.emit(`DB-delete-${collectionName}`)
         this.save(collectionName, this._store.DB[collectionName])
+        this._myEmitter.emit(`DB-reread-${collectionName}`)
     }
     save(collectionName:any, docs:any) {
         fs.writeFileSync(`${DB_FOLDER_PATH}/${collectionName}.json`, JSON.stringify(docs))

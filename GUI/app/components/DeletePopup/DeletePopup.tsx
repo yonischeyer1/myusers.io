@@ -61,8 +61,8 @@ export default function FullScreenDialog(props:any) {
   };
 
   const handleDeleteItemClick = (e:any) => {
-      const { collectionName, item } = itemAndCollectionName;
-      serviceStore.deleteDoc(collectionName, item)
+      const { collectionName, item, currentUserPicked } = itemAndCollectionName;
+      debugger
       if(currentUserPicked) {
         const users = serviceStore.readDocs('users')
         const user = users[currentUserPicked.id]
@@ -73,6 +73,7 @@ export default function FullScreenDialog(props:any) {
             user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
         }
         serviceStore.updateDocs('users', users)
+        serviceStore.deleteDoc(collectionName, item)
       }
   }
 

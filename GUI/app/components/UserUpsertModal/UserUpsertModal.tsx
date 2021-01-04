@@ -93,7 +93,7 @@ const Transition = React.forwardRef(function Transition(
 
 
 
-
+let lastcurrentUserPicked:any = null
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
 
@@ -104,34 +104,47 @@ export default function FullScreenDialog(props:any) {
   const [pickedAccount, setPickedAccount] = React.useState(null)
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
+  const [accountsView, setAccountsView] = React.useState(null);
+  const [actionsView, setActionsView] = React.useState(null);
   const { open, currentUserPicked } = props;
-  let accounts = []
-  let actions = []
-  let userNameTextFieldValue = null;
+  let userNameTextFieldValue:any = null;
+
+  const readUserAccounts = () => {
+    const users = serviceStore.readDocs('users')
+    const userPicked = currentUserPicked || lastcurrentUserPicked
+    const user = users[userPicked.id]
+    if(user.accountsIds.length > 0) {
+    const accounts = serviceStore.readDocs('accounts')
+      let temp = []
+      for(const acccountId of user.accountsIds) {
+        temp.push(accounts[acccountId])
+      }
+      return temp;
+    }
+  }
+
+  const readUserActions = () => {
+    const users = serviceStore.readDocs('users')
+    const userPicked = currentUserPicked || lastcurrentUserPicked
+    const user = users[userPicked.id]
+    if(user.actionsIds.length > 0) {
+    const actions = serviceStore.readDocs('actions')
+    let temp = []
+    for(const actionId of user.actionsIds) {
+      temp.push(actions[actionId])
+    }
+    return temp;
+  }
+ }
+  
   if(open) {
-     accounts = serviceStore.readDocs('accounts')
-     actions = serviceStore.readDocs('actions')
-    if(currentUserPicked) {
-      if(currentUserPicked.accountsIds.length > 0) {
-        let temp = []
-        for(const acccountId of currentUserPicked.accountsIds) {
-          temp.push(accounts[acccountId])
-        }
-        accounts = temp
-      }
-      if(currentUserPicked.actionsIds.length > 0) { 
-        let temp = []
-        for(const actionId of currentUserPicked.actionsIds) {
-          temp.push(actions[actionId])
-        }
-        actions = temp
-      }
-    } else {
-      accounts = []
-      actions = []
+    if(currentUserPicked && !accountsView && !actionsView) {
+      lastcurrentUserPicked = currentUserPicked;
+      setAccountsView(readUserAccounts());
+      setActionsView(readUserActions());
     }
     userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
-  }
+  } 
 
   const deleteAccountOrAction = (collectionName:any, item:any) => {
     setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
@@ -175,6 +188,14 @@ export default function FullScreenDialog(props:any) {
     setOpenUpsertAccountModal(account)
     setPickedAccount(account)
  }
+
+ serviceStore.getEventEmitter().on(`DB-reread-accounts`,()=> {
+    setAccountsView(readUserAccounts());
+ });
+
+ serviceStore.getEventEmitter().on(`DB-reread-actions`,()=>{
+   setActionsView(readUserActions());
+});
 
   const handleFloatingButtonClick = (e:any) => {
     if(tabIndex === 0) {
@@ -226,9 +247,9 @@ export default function FullScreenDialog(props:any) {
         <Suspense fallback={<div>Loading...</div>}>
           <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 0 ? 'flex' : 'none'}}> 
           {
-              !accounts ||  Object.values(accounts).length === 0 ? <div>
+              !accountsView ||  Object.values(accountsView).length === 0 ? <div>
                    User have 0 Accounts
-              </div> : Object.values(accounts).map((account:any)=>{
+              </div> : Object.values(accountsView).map((account:any)=>{
                 
                 return <div className={styles["user-upsert-row"]}> <div>
                   Account Name: {account.name}
@@ -249,12 +270,12 @@ export default function FullScreenDialog(props:any) {
           </div>
           <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 1 ? 'flex' : 'none'}}>
             {
-              !actions ||  Object.values(actions).length === 0 ? <div>
+              !actionsView ||  Object.values(actionsView).length === 0 ? <div>
                 User have 0 Actions
-              </div> : Object.values(actions).map((action:any)=>{
+              </div> : Object.values(actionsView).map((action:any)=>{
                 return <div className={styles["user-upsert-row"]}>
                   <div className={styles["user-upsert-row-item-name"]}>
-                  Action Name: {action.name}
+                  Action Name: {action.name || null}
                     </div>
                     <div>
                     <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
