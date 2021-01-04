@@ -203,7 +203,8 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
        <div className="modal-content-container">
        <div>
-           <div style={{color:"black",display:"flex",width:"100%",height:"auto"}}>
+         <br/><br/>
+           <div style={{color:"black",display:"flex",width:"100%",height:"auto", justifyContent:"center"}}>
              {
                serviceStore.getAppStateValue('isLoginMode') ?              
                <div className={styles["buttons-container"]}>
@@ -223,7 +224,7 @@ export default function FullScreenDialog(props:any) {
                  </div>
                </div>
              }
-             <div style={{width:"100%"}}>
+             <div style={{width:"auto"}}>
              {
                serviceStore.getAppStateValue('isLoginMode') ? null : <TextField disabled={state.recordButtonDisable} 
                onChange={handleURLChange} 

@@ -9,6 +9,7 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import AccountUpsertModal from '../AccountUpsertModal/AccountUpsertModal'
 import ActionUpsertModal from '../ActionUpsertModal/ActionUpsertModal'
+import DeletePopup from '../DeletePopup/DeletePopup'
 import { TextField, Tabs, Tab, Box, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ServiceStore from '../../services /store.service'
@@ -100,6 +101,9 @@ export default function FullScreenDialog(props:any) {
   const [openUpsertAccountModal, setOpenUpsertAccountModal] = React.useState(false)
   const [openUpsertActionModal, setOpenUpsertActionModal] = React.useState(false)
   const [pickedAction, setPickedAction] = React.useState(null)
+  const [pickedAccount, setPickedAccount] = React.useState(null)
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
+  const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const { open, currentUserPicked } = props;
   let accounts = []
   let actions = []
@@ -129,8 +133,18 @@ export default function FullScreenDialog(props:any) {
     userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
   }
 
+  const deleteAccountOrAction = (collectionName:any, item:any) => {
+    setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
+    setOpenDeletePopup(true);
+  }
+
   const handleUpsertAccountModalClose = (e:any) =>{
     setOpenUpsertAccountModal(false)
+  }
+
+  const handleDeletePopupClose = (e:any) =>{
+    setItemAndCollectionNameToDelete(null);
+    setOpenDeletePopup(false)
   }
 
   const handleUpsertActionModalClose = (e:any) =>{
@@ -157,10 +171,17 @@ export default function FullScreenDialog(props:any) {
      setPickedAction(action)
   }
 
+  const editAccount = (account:any) => {
+    setOpenUpsertAccountModal(account)
+    setPickedAccount(account)
+ }
+
   const handleFloatingButtonClick = (e:any) => {
     if(tabIndex === 0) {
+      setPickedAccount(null)
       setOpenUpsertAccountModal(!openUpsertAccountModal)
     } else {
+      setPickedAction(null)
       setOpenUpsertActionModal(!openUpsertActionModal)
     }
   }
@@ -214,12 +235,12 @@ export default function FullScreenDialog(props:any) {
                   </div>
                   <div>
                     <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="primary" disabled={false} onClick={()=>{
-                      editAction(action);
+                      editAccount(account);
                     }}>Edit</Button>     
                     </div>
                     <div>
                     <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
-                      editAction(action);
+                      deleteAccountOrAction('accounts', account);
                     }}>Delete</Button>     
                     </div>
                   </div>
@@ -242,7 +263,7 @@ export default function FullScreenDialog(props:any) {
                     </div>
                     <div>
                     <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={false} onClick={()=>{
-                      editAction(action);
+                      deleteAccountOrAction('actions', action);
                     }}>Delete</Button>     
                     </div>
                   </div>
@@ -252,7 +273,8 @@ export default function FullScreenDialog(props:any) {
           </Suspense>
         </TabPanel>
       </div>
-      <AccountUpsertModal handleUpsertAccountModalClose={handleUpsertAccountModalClose} open={openUpsertAccountModal}/>
+      <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
+      <AccountUpsertModal handleUpsertAccountModalClose={handleUpsertAccountModalClose} open={openUpsertAccountModal} pickedAccount={pickedAccount}/>
       <ActionUpsertModal handleUpsertActionModalClose={handleUpsertActionModalClose} open={openUpsertActionModal} pickedAction={pickedAction}/>
       </Dialog>
     </div>
