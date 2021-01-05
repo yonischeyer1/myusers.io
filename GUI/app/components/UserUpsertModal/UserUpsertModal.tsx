@@ -110,31 +110,41 @@ export default function FullScreenDialog(props:any) {
   let userNameTextFieldValue:any = null;
 
   const readUserAccounts = () => {
+    debugger
     const users = serviceStore.readDocs('users')
     const userPicked = currentUserPicked || lastcurrentUserPicked
-    const user = users[userPicked.id]
-    if(user.accountsIds.length > 0) {
-    const accounts = serviceStore.readDocs('accounts')
-      let temp = []
-      for(const acccountId of user.accountsIds) {
-        temp.push(accounts[acccountId])
+    if(userPicked) {
+      const user = users[userPicked.id]
+      if(user.accountsIds.length > 0) {
+      const accounts = serviceStore.readDocs('accounts')
+        let temp = []
+        for(const acccountId of user.accountsIds) {
+          temp.push(accounts[acccountId])
+        }
+        return temp;
+      } else {
+        return []
       }
-      return temp;
     }
   }
 
   const readUserActions = () => {
+    debugger
     const users = serviceStore.readDocs('users')
     const userPicked = currentUserPicked || lastcurrentUserPicked
-    const user = users[userPicked.id]
-    if(user.actionsIds.length > 0) {
-    const actions = serviceStore.readDocs('actions')
-    let temp = []
-    for(const actionId of user.actionsIds) {
-      temp.push(actions[actionId])
-    }
-    return temp;
-  }
+    if(userPicked) {
+      const user = users[userPicked.id]
+      if(user.actionsIds.length > 0) {
+      const actions = serviceStore.readDocs('actions')
+      let temp = []
+      for(const actionId of user.actionsIds) {
+        temp.push(actions[actionId])
+      }
+      return temp;
+     } else {
+       return []
+     }
+   }
  }
   
   if(open) {
@@ -165,6 +175,8 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleClose = (e:any) => {
+    setAccountsView(null);
+    setActionsView(null);
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };
@@ -247,9 +259,9 @@ export default function FullScreenDialog(props:any) {
         <Suspense fallback={<div>Loading...</div>}>
           <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 0 ? 'flex' : 'none'}}> 
           {
-              !accountsView ||  Object.values(accountsView).length === 0 ? <div>
+              !accountsView ||  accountsView.length === 0 ? <div>
                    User have 0 Accounts
-              </div> : Object.values(accountsView).map((account:any)=>{
+              </div> : accountsView.map((account:any)=>{
                 
                 return <div className={styles["user-upsert-row"]}> <div>
                   Account Name: {account.name}
@@ -270,9 +282,9 @@ export default function FullScreenDialog(props:any) {
           </div>
           <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 1 ? 'flex' : 'none'}}>
             {
-              !actionsView ||  Object.values(actionsView).length === 0 ? <div>
+              !actionsView ||  actionsView.length === 0 ? <div>
                 User have 0 Actions
-              </div> : Object.values(actionsView).map((action:any)=>{
+              </div> : actionsView.map((action:any)=>{
                 return <div className={styles["user-upsert-row"]}>
                   <div className={styles["user-upsert-row-item-name"]}>
                   Action Name: {action.name || null}
