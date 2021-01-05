@@ -62,7 +62,6 @@ export default function FullScreenDialog(props:any) {
 
   const handleDeleteItemClick = (e:any) => {
       const { collectionName, item, currentUserPicked } = itemAndCollectionName;
-      debugger
       if(currentUserPicked) {
         const users = serviceStore.readDocs('users')
         const user = users[currentUserPicked.id]
@@ -74,6 +73,31 @@ export default function FullScreenDialog(props:any) {
         }
         serviceStore.updateDocs('users', users)
         serviceStore.deleteDoc(collectionName, item)
+        handleClose(null)
+      } else {
+        if(collectionName === "tests") {
+          serviceStore.deleteDoc(collectionName, item)
+        } else if(collectionName === "users") {
+          const users = serviceStore.readDocs('users')
+          const user = users[item.id]
+          if(user.actionsIds.length > 0) {
+            const actions = serviceStore.readDocs('actions');
+            for(const actionId of user.actionsIds) {
+              delete actions[actionId];
+            }
+            serviceStore.updateDocs('actions',actions)
+          }
+          if(user.accountsIds.length > 0) {
+            const accounts = serviceStore.readDocs('accounts');
+            for(const accountId of user.accountsIds) {
+              delete accounts[accountId];
+            }
+            serviceStore.updateDocs('accounts',accounts)
+          }
+          serviceStore.deleteDoc(collectionName, item)
+          //TODO: delete user session folder
+          handleClose(null)
+        }
       }
   }
 

@@ -161,13 +161,13 @@ export default function FullScreenDialog(props:any) {
     setOpenDeletePopup(true);
   }
 
-  const handleUpsertAccountModalClose = (e:any) =>{
-    setOpenUpsertAccountModal(false)
-  }
-
   const handleDeletePopupClose = (e:any) =>{
     setItemAndCollectionNameToDelete(null);
     setOpenDeletePopup(false)
+  }
+
+  const handleUpsertAccountModalClose = (e:any) =>{
+    setOpenUpsertAccountModal(false)
   }
 
   const handleUpsertActionModalClose = (e:any) =>{
@@ -177,6 +177,7 @@ export default function FullScreenDialog(props:any) {
   const handleClose = (e:any) => {
     setAccountsView(null);
     setActionsView(null);
+    serviceStore.upsertAppStateValue('currentUser', null)
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };

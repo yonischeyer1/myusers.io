@@ -11,6 +11,7 @@ import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
 import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
+import DeletePopup from '../DeletePopup/DeletePopup'
 import {TEST_STATUS} from '../../models/Test.model'
 import ServiceStore from '../../services /store.service'
 import styles from './Home.css'
@@ -66,6 +67,8 @@ export default function SimpleTabs(props:any) {
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
   const [portsPlaying, setPortsPlaying] = React.useState({})
   const [stopLiveView, setStopLiveView] = React.useState(true)
+  const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
+  const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
@@ -91,6 +94,17 @@ export default function SimpleTabs(props:any) {
     setLiveViewPort(portsPlaying[test.id])
     setStopLiveView(false)
     setLiveViewPortModalOpen(true)
+  }
+
+  const deleteAccountOrAction = (collectionName:any, item:any) => {
+    debugger
+    setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
+    setOpenDeletePopup(true);
+  }
+
+  const handleDeletePopupClose = (e:any) =>{
+    setItemAndCollectionNameToDelete(null);
+    setOpenDeletePopup(false)
   }
 
   const playTest = async (test:any) => {
@@ -177,7 +191,7 @@ export default function SimpleTabs(props:any) {
                        </div>
                        <div className={styles["test-due-date-container"]}>
                        <Button disabled={false} size="small" variant="outlined" color="secondary" 
-                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Delete</Button>
+                       onClick={(e:any)=>{deleteAccountOrAction('tests', test);}}>Delete</Button>
                        </div>
                     </div>)
                   }) 
@@ -198,7 +212,7 @@ export default function SimpleTabs(props:any) {
                          <Button size="small" variant="outlined" color="primary" onClick={(e:any)=>{handleUserClick(user)}}>Edit</Button>
                        </div>
                        <div>
-                         <Button size="small" variant="outlined" color="secondary">Delete</Button>
+                         <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=>{deleteAccountOrAction('users', user)}}>Delete</Button>
                        </div>
                     </div>)
                   }) 
@@ -213,6 +227,7 @@ export default function SimpleTabs(props:any) {
          <AddIcon />
         </Fab>
         </div>
+        <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
         <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={stopLiveView} port={liveViewPort}/>
         <TestUpsertModal handleUpsertTestModalClose={handleUpsertTestModalClose} open={openUpsertTestModal}/>
         <UserUpsertModal currentUserPicked={currentUserPicked} handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
