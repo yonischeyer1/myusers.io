@@ -122,7 +122,7 @@ export default function FullScreenDialog(props:any) {
 
   const readUserAccounts = () => {
     const users = serviceStore.readDocs('users')
-    const userPicked = currentUserPicked || lastcurrentUserPicked
+    const userPicked = currentUserPicked || lastcurrentUserPicked || serviceStore.getAppStateValue('currentUser')
     if(userPicked) {
       const user = users[userPicked.id]
       if(user.accountsIds.length > 0) {
@@ -140,7 +140,7 @@ export default function FullScreenDialog(props:any) {
 
   const readUserActions = () => {
     const users = serviceStore.readDocs('users')
-    const userPicked = currentUserPicked || lastcurrentUserPicked
+    const userPicked = currentUserPicked || lastcurrentUserPicked || serviceStore.getAppStateValue('currentUser')
     if(userPicked) {
       const user = users[userPicked.id]
       if(user.actionsIds.length > 0) {

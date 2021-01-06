@@ -96,9 +96,9 @@ export default function FullScreenDialog(props:any) {
           }
           serviceStore.deleteDoc(collectionName, item)
           //TODO: delete user session folder
-          handleClose(null)
         }
       }
+      handleClose(null)
   }
 
   return open ? (

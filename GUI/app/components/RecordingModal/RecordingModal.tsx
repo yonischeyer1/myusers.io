@@ -181,7 +181,10 @@ export default function FullScreenDialog(props:any) {
         actionsIds:[]
       }
       userToInsert.accountsIds.push(createdAccountId)
-      serviceStore.createDoc('users', userToInsert);
+      const userId = serviceStore.createDoc('users', userToInsert);
+      userToInsert["id"] = userId;
+      serviceStore.upsertAppStateValue('currentUser', userToInsert)
+      serviceStore.getEventEmitter().emit('DB-reread-users')
     }
    }
    
