@@ -27,6 +27,7 @@ export default class ServiceStore {
             return instance;
         }
         this._myEmitter = new MyEmitter();
+        this._myEmitter.setMaxListeners(4)
         instance = this
         return this;
     }

@@ -53,7 +53,9 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-let checkOnceisLoginModeFlag = false
+
+let loginFlagOnce:any = false;
+
 export default function FullScreenDialog(props:any) {
   const [state, setState] = React.useState({
     record: false,
@@ -75,7 +77,6 @@ export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const { open } = props;
 
-
   const startLogin = async (e:any) => {
     const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
     const loginURL = serviceStore.getAppStateValue('loginURL')
@@ -87,12 +88,8 @@ export default function FullScreenDialog(props:any) {
       recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
  }
 
-  if(serviceStore.getAppStateValue('isLoginMode') && !checkOnceisLoginModeFlag) {
-    checkOnceisLoginModeFlag = true;
-     startLogin(null);
-  }
-
   const handleClose = async (e:any) => {
+    loginFlagOnce = false;
     const loginContainer:any = state.recorderContainer;
     if(loginContainer) {
       await removeContainerByName(loginContainer._containerName)
@@ -145,14 +142,15 @@ export default function FullScreenDialog(props:any) {
    }
 
    const finishLogin = async (e:any) => {
+     loginFlagOnce = false;
+     serviceStore.upsertAppStateValue('isLoginMode', false)
      const {handleRecordingModalClose} = props
      const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
      const loginContainer = state.recorderContainer;
      await loginContainer.finishLogin(userName);
-     
      await saveAccount()
      await removeContainerByName(loginContainer._containerName)
-     serviceStore.upsertAppStateValue('isLoginMode', false)
+
      handleRecordingModalClose()
     }
 
@@ -185,6 +183,12 @@ export default function FullScreenDialog(props:any) {
       userToInsert.accountsIds.push(createdAccountId)
       serviceStore.createDoc('users', userToInsert);
     }
+   }
+   
+   const isLoginMode:any = serviceStore.getAppStateValue('isLoginMode')
+   if(open && isLoginMode && !loginFlagOnce) {
+      loginFlagOnce = true;
+      startLogin(null);
    }
    
   return open ? (

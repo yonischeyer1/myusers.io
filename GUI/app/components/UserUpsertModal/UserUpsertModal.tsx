@@ -15,10 +15,6 @@ import AddIcon from '@material-ui/icons/Add';
 import ServiceStore from '../../services /store.service'
 import styles from './UserUpsertModal.css'
 
-const serviceStore = new ServiceStore();
-
-
-
 interface TabPanelProps {
     children?: React.ReactNode;
     index: any;
@@ -92,8 +88,21 @@ const Transition = React.forwardRef(function Transition(
 });
 
 
+const serviceStore = new ServiceStore();
 
 let lastcurrentUserPicked:any = null
+let serviceStoreEmitter:any = serviceStore.getEventEmitter()
+let readUserAccountsFunc:any = null;
+let readUserActionsFunc:any = null;
+let setAccountsViewFunc:any = null;
+let setActionsViewFunc:any = null;
+
+serviceStoreEmitter.on(`DB-reread-users`,()=> {
+  setAccountsViewFunc(readUserAccountsFunc());
+  setActionsViewFunc(readUserActionsFunc());
+});
+
+
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
 
@@ -108,9 +117,10 @@ export default function FullScreenDialog(props:any) {
   const [actionsView, setActionsView] = React.useState(null);
   const { open, currentUserPicked } = props;
   let userNameTextFieldValue:any = null;
+  setAccountsViewFunc = setAccountsView
+  setActionsViewFunc = setActionsView
 
   const readUserAccounts = () => {
-    debugger
     const users = serviceStore.readDocs('users')
     const userPicked = currentUserPicked || lastcurrentUserPicked
     if(userPicked) {
@@ -129,7 +139,6 @@ export default function FullScreenDialog(props:any) {
   }
 
   const readUserActions = () => {
-    debugger
     const users = serviceStore.readDocs('users')
     const userPicked = currentUserPicked || lastcurrentUserPicked
     if(userPicked) {
@@ -146,6 +155,9 @@ export default function FullScreenDialog(props:any) {
      }
    }
  }
+
+ readUserAccountsFunc = readUserAccounts;
+ readUserActionsFunc = readUserActions
   
   if(open) {
     if(currentUserPicked && !accountsView && !actionsView) {
@@ -201,14 +213,6 @@ export default function FullScreenDialog(props:any) {
     setOpenUpsertAccountModal(account)
     setPickedAccount(account)
  }
-
- serviceStore.getEventEmitter().on(`DB-reread-accounts`,()=> {
-    setAccountsView(readUserAccounts());
- });
-
- serviceStore.getEventEmitter().on(`DB-reread-actions`,()=>{
-   setActionsView(readUserActions());
-});
 
   const handleFloatingButtonClick = (e:any) => {
     if(tabIndex === 0) {
