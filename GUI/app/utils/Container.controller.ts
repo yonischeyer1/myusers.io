@@ -226,25 +226,14 @@ export default class Container {
     }
     async playRecorderAction(action:any, callbackStartedBrowser:any) {
         await removeFileFromContainer(this._containerId, `${this.userName}`)
-
         const userSessionFolderPath = `${APP_CWD}sessions/${this.userName}`
         await copyFileToContainer(this._containerId, userSessionFolderPath)
         const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this.userName);
         this._containerProcess.browser.pid = browserPid;
         callbackStartedBrowser();
-        const videoPid = await startVideoRecording(this._containerId, this._containerProcess.video.name);
-        this._containerProcess.video.pid = videoPid;
         const actionWithDists = await (await this._ieyes.playRecorderAction(action)).json()
-        await convertVideoFile(this._containerId);
-        await stopContainerProcess(this._containerId ,this._containerProcess.video.pid)
-        await copyFileFromContainer(this._containerId, 'output.mp4', `${this._mode}.mp4`)
-        await removeFileFromContainer(this._containerId, 'output.mp4')
-        await removeFileFromContainer(this._containerId, 'output.avi')
-        await removeFileFromContainer(this._containerId, 'recording.io.json')
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
-
         return actionWithDists;
-        //live player modal pop 
     }
     standBy() {
         //kill all process
