@@ -97,7 +97,7 @@ async function isDistValid(res, actionId) {
     let dynamicSnapHash = null
     let newCurrentTagHash = null
     if(currentTag.dynamic) {
-        console.log("tag dynamic")
+        console.log("tag dynamic frameURI", frameURI)
         const drawnURI = await drawOnImageAndReturnHashNODEJS(frameURI,currentTag.dynamic.coords)
         console.log("drawnURI",drawnURI)
         dynamicSnapHash = await imageURIToHash(drawnURI);
@@ -105,6 +105,8 @@ async function isDistValid(res, actionId) {
         console.log("newCurrentTagURI",newCurrentTagURI)
         newCurrentTagHash = await imageURIToHash(newCurrentTagURI);
     }
+    console.log("newCurrentTagHash", !!newCurrentTagHash)
+    console.log("dynamicSnapHash", !!dynamicSnapHash)
     const dist = dynamicSnapHash ? distance(newCurrentTagHash,dynamicSnapHash) : distance(hashOfTag, frameHash)
     console.log("currentTag.distances[0]",currentTag.distances[0])
     console.log("dist",dist)

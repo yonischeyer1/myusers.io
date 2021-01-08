@@ -113,7 +113,7 @@ function frameAsBase64String(frame) {
 }
 
 async function resizeImageNODEJS(frame) {
-    return await sharp(frame).resize(IMAGE_SIZE, IMAGE_SIZE, {fit:'fill'}).toBuffer();
+    return await sharp(frame).greyscale().resize(IMAGE_SIZE, IMAGE_SIZE, {fit:'fill'}).toBuffer();
 }
 
 
