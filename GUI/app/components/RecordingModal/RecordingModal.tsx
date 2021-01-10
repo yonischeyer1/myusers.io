@@ -78,12 +78,12 @@ export default function FullScreenDialog(props:any) {
   const { open } = props;
 
   const startLogin = async (e:any) => {
-    const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
+    const user = serviceStore.getAppStateValue('currentUser');
     const loginURL = serviceStore.getAppStateValue('loginURL')
     const loginContainer = new Container(CONTAINER_MODE.login);
     await loginContainer.init()
     loginContainer.loadingFunction = setLoadingState;
-    await loginContainer.login(loginURL, userName)
+    await loginContainer.login(loginURL, user.id)
     setState({...state,record:true, port:loginContainer._port,
       recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
  }
@@ -99,11 +99,11 @@ export default function FullScreenDialog(props:any) {
     handleRecordingModalClose(false);
   };
   const  initRecorder = async () => {
-    const userName = serviceStore.getAppStateValue('currentUser') ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName') 
+    const user = serviceStore.getAppStateValue('currentUser')
     const recorderContainer = new Container(CONTAINER_MODE.recorder);
     await recorderContainer.init()
     recorderContainer.loadingFunction = setLoadingState;
-    await recorderContainer.record(state.startUrl, userName)
+    await recorderContainer.record(state.startUrl, user.id)
     serviceStore.upsertAppStateValue('startUrl',state.startUrl)
     console.log("recorderContainer",recorderContainer)
     setState({...state,record:true, port:recorderContainer._port,
@@ -145,10 +145,10 @@ export default function FullScreenDialog(props:any) {
      loginFlagOnce = false;
      serviceStore.upsertAppStateValue('isLoginMode', false)
      const {handleRecordingModalClose} = props
-     const userName = serviceStore.getAppStateValue('currentUser')  ? serviceStore.getAppStateValue('currentUser').name : serviceStore.getAppStateValue('userName')
+     const user = serviceStore.getAppStateValue('currentUser')
      const loginContainer = state.recorderContainer;
-     await loginContainer.finishLogin(userName);
-     await saveAccount()
+     const userId:any = await saveAccount() 
+     await loginContainer.finishLogin(user.id, userId);
      await removeContainerByName(loginContainer._containerName)
 
      handleRecordingModalClose()
@@ -163,29 +163,16 @@ export default function FullScreenDialog(props:any) {
     const currentUser = serviceStore.getAppStateValue('currentUser')
     const accountName = serviceStore.getAppStateValue('accountName')
     const loginURL = serviceStore.getAppStateValue('loginURL')
-
     const accountToInsert:Account = {
       name: accountName,
       loginURL
     }
     const createdAccountId:any = serviceStore.createDoc('accounts', accountToInsert);
-
-    if(currentUser) {
-      users[currentUser.id].accountsIds.push(createdAccountId)
-      serviceStore.updateDocs('users', users)
-    } else {
-      const userName = serviceStore.getAppStateValue('userName')
-      const userToInsert:User = {
-        name:userName,
-        accountsIds:[],
-        actionsIds:[]
-      }
-      userToInsert.accountsIds.push(createdAccountId)
-      const userId = serviceStore.createDoc('users', userToInsert);
-      userToInsert["id"] = userId;
-      serviceStore.upsertAppStateValue('currentUser', userToInsert)
-      serviceStore.getEventEmitter().emit('DB-reread-users')
-    }
+    let userIdToReturn = null;
+    userIdToReturn = currentUser.id
+    users[currentUser.id].accountsIds.push(createdAccountId)
+    serviceStore.updateDocs('users', users)
+    return userIdToReturn
    }
    
    const isLoginMode:any = serviceStore.getAppStateValue('isLoginMode')

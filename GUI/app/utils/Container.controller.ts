@@ -11,7 +11,7 @@ export const CONTAINER_MODE = {
     login:'login'
 }
 export default class Container {
-     userName:null;
+     _userId:null;
      autoTaggerData: null;
     _startRecordTimeStamp:null;
     _ihands :IHands;
@@ -53,7 +53,7 @@ export default class Container {
             }
         }
     }
-    async init(startUrl:any = null, userName:any = null) {
+    async init(startUrl:any = null, userId:any = null) {
         try {
             if (this._port && this._containerName) {
                 return;
@@ -80,12 +80,13 @@ export default class Container {
                 this._ihands = new IHands(this._containerServicesPorts.hands);
                 this._ieyes = new IEyes(this._containerServicesPorts.eyes);
                 if(this._mode === CONTAINER_MODE.player) {
-                    const userSessionFolderPath = `${APP_CWD}sessions/${userName}`
+                    const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
                     await copyFileToContainer(this._containerId, userSessionFolderPath)
-                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userName);
+                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
                     this._containerProcess.browser.pid = browserPid;
                     const vncPid = await startVnc(this._containerId, this._port,this._containerProcess.vnc.name);
                     this._containerProcess.vnc.pid = vncPid;
+                    debugger
                 }
             }
         } catch(err) {
@@ -98,18 +99,18 @@ export default class Container {
         this._port = port;
     }
 
-    async record(startUrl:string, userName:any = null) {
+    async record(startUrl:string, userId:any = null) {
         return new Promise((resolve, reject)=>{
             (async()=>{
-                this.userName = userName; 
+                this._userId = userId; 
                 this._startUrl = startUrl;
-                if(userName) {
-                    const userSessionFolderPath = `${APP_CWD}sessions/${userName}`
+                if(userId) {
+                    const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
                     await copyFileToContainer(this._containerId, userSessionFolderPath)
                 }
                 if(this._mode === CONTAINER_MODE.recorder) {
                     this.loadingFunction(true);
-                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userName);
+                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
                     const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
                     this._containerProcess.hands.pid = handsPid;
                     this._containerProcess.browser.pid = browserPid;
@@ -128,26 +129,26 @@ export default class Container {
         })
     }
 
-    async login(startUrl:any, userName:any = null) {
+    async login(startUrl:any, userId:any = null) {
         //https://accounts.google.com/signin/v2/identifier
         this.loadingFunction(true);
-        if(userName) {
-            const userSessionFolderPath = `${APP_CWD}sessions/${userName}`
+        if(userId) {
+            const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
             await copyFileToContainer(this._containerId, userSessionFolderPath)
         }
         this._startUrl = startUrl;
-        const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userName);
+        const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
         this._containerProcess.browser.pid = browserPid;
         const vncPid = await startVnc(this._containerId, this._port, this._containerProcess.vnc.name);
         this._containerProcess.vnc.pid = vncPid;
         this.loadingFunction(false);
     }
 
-    async finishLogin(userName:any) {
+    async finishLogin(userId:any) {
         this.loadingFunction(true);
-        const userSessionFolderPath = `sessions/${userName}`
-        await removeUserSessionFolder(`${APP_CWD}sessions/${userName}`.trim());
-        await copyFileFromContainer(this._containerId, userName, userSessionFolderPath)
+        const userSessionFolderPath = `sessions/${userId}`
+        await removeUserSessionFolder(`${APP_CWD}sessions/${userId}`.trim());
+        await copyFileFromContainer(this._containerId, userId, userSessionFolderPath)
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
         this.loadingFunction(false);
     }
@@ -168,9 +169,9 @@ export default class Container {
             await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
 
             //TODO: remove session folder and copy it again to container
-            await removeFileFromContainer(this._containerId, `${this.userName}`)
+            await removeFileFromContainer(this._containerId, `${this._userId}`)
 
-            const userSessionFolderPath = `${APP_CWD}sessions/${this.userName}`
+            const userSessionFolderPath = `${APP_CWD}sessions/${this._userId}`
             await copyFileToContainer(this._containerId, userSessionFolderPath)
 
             await this.play(false, {ioActions});
@@ -184,7 +185,7 @@ export default class Container {
         return new Promise((resolve, reject)=>{
             (async()=>{
                 if(this._mode === CONTAINER_MODE.recorder) { 
-                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this.userName);
+                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this._userId);
                     this._containerProcess.browser.pid = browserPid;
                     const vncPid = await startVnc(this._containerId, this._port,this._containerProcess.vnc.name);
                     this._containerProcess.vnc.pid = vncPid;
@@ -199,8 +200,10 @@ export default class Container {
                 } else {
                     //Post /playAction to eyes server 
                     const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
+                    debugger
                     setTimeout(()=>{
                         (async ()=>{ 
+                            debugger
                             const resp = await this._ieyes.playAction(action)
                             await removeContainerByName(this._containerName);
                             resolve(resp)
@@ -225,10 +228,10 @@ export default class Container {
     //     return;
     }
     async playRecorderAction(action:any, callbackStartedBrowser:any) {
-        await removeFileFromContainer(this._containerId, `${this.userName}`)
-        const userSessionFolderPath = `${APP_CWD}sessions/${this.userName}`
+        await removeFileFromContainer(this._containerId, `${this._userId}`)
+        const userSessionFolderPath = `${APP_CWD}sessions/${this._userId}`
         await copyFileToContainer(this._containerId, userSessionFolderPath)
-        const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this.userName);
+        const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this._userId);
         this._containerProcess.browser.pid = browserPid;
         callbackStartedBrowser();
         const actionWithDists = await (await this._ieyes.playRecorderAction(action)).json()

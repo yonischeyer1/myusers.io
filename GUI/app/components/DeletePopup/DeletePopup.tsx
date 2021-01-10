@@ -9,6 +9,8 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styles from './DeletePopup.css'
 import ServiceStore from '../../services /store.service';
+import { removeUserSessionFolder } from '../../utils/IHost';
+import { APP_CWD } from '../../utils/general';
 
 const serviceStore = new ServiceStore()
 
@@ -60,7 +62,7 @@ export default function FullScreenDialog(props:any) {
     handleDeletePopupClose(false);
   };
 
-  const handleDeleteItemClick = (e:any) => {
+  const handleDeleteItemClick = async (e:any) => {
       const { collectionName, item, currentUserPicked } = itemAndCollectionName;
       if(currentUserPicked) {
         const users = serviceStore.readDocs('users')
@@ -94,11 +96,11 @@ export default function FullScreenDialog(props:any) {
             }
             serviceStore.updateDocs('accounts',accounts)
           }
+          handleClose(null)
           serviceStore.deleteDoc(collectionName, item)
-          //TODO: delete user session folder
+          await removeUserSessionFolder(`${APP_CWD}sessions/${user.id}`.trim());
         }
       }
-      handleClose(null)
   }
 
   return open ? (

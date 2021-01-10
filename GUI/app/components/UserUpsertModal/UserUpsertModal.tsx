@@ -14,6 +14,7 @@ import { TextField, Tabs, Tab, Box, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import ServiceStore from '../../services /store.service'
 import styles from './UserUpsertModal.css'
+import { User } from '../../models/User.model';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -215,6 +216,17 @@ export default function FullScreenDialog(props:any) {
  }
 
   const handleFloatingButtonClick = (e:any) => {
+    if(!currentUserPicked) {
+      const userName = serviceStore.getAppStateValue('userName');
+      const userToInsert:User = {
+        name:userName,
+        accountsIds:[],
+        actionsIds:[]
+      }
+      const userId = serviceStore.createDoc('users', userToInsert);
+      userToInsert["id"] = userId;
+      serviceStore.upsertAppStateValue('currentUser', userToInsert);
+    }
     if(tabIndex === 0) {
       setPickedAccount(null)
       setOpenUpsertAccountModal(!openUpsertAccountModal)

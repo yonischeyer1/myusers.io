@@ -113,7 +113,7 @@ export default function SimpleTabs(props:any) {
     const user = users[test.userId];
     const action = actions[test.actionId]
     const playingContainerInstance = new Container(CONTAINER_MODE.player);
-    await playingContainerInstance.init(action.startUrl, user.name);
+    await playingContainerInstance.init(action.startUrl, user.id);
     setPortsPlaying({...portsPlaying, [test.id]:playingContainerInstance._port})
     const testResp:any = await (await playingContainerInstance.play(true, action)).json()
     if(testResp.success) {

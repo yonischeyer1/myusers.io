@@ -138,20 +138,8 @@ export default function FullScreenDialog(props:any) {
       startUrl
     }
     const newActionId = serviceStore.createDoc('actions', actionToInsert)
-    if(currentUser) {
-      users[currentUser.id].actionsIds.push(newActionId);
-      serviceStore.updateDocs('users', users)
-    } else {
-      const userName = serviceStore.getAppStateValue('userName')
-      const userToInsert:User = {
-        name:userName,
-        accountsIds:[],
-        actionsIds:[]
-      }
-      userToInsert.actionsIds.push(newActionId)
-      serviceStore.createDoc('users', userToInsert);
-
-    }
+    users[currentUser.id].actionsIds.push(newActionId);
+    serviceStore.updateDocs('users', users)
     serviceStore.upsertAppStateValue('currentUser', null)
     serviceStore.upsertAppStateValue('userName',null)
   }
