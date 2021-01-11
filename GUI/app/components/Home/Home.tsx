@@ -157,7 +157,7 @@ export default function SimpleTabs(props:any) {
   };
 
   const handleCloseTest = (event: React.MouseEvent<Document, MouseEvent>) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+    if (anchorRefTest.current && anchorRefTest.current.contains(event.target as HTMLElement)) {
       return;
     }
 
@@ -165,7 +165,7 @@ export default function SimpleTabs(props:any) {
   };
 
   const handleCloseUser = (event: React.MouseEvent<Document, MouseEvent>) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+    if (anchorRefUser.current && anchorRefUser.current.contains(event.target as HTMLElement)) {
       return;
     }
     setOpenUserActionBtnGrp(false);
