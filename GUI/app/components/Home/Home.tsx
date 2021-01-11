@@ -72,6 +72,7 @@ export default function SimpleTabs(props:any) {
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const [currentRuningTestName, setCurrentRuningTestName] = React.useState(null)
   const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
+  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState(false)
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
@@ -147,11 +148,15 @@ export default function SimpleTabs(props:any) {
     }
   }
 
-  const handleToggle = () => {
+  const handleToggleTest = () => {
     setOpenTestActionBtnGrp(!openTestActionBtnGrp);
   };
 
-  const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleToggleUser = () => {
+    setOpenUserActionBtnGrp(!openUserActionBtnGrp);
+  };
+
+  const handleCloseTest = (event: React.MouseEvent<Document, MouseEvent>) => {
     if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
       return;
     }
@@ -159,8 +164,19 @@ export default function SimpleTabs(props:any) {
     setOpenTestActionBtnGrp(false);
   };
 
-  const editUserOrTest = (collectionName:any, item:any) => {
+  const handleCloseUser = (event: React.MouseEvent<Document, MouseEvent>) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+      return;
+    }
+    setOpenUserActionBtnGrp(false);
+  }
 
+  const editUserOrTest = (collectionName:any, item:any) => {
+    if(collectionName === 'users') {
+      handleUserClick(item)
+    } else {
+      
+    }
   } 
 
   const deleteUserOrTest = (collectionName:any, item:any) => {
@@ -168,8 +184,28 @@ export default function SimpleTabs(props:any) {
     setOpenDeletePopup(true);
   }
 
+  const handleUserMenuItemClick =  (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    index: number,
+    user:any
+  ) => {
+    switch (index) {
+      case 0:
+        editUserOrTest('users', user);
+      break;
 
-  const handleMenuItemClick = (
+      case 1:
+        deleteUserOrTest('users', user)
+      break;
+    
+      default:
+        break;
+    }
+    //TODO: execute action by Index
+    setOpenTestActionBtnGrp(false);
+  };
+
+  const handleTestMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
     test:any
@@ -199,9 +235,10 @@ export default function SimpleTabs(props:any) {
   };
 
 
-   const options = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
-   const anchorRef = React.useRef<HTMLDivElement>(null);
-
+   const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
+   const optionsUser = ['Edit','Delete'];
+   const anchorRefTest = React.useRef<HTMLDivElement>(null);
+   const anchorRefUser = React.useRef<HTMLDivElement>(null);
     return (
       <div className={classes.root} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
@@ -235,8 +272,8 @@ export default function SimpleTabs(props:any) {
                              test playing: {currentRuningTestName}
                            </div>
                        }
-                        <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                        <Button style={{pointerEvents:"none"}} >{options[selectedIndex]}</Button>
+                        <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
+                        <Button style={{pointerEvents:"none"}} >{'Actions'}</Button>
                         <Button
                           color="primary"
                           size="small"
@@ -244,12 +281,12 @@ export default function SimpleTabs(props:any) {
                           aria-expanded={openTestActionBtnGrp ? 'true' : undefined}
                           aria-label="select merge strategy"
                           aria-haspopup="menu"
-                          onClick={handleToggle}
+                          onClick={handleToggleTest}
                         >
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper open={openTestActionBtnGrp} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                       <Popper open={openTestActionBtnGrp} anchorEl={anchorRefTest.current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
@@ -258,14 +295,14 @@ export default function SimpleTabs(props:any) {
                            }}
                          >
                            <Paper>
-                             <ClickAwayListener onClickAway={handleClose}>
+                             <ClickAwayListener onClickAway={handleCloseTest}>
                                <MenuList id="split-button-menu">
-                                 {options.map((option, index) => (
+                                 {optionsTest.map((option, index) => (
                                    <MenuItem
                                      style={index === 0 ? {display:'none'} : {}}
                                      key={option}
                                      disabled={index === 2 && !portsPlaying[test.id]}
-                                     onClick={(event:any) => handleMenuItemClick(event, index, test)}
+                                     onClick={(event:any) => handleTestMenuItemClick(event, index, test)}
                                    >
                                      {option}
                                    </MenuItem>
@@ -283,6 +320,8 @@ export default function SimpleTabs(props:any) {
              </div>
           </div>
           <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
+           {
+             tabIndex !== 1 ? null:
           <div className={styles["tests-menu-container"]}>
                 {
                   !users || Object.values(users).length === 0 ? <div>
@@ -293,15 +332,51 @@ export default function SimpleTabs(props:any) {
                          name : {user.name}
                        </div>
                        <div>
-                         <Button size="small" variant="outlined" color="primary" onClick={(e:any)=>{handleUserClick(user)}}>Edit</Button>
-                       </div>
-                       <div>
-                         <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=>{deleteUserOrTest('users', user)}}>Delete</Button>
+                       <ButtonGroup variant="contained" color="primary" ref={anchorRefUser} aria-label="split button">
+                        <Button style={{pointerEvents:"none"}} >{'Actions'}</Button>
+                        <Button
+                          color="primary"
+                          size="small"
+                          aria-controls={openUserActionBtnGrp ? 'split-button-menu-test' : undefined}
+                          aria-expanded={openUserActionBtnGrp ? 'true' : undefined}
+                          aria-label="select merge strategy"
+                          aria-haspopup="menu"
+                          onClick={handleToggleUser}
+                        >
+                        <ArrowDropDownIcon />
+                       </Button>
+                       </ButtonGroup>
+                       <Popper open={openUserActionBtnGrp} anchorEl={anchorRefUser.current} role={undefined} transition disablePortal>
+                       {({ TransitionProps, placement }) => (
+                         <Grow
+                           {...TransitionProps}
+                           style={{
+                             transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                           }}
+                         >
+                           <Paper>
+                             <ClickAwayListener onClickAway={handleCloseUser}>
+                               <MenuList id="split-button-menu-test">
+                                 {optionsUser.map((option, index) => (
+                                   <MenuItem
+                                     key={option}
+                                     onClick={(event:any) => handleUserMenuItemClick(event, index, user)}
+                                   >
+                                     {option}
+                                   </MenuItem>
+                                 ))}
+                               </MenuList>
+                             </ClickAwayListener>
+                           </Paper>
+                         </Grow>
+                       )}
+                        </Popper>
                        </div>
                     </div>)
                   }) 
                 }
              </div>
+             }
           </div>
           </Suspense>
         </TabPanel>
