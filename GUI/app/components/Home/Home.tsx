@@ -202,7 +202,7 @@ export default function SimpleTabs(props:any) {
         break;
     }
     //TODO: execute action by Index
-    setOpenTestActionBtnGrp(false);
+    setOpenUserActionBtnGrp(false);
   };
 
   const handleTestMenuItemClick = (
