@@ -6,7 +6,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
-import { Fab, Button } from '@material-ui/core';
+import { Fab, Button, ButtonGroup, Popper, Grow, Paper, ClickAwayListener, MenuList, MenuItem } from '@material-ui/core';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
 import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
@@ -69,6 +70,9 @@ export default function SimpleTabs(props:any) {
   const [stopLiveView, setStopLiveView] = React.useState(true)
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
+  const [currentRuningTestName, setCurrentRuningTestName] = React.useState(null)
+  const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
@@ -94,12 +98,6 @@ export default function SimpleTabs(props:any) {
     setLiveViewPort(portsPlaying[test.id])
     setStopLiveView(false)
     setLiveViewPortModalOpen(true)
-  }
-
-  const deleteAccountOrAction = (collectionName:any, item:any) => {
-    debugger
-    setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
-    setOpenDeletePopup(true);
   }
 
   const handleDeletePopupClose = (e:any) =>{
@@ -149,7 +147,60 @@ export default function SimpleTabs(props:any) {
     }
   }
 
+  const handleToggle = () => {
+    setOpenTestActionBtnGrp(!openTestActionBtnGrp);
+  };
 
+  const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+      return;
+    }
+
+    setOpenTestActionBtnGrp(false);
+  };
+
+  const editUserOrTest = (collectionName:any, item:any) => {
+
+  } 
+
+  const deleteUserOrTest = (collectionName:any, item:any) => {
+    setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
+    setOpenDeletePopup(true);
+  }
+
+
+  const handleMenuItemClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    index: number,
+    test:any
+  ) => {
+    switch (index) {
+      case 1:
+        playTest(test)
+      break;
+
+      case 2:
+        handleLiveViewClick(test)
+      break;
+
+      case 3:
+        editUserOrTest('tests', test)
+      break;
+
+      case 4:
+        deleteUserOrTest('tests', test)
+      break;
+    
+      default:
+        break;
+    }
+    //TODO: execute action by Index
+    setOpenTestActionBtnGrp(false);
+  };
+
+
+   const options = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
+   const anchorRef = React.useRef<HTMLDivElement>(null);
 
     return (
       <div className={classes.root} style={{height:"100vh",color:"white"}}>
@@ -167,9 +218,10 @@ export default function SimpleTabs(props:any) {
                   !tests || Object.values(tests).length === 0 ? <div> 
                           You have 0 Tests
                      </div>: Object.values(tests).map((test:any)=> {
-                    return (<div className={styles["test-row"]}>
+                    return (
+                     <div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]}>
-                        name: {test.name}
+                         name: {test.name}
                        </div>
                        <div className={styles["test-status-container"]}>  
                          status : {test.status}
@@ -177,23 +229,55 @@ export default function SimpleTabs(props:any) {
                        <div className={styles["test-due-date-container"]}>
                          dueDate: {test.dueDate}
                        </div>
-                       <div className={styles["test-due-date-container"]}>
-                       <Button disabled={false} size="small" variant="outlined" color="primary" 
-                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Edit</Button>
-                       </div>
-                       <div className={styles["play-button-container"]}>
-                       <Button size="small" variant="outlined" color="primary" 
-                       onClick={(e:any)=>{playTest(test)}}>Play</Button>
-                       </div>
-                       <div className={styles["test-due-date-container"]}>
-                       <Button disabled={!portsPlaying[test.id]} size="small" variant="outlined" color="primary" 
-                       onClick={(e:any)=>{handleLiveViewClick(test)}}>Live Preview</Button>
-                       </div>
-                       <div className={styles["test-due-date-container"]}>
-                       <Button disabled={false} size="small" variant="outlined" color="secondary" 
-                       onClick={(e:any)=>{deleteAccountOrAction('tests', test);}}>Delete</Button>
-                       </div>
-                    </div>)
+                       {
+                         !currentRuningTestName ? null :
+                          <div className={styles["test-due-date-container"]}>
+                             test playing: {currentRuningTestName}
+                           </div>
+                       }
+                        <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
+                        <Button style={{pointerEvents:"none"}} >{options[selectedIndex]}</Button>
+                        <Button
+                          color="primary"
+                          size="small"
+                          aria-controls={openTestActionBtnGrp ? 'split-button-menu' : undefined}
+                          aria-expanded={openTestActionBtnGrp ? 'true' : undefined}
+                          aria-label="select merge strategy"
+                          aria-haspopup="menu"
+                          onClick={handleToggle}
+                        >
+                        <ArrowDropDownIcon />
+                       </Button>
+                       </ButtonGroup>
+                       <Popper open={openTestActionBtnGrp} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                       {({ TransitionProps, placement }) => (
+                         <Grow
+                           {...TransitionProps}
+                           style={{
+                             transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                           }}
+                         >
+                           <Paper>
+                             <ClickAwayListener onClickAway={handleClose}>
+                               <MenuList id="split-button-menu">
+                                 {options.map((option, index) => (
+                                   <MenuItem
+                                     style={index === 0 ? {display:'none'} : {}}
+                                     key={option}
+                                     disabled={index === 2 && !portsPlaying[test.id]}
+                                     onClick={(event:any) => handleMenuItemClick(event, index, test)}
+                                   >
+                                     {option}
+                                   </MenuItem>
+                                 ))}
+                               </MenuList>
+                             </ClickAwayListener>
+                           </Paper>
+                         </Grow>
+                       )}
+                        </Popper>
+                    </div>
+                    )
                   }) 
                 }
              </div>
@@ -212,7 +296,7 @@ export default function SimpleTabs(props:any) {
                          <Button size="small" variant="outlined" color="primary" onClick={(e:any)=>{handleUserClick(user)}}>Edit</Button>
                        </div>
                        <div>
-                         <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=>{deleteAccountOrAction('users', user)}}>Delete</Button>
+                         <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=>{deleteUserOrTest('users', user)}}>Delete</Button>
                        </div>
                     </div>)
                   }) 

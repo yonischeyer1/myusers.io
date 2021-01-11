@@ -7,11 +7,11 @@ export enum TEST_STATUS {
 
 export interface Test {
     id?:string
+    schedule?:{}
+    suite?:Test[]
     name:string
     userId:string
     actionId:string
-    schedule:{},
-    finishAction: UserAction,
     status:TEST_STATUS
 }
 

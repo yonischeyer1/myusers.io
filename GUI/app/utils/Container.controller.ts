@@ -86,7 +86,6 @@ export default class Container {
                     this._containerProcess.browser.pid = browserPid;
                     const vncPid = await startVnc(this._containerId, this._port,this._containerProcess.vnc.name);
                     this._containerProcess.vnc.pid = vncPid;
-                    debugger
                 }
             }
         } catch(err) {
@@ -200,10 +199,8 @@ export default class Container {
                 } else {
                     //Post /playAction to eyes server 
                     const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
-                    debugger
                     setTimeout(()=>{
                         (async ()=>{ 
-                            debugger
                             const resp = await this._ieyes.playAction(action)
                             await removeContainerByName(this._containerName);
                             resolve(resp)
