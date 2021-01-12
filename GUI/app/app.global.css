@@ -60,7 +60,9 @@ a:hover {
 
 
 
-
+.MuiDialog-paperFullScreen { 
+  overflow: hidden !important;
+}
 
 
 

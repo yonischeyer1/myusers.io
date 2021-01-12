@@ -5,7 +5,8 @@
     position: relative;
     width:75%;
     height: 100%;
-}           
+}
+
 .test-name-container-suite{
   position: relative;
   display: flex;
@@ -35,12 +36,16 @@
 }
 .done-cancel-btns{
     position: absolute;
-    bottom: 10%;
+    bottom: 4%;
     width: 100%;
 }
-
 .add-button-container {
     position: absolute;
     right: 315px;
     bottom: 7px;
+}
+.suite-container {
+    position: relative;
+    overflow: auto;
+    height: 500px;
 }

@@ -8,6 +8,7 @@ declare const styles: {
   readonly "pick-user-finish-action-container": string;
   readonly "done-cancel-btns": string;
   readonly "add-button-container": string;
+  readonly "suite-container": string;
 };
 export = styles;
 

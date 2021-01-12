@@ -393,7 +393,8 @@ export default function SimpleTabs(props:any) {
         <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} 
         open={liveViewPortModalOpen} stopPlaying={stopLiveView} port={liveViewPort}/>
 
-        <TestUpsertModal handleUpsertTestModalClose={handleUpsertTestModalClose} 
+        <TestUpsertModal style={{overflow:"hidden"}} 
+        handleUpsertTestModalClose={handleUpsertTestModalClose} 
         open={openUpsertTestModal} currentTestPicked={currentTestPicked}/>
 
         <UserUpsertModal currentUserPicked={currentUserPicked} 

@@ -144,8 +144,8 @@ export default function FullScreenDialog(props:any) {
   }
   console.log("suite", suite)
   return open ? (
-    <div>
-      <Dialog fullScreen open={open} TransitionComponent={Transition}>
+    <div style={{overflow:"hidden"}}>
+      <Dialog style={{overflow:"hidden"}} fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" className={classes.title}>
@@ -164,7 +164,7 @@ export default function FullScreenDialog(props:any) {
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
              <br/>
-        <div className={styles["pick-schedule-container"]}>
+        <div className={styles["suite-container"]}>
            {
            suite.length === 0 ? null : suite.map((test:any) => {
                return (
