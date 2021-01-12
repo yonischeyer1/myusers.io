@@ -66,6 +66,7 @@ export default function SimpleTabs(props:any) {
   const [liveViewPort, setLiveViewPort] = React.useState(null)
   const [liveViewPortModalOpen, setLiveViewPortModalOpen] = React.useState(false)
   const [currentUserPicked, setCurrentUserPicked] = React.useState(null)
+  const [currentTestPicked, setCurrentTestPicked] = React.useState(null)
   const [portsPlaying, setPortsPlaying] = React.useState({})
   const [stopLiveView, setStopLiveView] = React.useState(true)
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
@@ -73,7 +74,6 @@ export default function SimpleTabs(props:any) {
   const [currentRuningTestName, setCurrentRuningTestName] = React.useState(null)
   const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
   const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState(false)
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
@@ -175,7 +175,8 @@ export default function SimpleTabs(props:any) {
     if(collectionName === 'users') {
       handleUserClick(item)
     } else {
-      
+      setCurrentTestPicked(item)
+      setOpenUpsertTestModal(true)
     }
   } 
 
@@ -386,10 +387,17 @@ export default function SimpleTabs(props:any) {
          <AddIcon />
         </Fab>
         </div>
+         
         <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
-        <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={stopLiveView} port={liveViewPort}/>
-        <TestUpsertModal handleUpsertTestModalClose={handleUpsertTestModalClose} open={openUpsertTestModal}/>
-        <UserUpsertModal currentUserPicked={currentUserPicked} handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
+
+        <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} 
+        open={liveViewPortModalOpen} stopPlaying={stopLiveView} port={liveViewPort}/>
+
+        <TestUpsertModal handleUpsertTestModalClose={handleUpsertTestModalClose} 
+        open={openUpsertTestModal} currentTestPicked={currentTestPicked}/>
+
+        <UserUpsertModal currentUserPicked={currentUserPicked} 
+        handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
       </div>
     );
   

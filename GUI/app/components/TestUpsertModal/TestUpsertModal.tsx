@@ -34,10 +34,15 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
     },
     userActionSelectContainer: {
-      display: "flex"
+      display: "flex",
+      justifyContent:"right",
+      marginLeft:"30px",
+      position:'relative'
     },
     doneCancelBtnsContianer: {
-      display:"flex"
+      display:"flex",
+      justifyContent:"right",
+      marginLeft:"30px"
     }
   }),
 );
@@ -53,20 +58,30 @@ const Transition = React.forwardRef(function Transition(
 
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
+  const [suiteName, setSuiteName] = React.useState("");
   const [testName, setTestName] = React.useState("");
+
+  //Main test hooks
   const [pickedUserId, setPickedUser] = React.useState("");
   const [pickedUserActions, setPickedUserActions] = React.useState(null);
   const [pickedUserAction, setPickedUserAction] = React.useState("");
-  const [pickedUserIdFinal, setPickedUserFinal] = React.useState("");
-  const [pickedUserActionsFinal, setPickedUserActionsFinal] = React.useState(null);
-  const [pickedUserActionFinal, setPickedUserActionFinal] = React.useState("");
-  const { open } = props;
-  let users = []
-  let actions = []
+
+  //Test suite
+  const [suite, setSuite] = React.useState([]);
+  const [pickedUserActionsSuite, setPickedUserActionsSuite] = React.useState({});
+  const [pickedUserActionSuite, setPickedUserActionSuite] = React.useState({});
+
+
+  const { open, currentTestPicked } = props;
+  let users:any = []
+  let actions:any = []
 
   if(open) {
     users = serviceStore.readDocs('users');
     actions = serviceStore.readDocs('actions');
+    if(currentTestPicked) {
+      setSuite(currentTestPicked.suite)
+    }
   }
 
   const handleClose = (e:any) => {
@@ -86,6 +101,14 @@ export default function FullScreenDialog(props:any) {
 
   const handleUserPick = (e:any) => {
     const {userActions, user} = getUserActions(e);
+    //setPortsPlaying({...portsPlaying, [test.id]:playingContainerInstance._port})
+    setPickedUser(user.id)
+    setPickedUserActions(userActions)
+  }
+
+  const handleUserPickSuite = (e:any) => {
+    const {userActions, user} = getUserActions(e);
+    //setPortsPlaying({...portsPlaying, [test.id]:playingContainerInstance._port})
     setPickedUser(user.id)
     setPickedUserActions(userActions)
   }
@@ -95,34 +118,33 @@ export default function FullScreenDialog(props:any) {
     setPickedUserAction(pickedAction)
   }
 
-  const handleUserPickFinal = async (e:any) => {
-    const {userActions, user} = getUserActions(e);
-    setPickedUserFinal(user.id)
-    setPickedUserActionsFinal(userActions)
-  }
-
-  const handleActionPickFinal = async (e:any) => {
-    const pickedAction = e.target.value
-    setPickedUserActionFinal(pickedAction)
-  }
-
-  
-
   const save = async (e:any) => {
     const test:Test = {
       name:testName,
       userId:pickedUserId,
       actionId:pickedUserAction,
       schedule:{},
-      finishAction: {
-        actionId:pickedUserActionFinal,
-        userId:pickedUserIdFinal
-      },
       status:TEST_STATUS.IDLE
     }
     serviceStore.createDoc('tests', test);
+    handleClose(null)
   }
 
+  const addTestToSuite = (e:any) => {
+    const test:Test = {
+      name:testName,
+      userId:pickedUserId,
+      actionId:pickedUserAction,
+      schedule:{},
+      status:TEST_STATUS.IDLE
+    }
+    setSuite([...suite, test])
+    setTestName(null)
+    setPickedUser(null)
+    setPickedUserAction(null)
+    setPickedUserActions(null)
+  }
+  console.log("suite", suite)
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -137,93 +159,104 @@ export default function FullScreenDialog(props:any) {
             </Toolbar>
           </AppBar>
           <div className={styles["modal-content-container"]}>
-             <div className={styles["test-name-container"]}>
+             <div className={styles["test-name-container-suite"]}>
             <TextField disabled={false} 
-             onChange={( e => setTestName(e.target.value)) } 
-             label="Test name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
+             onChange={( e => setSuiteName(e.target.value)) } 
+             label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
              <br/>
-         <div className={classes.userActionSelectContainer}>
-         <div className={styles["pick-user-combobox-container"]}>     
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={pickedUserId}
-            onChange={handleUserPick}>
-            {
-              !users ? null : Object.values(users).map((user:any)=>{
-                return <MenuItem value={user.id}>{user.name}</MenuItem>
-              })
-            }
-          </Select>
-        </FormControl>
+            <div className={styles["test-name-container"]}>
+            <TextField disabled={false} 
+             onChange={( e => setTestName(e.target.value)) } 
+             label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
              </div>
-             <div className={styles["pick-action-combobox-container"]}>
+           <div className={classes.userActionSelectContainer}>
+             <div className={styles["pick-user-combobox-container"]}>     
              <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={pickedUserAction}
-            onChange={handleActionPick}>
-            {
-              !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
-                return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
-              })
-            }
-          </Select>
-        </FormControl>
-            </div>
+              <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
+              <Select
+               labelId="demo-simple-select-label"
+               id="demo-simple-select"
+               value={pickedUserId}
+               onChange={handleUserPick}>
+               {
+                 !users ? null : Object.values(users).map((user:any)=>{
+                   return <MenuItem value={user.id}>{user.name}</MenuItem>
+                 })
+               }
+              </Select>
+            </FormControl>
+           </div>
+           <div className={styles["pick-action-combobox-container"]}>
+           <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={pickedUserAction}
+              onChange={handleActionPick}>
+              {
+                !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
+                  return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
+                })
+              }
+            </Select>
+          </FormControl>
+          </div>
+          <div className={styles["add-button-container"]} >
+             <Button size="small" variant="outlined" color="primary" onClick={addTestToSuite}>ADD +</Button>
+          </div>
         </div>     
-
         <div className={styles["pick-schedule-container"]}>
-             
-        </div>
-        <div className={styles["pick-user-finish-action-container"]}>
-          <br/> <br/>
-              &nbsp; Pick Action to run on test finish:
-              <br/><br/>
-             <div className={classes.userActionSelectContainer}>
-         <div className={styles["pick-user-combobox-container"]}>     
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={pickedUserIdFinal}
-            onChange={handleUserPickFinal}
-          >
-            {
-              !users ? null : Object.values(users).map((user:any)=>{
-                return <MenuItem value={user.id}>{user.name}</MenuItem>
-              })
-            }
-          </Select>
-        </FormControl>
+           {
+           suite.length === 0 ? null : suite.map((test:any) => {
+               return (
+                <div className={classes.userActionSelectContainer}>
+                <div className={styles["pick-user-combobox-container"]}>     
+                <FormControl className={classes.formControl}>
+                 <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
+                 <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={test.userId}
+                  onChange={handleUserPickSuite}>
+                  {
+                    !users ? null : Object.values(users).map((user:any)=>{
+                      return <MenuItem value={user.id}>{user.name}</MenuItem>
+                    })
+                  }
+                 </Select>
+               </FormControl>
+              </div>
+              <div className={styles["pick-action-combobox-container"]}>
+              <FormControl className={classes.formControl}>
+               <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
+               <Select
+                 labelId="demo-simple-select-label"
+                 id="demo-simple-select"
+                 value={test.actionId}
+                 onChange={handleActionPick}>
+                 {
+                   !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
+                     return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
+                   })
+                 }
+               </Select>
+             </FormControl>
              </div>
-             <div className={styles["pick-action-combobox-container"]}>
-             <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
-          <Select labelId="demo-simple-select-label" id="demo-simple-select"
-            value={pickedUserActionFinal}
-            onChange={handleActionPickFinal}>
-            {
-              !pickedUserActionsFinal ? null : Object.values(pickedUserActionsFinal).map((userAction:any)=>{
-                return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
-              })
-            }
-          </Select>
-        </FormControl>
-            </div>
-        </div>    
+             <div className={styles["pick-action-combobox-container"]} >
+             <Button size="small" variant="outlined" color="primary" onClick={addTestToSuite}>ADD +</Button>
+             </div>
+           </div>  
+               )
+             })     
+         }
         </div>
         <br/><br/>
          <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>
-         &nbsp;&nbsp;
-         <Button size="small" variant="outlined" color="primary" onClick={save}>Done</Button>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <Button style={{position:"absolute", right:0}} size="small" variant="outlined" color="primary" onClick={save}>Done</Button>
          </div>
         </div>
       </Dialog>

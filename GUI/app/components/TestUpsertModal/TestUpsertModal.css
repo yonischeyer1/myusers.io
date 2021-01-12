@@ -3,15 +3,28 @@
     margin: 0 auto;
     top: 20px;
     position: relative;
+    width:75%;
 }           
+.test-name-container-suite{
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
 .test-name-container{
   position: relative;
+  display: flex;
+  justify-content: right;
+  margin-left: 30px;
 }
 .pick-user-combobox-container{
     position: relative;
+    display: flex;
+    justify-content: center;
 }
 .pick-action-combobox-container{
     position: relative;
+    display: flex;
+    justify-content: center;
 }
 .pick-schedule-container{
     position: relative;
@@ -20,5 +33,14 @@
     position: relative;
 }
 .done-cancel-btns{
-    position: relative;
+  display: flex;
+  position: relative;
+  justify-content: right;
+  margin-left: 0px;
+}
+
+.add-button-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
