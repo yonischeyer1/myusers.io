@@ -77,6 +77,7 @@ export default function SimpleTabs(props:any) {
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
   const handleUpsertTestModalClose = (e:any) =>{
+    setCurrentTestPicked(null)
     setOpenUpsertTestModal(false)
   }
 
@@ -104,6 +105,12 @@ export default function SimpleTabs(props:any) {
   const handleDeletePopupClose = (e:any) =>{
     setItemAndCollectionNameToDelete(null);
     setOpenDeletePopup(false)
+  }
+
+  const playTestSuite = async (testSuite:any) => {
+    for(const test of testSuite.suite) {
+       await playTest(test)
+    }
   }
 
   const playTest = async (test:any) => {
@@ -213,7 +220,7 @@ export default function SimpleTabs(props:any) {
   ) => {
     switch (index) {
       case 1:
-        playTest(test)
+        playTestSuite(test)
       break;
 
       case 2:
@@ -255,25 +262,20 @@ export default function SimpleTabs(props:any) {
                 {
                   !tests || Object.values(tests).length === 0 ? <div> 
                           You have 0 Tests
-                     </div>: Object.values(tests).map((test:any)=> {
+                     </div>: Object.values(tests).map((testSuite:any)=> {
                     return (
-                     <div className={styles["test-row"]}>
-                       <div className={styles["test-name-container"]}>
-                         name: {test.name}
-                       </div>
-                       <div className={styles["test-status-container"]}>  
-                         status : {test.status}
-                       </div>
-                       <div className={styles["test-due-date-container"]}>
-                         dueDate: {test.dueDate}
-                       </div>
-                       {
-                         !currentRuningTestName ? null :
-                          <div className={styles["test-due-date-container"]}>
-                             test playing: {currentRuningTestName}
-                           </div>
-                       }
-                        <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
+                      <div className={styles["test-row"]}>
+                         <div className={styles["test-name-container"]}>
+                              Test suite name:&nbsp; {testSuite.suiteName}
+                         </div>
+                         <div className={styles["test-name-container"]}>
+                              Test runing:&nbsp; {testSuite.suite[0].testName}
+                         </div>
+                         <div className={styles["test-name-container"]}>
+                              Test status:&nbsp; {testSuite.suite[0].status}
+                         </div>
+                         <div>
+                         <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
                         <Button style={{pointerEvents:"none"}} >{'Actions'}</Button>
                         <Button
                           color="primary"
@@ -302,8 +304,8 @@ export default function SimpleTabs(props:any) {
                                    <MenuItem
                                      style={index === 0 ? {display:'none'} : {}}
                                      key={option}
-                                     disabled={index === 2 && !portsPlaying[test.id]}
-                                     onClick={(event:any) => handleTestMenuItemClick(event, index, test)}
+                                     disabled={index === 2 && !portsPlaying[testSuite.id]}
+                                     onClick={(event:any) => handleTestMenuItemClick(event, index, testSuite)}
                                    >
                                      {option}
                                    </MenuItem>
@@ -314,7 +316,8 @@ export default function SimpleTabs(props:any) {
                          </Grow>
                        )}
                         </Popper>
-                    </div>
+                         </div>
+                      </div>
                     )
                   }) 
                 }

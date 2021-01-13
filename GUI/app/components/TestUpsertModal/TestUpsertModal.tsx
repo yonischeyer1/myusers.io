@@ -56,10 +56,9 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
+let onceflag = false;
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
-  const [suiteName, setSuiteName] = React.useState("");
   const [testName, setTestName] = React.useState("");
 
   //Main test hooks
@@ -69,8 +68,7 @@ export default function FullScreenDialog(props:any) {
 
   //Test suite
   const [suite, setSuite] = React.useState([]);
-  const [pickedUserActionsSuite, setPickedUserActionsSuite] = React.useState({});
-  const [pickedUserActionSuite, setPickedUserActionSuite] = React.useState({});
+  const [suiteName, setSuiteName] = React.useState("");
 
 
   const { open, currentTestPicked } = props;
@@ -80,14 +78,19 @@ export default function FullScreenDialog(props:any) {
   if(open) {
     users = serviceStore.readDocs('users');
     actions = serviceStore.readDocs('actions');
-    if(currentTestPicked) {
+    if(currentTestPicked && !onceflag) {
+      onceflag = true;
       setSuite(currentTestPicked.suite)
+      setSuiteName(currentTestPicked.suiteName)
     }
   }
 
   const handleClose = (e:any) => {
+    onceflag = false;
     const {handleUpsertTestModalClose} = props;
     handleUpsertTestModalClose(false);
+    setSuite([])
+    setSuiteName(null)
   };
 
   const getUserActions = (e:any) => {
@@ -152,7 +155,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" className={classes.title}>
-              Test Upsert 
+              {suiteName ? `Edit suite: ${suiteName}` : "Create new test suite"}
             </Typography>
             <Button color="inherit" onClick={handleClose}>
                 Close
@@ -162,7 +165,8 @@ export default function FullScreenDialog(props:any) {
           <div className={styles["modal-content-container"]}>
           <br/>
              <div className={styles["test-name-container-suite"]}>
-            <TextField disabled={false} 
+            <TextField disabled={false}
+             value={suiteName} 
              onChange={( e => setSuiteName(e.target.value)) } 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
