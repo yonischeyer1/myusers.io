@@ -36,13 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
     userActionSelectContainer: {
       display: "flex",
       justifyContent:"right",
-      marginLeft:"30px",
-      position:'relative'
+      marginLeft:"100px",
+      position:'relative',
+      width: "93%"
     },
     doneCancelBtnsContianer: {
       display:"flex",
       justifyContent:"right",
-      marginLeft:"30px"
+      marginLeft:"100px"
     }
   }),
 );
@@ -163,7 +164,50 @@ export default function FullScreenDialog(props:any) {
              onChange={( e => setSuiteName(e.target.value)) } 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
-             <br/>
+             <br/>   <br/>
+             <div className={styles["test-name-container"]}>
+            <TextField disabled={false} 
+             onChange={( e => setTestName(e.target.value)) } 
+             label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
+        </div>
+        <div className={classes.userActionSelectContainer}>
+             <div className={styles["pick-user-combobox-container"]}>     
+             <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
+              <Select
+               labelId="demo-simple-select-label"
+               id="demo-simple-select"
+               value={pickedUserId}
+               onChange={handleUserPick}>
+               {
+                 !users ? null : Object.values(users).map((user:any)=>{
+                   return <MenuItem value={user.id}>{user.name}</MenuItem>
+                 })
+               }
+              </Select>
+            </FormControl>
+           </div>
+           <div className={styles["pick-action-combobox-container"]}>
+           <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={pickedUserAction}
+              onChange={handleActionPick}>
+              {
+                !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
+                  return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
+                })
+              }
+            </Select>
+          </FormControl>
+          </div> 
+          <div className={styles["add-button-container"]} >
+             <Button size="small" variant="outlined" color="primary" onClick={addTestToSuite}>ADD TEST +</Button>
+          </div>
+        </div> 
+             <br/> <br/>
         <div className={styles["suite-container"]}>
            {
            suite.length === 0 ? null : suite.map((test:any) => {
@@ -208,55 +252,16 @@ export default function FullScreenDialog(props:any) {
                </Select>
              </FormControl>
              </div>
+             <div className={styles["add-button-container"]} >
+             <Button size="small" variant="outlined" color="secondary" onClick={addTestToSuite}>Delete</Button>
+             </div>
              </div>
            </div>  
                )
              })     
          }
         </div>
-        <br/><br/>
-        <div className={styles["test-name-container"]}>
-            <TextField disabled={false} 
-             onChange={( e => setTestName(e.target.value)) } 
-             label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
-             </div>
-           <div className={classes.userActionSelectContainer}>
-             <div className={styles["pick-user-combobox-container"]}>     
-             <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
-              <Select
-               labelId="demo-simple-select-label"
-               id="demo-simple-select"
-               value={pickedUserId}
-               onChange={handleUserPick}>
-               {
-                 !users ? null : Object.values(users).map((user:any)=>{
-                   return <MenuItem value={user.id}>{user.name}</MenuItem>
-                 })
-               }
-              </Select>
-            </FormControl>
-           </div>
-           <div className={styles["pick-action-combobox-container"]}>
-           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={pickedUserAction}
-              onChange={handleActionPick}>
-              {
-                !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
-                  return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
-          </div>
-          <div className={styles["add-button-container"]} >
-             <Button size="small" variant="outlined" color="primary" onClick={addTestToSuite}>ADD +</Button>
-          </div>
-        </div>     
+        <br/><br/>    
          <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
