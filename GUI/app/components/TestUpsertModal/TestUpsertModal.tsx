@@ -119,11 +119,8 @@ export default function FullScreenDialog(props:any) {
 
   const save = async (e:any) => {
     const test:Test = {
-      name:testName,
-      userId:pickedUserId,
-      actionId:pickedUserAction,
-      schedule:{},
-      status:TEST_STATUS.IDLE
+      suiteName,
+      suite
     }
     serviceStore.createDoc('tests', test);
     handleClose(null)
