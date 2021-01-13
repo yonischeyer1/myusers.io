@@ -143,6 +143,11 @@ export default function FullScreenDialog(props:any) {
     setPickedUserAction(null)
     setPickedUserActions(null)
   }
+  const deleteTestFromSuite = (test:any) => {
+    const newSuite = suite.filter(item => item.testName !== test.testName)
+    setSuite(newSuite)
+  }
+  
   console.log("suite", suite)
   return open ? (
     <div style={{overflow:"hidden"}}>
@@ -253,7 +258,7 @@ export default function FullScreenDialog(props:any) {
              </FormControl>
              </div>
              <div className={styles["add-button-container"]} >
-             <Button size="small" variant="outlined" color="secondary" onClick={addTestToSuite}>Delete</Button>
+             <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=> { deleteTestFromSuite(test) }}>Delete</Button>
              </div>
              </div>
            </div>  
