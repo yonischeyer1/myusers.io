@@ -138,7 +138,7 @@ export default function FullScreenDialog(props:any) {
       status:TEST_STATUS.IDLE
     }
     setSuite([...suite, test])
-    setTestName(null)
+    setTestName("")
     setPickedUser(null)
     setPickedUserAction(null)
     setPickedUserActions(null)
@@ -167,6 +167,7 @@ export default function FullScreenDialog(props:any) {
              <br/>   <br/>
              <div className={styles["test-name-container"]}>
             <TextField disabled={false} 
+             value={testName}
              onChange={( e => setTestName(e.target.value)) } 
              label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
         </div>
@@ -215,7 +216,8 @@ export default function FullScreenDialog(props:any) {
                  <div>
                   <br/>  <br/>
                  <div className={styles["test-name-container"]}>
-                 <TextField disabled={false} 
+                 <TextField disabled={true} 
+                  value={test.testName}
                   onChange={( e => setTestName(e.target.value)) } 
                   label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
                 </div> <br/>
@@ -223,14 +225,15 @@ export default function FullScreenDialog(props:any) {
                 <div className={styles["pick-user-combobox-container"]}>     
                 <FormControl className={classes.formControl}>
                  <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
-                 <Select
+                 <Select 
+                  disabled={true}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={test.userId}
                   onChange={handleUserPickSuite}>
                   {
                     !users ? null : Object.values(users).map((user:any)=>{
-                      return <MenuItem value={user.id}>{user.name}</MenuItem>
+                      return <MenuItem  value={user.id}>{user.name}</MenuItem>
                     })
                   }
                  </Select>
@@ -240,15 +243,12 @@ export default function FullScreenDialog(props:any) {
               <FormControl className={classes.formControl}>
                <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
                <Select
+                 disabled={true}
                  labelId="demo-simple-select-label"
                  id="demo-simple-select"
                  value={test.actionId}
                  onChange={handleActionPick}>
-                 {
-                   !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
-                     return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
-                   })
-                 }
+                    <MenuItem value={test.actionId}>{actions[test.actionId].name}</MenuItem>
                </Select>
              </FormControl>
              </div>
