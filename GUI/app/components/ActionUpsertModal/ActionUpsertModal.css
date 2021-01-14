@@ -24,4 +24,7 @@
 
 .tags-editor-container {
     position: relative;
+    height: 20%;
+    overflow: auto;
+
 }

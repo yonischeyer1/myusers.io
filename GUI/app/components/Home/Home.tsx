@@ -71,7 +71,7 @@ export default function SimpleTabs(props:any) {
   const [stopLiveView, setStopLiveView] = React.useState(true)
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
-  const [currentRuningTestName, setCurrentRuningTestName] = React.useState(null)
+  const [currentRuningTestName, setCurrentRuningTestName] = React.useState("")
   const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
   const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState(false)
   const tests = serviceStore.readDocs('tests');
@@ -109,18 +109,18 @@ export default function SimpleTabs(props:any) {
 
   const playTestSuite = async (testSuite:any) => {
     for(const test of testSuite.suite) {
-       await playTest(test)
+       await playTest(test, testSuite.id)
     }
   }
 
-  const playTest = async (test:any) => {
+  const playTest = async (test:any, testSuiteId:any) => {
     await changeTestStatus(test, TEST_STATUS.PLAYING)
     const actions = serviceStore.readDocs('actions');
     const user = users[test.userId];
     const action = actions[test.actionId]
     const playingContainerInstance = new Container(CONTAINER_MODE.player);
     await playingContainerInstance.init(action.startUrl, user.id);
-    setPortsPlaying({...portsPlaying, [test.id]:playingContainerInstance._port})
+    setPortsPlaying({...portsPlaying, [testSuiteId]:playingContainerInstance._port})
     const testResp:any = await (await playingContainerInstance.play(true, action)).json()
     if(testResp.success) {
       await changeTestStatus(test, TEST_STATUS.SUCCESS)
@@ -133,9 +133,10 @@ export default function SimpleTabs(props:any) {
   }
 
   const changeTestStatus = async (test:any, status:any) => {
-    test.status = status;
-    tests[test.id] = test;
-    serviceStore.updateDocs('tests', tests);
+    setCurrentRuningTestName({name:test.testName, status })
+    // test.status = status;
+    // tests[test.id] = test;
+    // serviceStore.updateDocs('tests', tests);
   }
 
   const handleUserClick = async (user:any) => {
@@ -269,10 +270,10 @@ export default function SimpleTabs(props:any) {
                               Test suite name:&nbsp; {testSuite.suiteName}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test runing:&nbsp; {testSuite.suite[0].testName}
+                              Test runing:&nbsp; {currentRuningTestName.name}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test status:&nbsp; {testSuite.suite[0].status}
+                              Test status:&nbsp; {currentRuningTestName.status}
                          </div>
                          <div>
                          <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
