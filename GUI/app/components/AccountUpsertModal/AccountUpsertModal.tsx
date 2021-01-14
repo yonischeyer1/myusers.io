@@ -56,16 +56,21 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
+let onceflag = false
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const [openRecordingModal, setOpenRecordingMoal] = React.useState(false);
-  const { open } = props;
+  const [accountName, setAccountName] = React.useState(false);
+  const [loginURL, setLoginURL] = React.useState(false);
+  const { open, pickedAccount } = props;
 
 
   const handleClose = (e:any) => {
     const {handleUpsertAccountModalClose} = props;
     handleUpsertAccountModalClose(false);
+    onceflag = false;
+    setAccount(null)
+    setLoginURL(null)
   };
   const handleRecordingModalClose = () => {
     setOpenRecordingMoal(false)
@@ -76,12 +81,14 @@ export default function FullScreenDialog(props:any) {
   const handleAccountNameChange = (e:any) => {
     const key = "accountName"
     const newAccountName = e.target.value
+    setAccountName(newAccountName)
     serviceStore.upsertAppStateValue(key, newAccountName)
   }
 
   const handleLoginUrlChange = (e:any) => {
     const key = "loginURL"
     const newLoginUrl = e.target.value
+    setLoginURL(newLoginUrl)
     serviceStore.upsertAppStateValue(key, newLoginUrl)
   }
 
@@ -89,6 +96,13 @@ export default function FullScreenDialog(props:any) {
     serviceStore.upsertAppStateValue('isLoginMode', true)
     setOpenRecordingMoal(true)  
   }
+
+  if(open && pickedAccount && !onceflag) {
+     onceflag = true;
+     setAccountName(pickedAccount.name)
+     setLoginURL(pickedAccount.loginURL)
+  } 
+
 
    //** HTML */
   return open ? (
@@ -106,12 +120,12 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} 
+             <TextField disabled={false} value={accountName}
              onChange={handleAccountNameChange} 
              label="Account name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} 
+             <TextField disabled={false} value={loginURL}
              onChange={handleLoginUrlChange} 
              label="Login URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
          </div>

@@ -53,16 +53,20 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+let onceflag = false;
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const [openRecordingModal, setOpenRecordingModal] = React.useState(false)
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
+  const [actionName, setActionName] = React.useState(false);
   const { open, pickedAction } = props;
 
   const handleClose = (e:any) => {
     const {handleUpsertActionModalClose} = props;
     handleUpsertActionModalClose(false);
+    onceflag = false
+    setActionName(null)
   };
 
   const handleRecordingModalClose = () =>{
@@ -89,6 +93,7 @@ export default function FullScreenDialog(props:any) {
   const handleActionNameChange = (e:any) => {
     const key = "actionName"
     const newActionName = e.target.value
+    setActionName(newActionName)
     serviceStore.upsertAppStateValue(key, newActionName)
   }
 
@@ -101,6 +106,11 @@ export default function FullScreenDialog(props:any) {
    const actions = serviceStore.readDocs('actions')
    actions[pickedAction.id].tags = pickedAction.tags;
    serviceStore.updateDocs('actions', actions);
+ }
+
+ if(open && pickedAction && !onceflag) {
+   onceflag = true;
+   setActionName(pickedAction.name)
  }
 
   return open ? (
@@ -118,7 +128,7 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} 
+             <TextField disabled={false} value={actionName}
              onChange={handleActionNameChange} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
         </div>
