@@ -10,6 +10,7 @@ import { Fab, Button, ButtonGroup, Popper, Grow, Paper, ClickAwayListener, MenuL
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
+import TroubleshootMenu from '../TroubleshootMenu/TroubleshootMenu'
 import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DeletePopup from '../DeletePopup/DeletePopup'
@@ -74,8 +75,15 @@ export default function SimpleTabs(props:any) {
   const [currentRuningTestName, setCurrentRuningTestName] = React.useState("")
   const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
   const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState(false)
+  const [openTroubleshootMenu, setOpenTroubleshootMenu] = React.useState(false)
+  const [testTroubleshootPick, setTestTroubleshootPick]= React.useState(false)
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
+
+  const handleTroubleshootMenuClose = (e:any) => {
+    setOpenTroubleshootMenu(false)
+  }
+
   const handleUpsertTestModalClose = (e:any) =>{
     setCurrentTestPicked(null)
     setOpenUpsertTestModal(false)
@@ -193,6 +201,12 @@ export default function SimpleTabs(props:any) {
     setOpenDeletePopup(true);
   }
 
+  const handleFailClick = (test:any) => {
+    const lastTestRuningName = currentRuningTestName
+    setOpenTroubleshootMenu(true);
+    setTestTroubleshootPick(test)
+  }
+
   const handleUserMenuItemClick =  (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
@@ -273,7 +287,9 @@ export default function SimpleTabs(props:any) {
                               Test runing:&nbsp; {currentRuningTestName.name}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test status:&nbsp; {currentRuningTestName.status}
+                              Test status:&nbsp; {currentRuningTestName.status !== "FAIL" ? <Button variant="outlined" color="secondary" onClick={(e:any)=>{
+                                 handleFailClick(testSuite)
+                              }}>FAIL</Button> : currentRuningTestName.status}
                          </div>
                          <div>
                          <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
@@ -403,6 +419,10 @@ export default function SimpleTabs(props:any) {
 
         <UserUpsertModal currentUserPicked={currentUserPicked} 
         handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
+
+        <TroubleshootMenu open={openTroubleshootMenu} 
+        testTroubleshootPick={testTroubleshootPick}
+        handleTroubleshootMenuClose={handleTroubleshootMenuClose} />
       </div>
     );
   
