@@ -74,42 +74,9 @@ export default function FullScreenDialog(props:any) {
 
 
   const handleClose = (e:any) => {
-    const {handleUpsertAccountModalClose} = props;
-    handleUpsertAccountModalClose(false);
-    onceflag = false;
-    setAccount(null)
-    setLoginURL(null)
+    const {handleTroubleshootMenuClose} = props;
+    handleTroubleshootMenuClose(false);
   };
-  const handleRecordingModalClose = () => {
-    setOpenRecordingMoal(false)
-    const {handleUpsertAccountModalClose} = props;
-    handleUpsertAccountModalClose(false);
-  }
-
-  const handleAccountNameChange = (e:any) => {
-    const key = "accountName"
-    const newAccountName = e.target.value
-    setAccountName(newAccountName)
-    serviceStore.upsertAppStateValue(key, newAccountName)
-  }
-
-  const handleLoginUrlChange = (e:any) => {
-    const key = "loginURL"
-    const newLoginUrl = e.target.value
-    setLoginURL(newLoginUrl)
-    serviceStore.upsertAppStateValue(key, newLoginUrl)
-  }
-
-  const handleLoginClick = (e:any) => {
-    serviceStore.upsertAppStateValue('isLoginMode', true)
-    setOpenRecordingMoal(true)  
-  }
-
-  if(open && pickedAccount && !onceflag) {
-     onceflag = true;
-     setAccountName(pickedAccount.name)
-     setLoginURL(pickedAccount.loginURL)
-  } 
 
 
    //** HTML */
