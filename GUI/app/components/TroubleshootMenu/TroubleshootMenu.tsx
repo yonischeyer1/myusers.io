@@ -72,6 +72,34 @@ export default function FullScreenDialog(props:any) {
     handleTroubleshootMenuClose(false);
   };
 
+  const handleOpenMaksingWizard = (e:any) => {
+
+  }
+
+  const handleUIChange = (e:any) => {
+
+  }
+
+  const handleSetTagWaitTime = (e:any) => {
+
+  }
+
+  const handleBugReport = (e:any) => {
+
+  }
+
+  const handleAddSnapshotToTag = (e:any) => {
+
+  }
+
+  const handleSkipTag = (e:any) => {
+
+  }
+
+  const handleLiveSnapshot = (e:any) => {
+
+  }
+
 
    //** HTML */
   return open ? (
@@ -102,7 +130,7 @@ export default function FullScreenDialog(props:any) {
              You can use static masking wizard in order to cover those parts 
           </Typography>
           <br/>
-          <Button variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={handleOpenMaksingWizard} variant="outlined" color="primary">Open Static Masking wizard</Button>
           </div>
         </AccordionDetails>
       </Accordion>
@@ -119,7 +147,7 @@ export default function FullScreenDialog(props:any) {
                 Replace current tag image with the faild tag image.
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Replace tag snapshot</Button>
+          <Button onClick={handleUIChange} variant="outlined" color="primary">Replace tag snapshot</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -136,7 +164,7 @@ export default function FullScreenDialog(props:any) {
                 You can increase the wait time of each tag and number of attempts
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Increase tag wait time</Button>
+          <Button onClick={handleSetTagWaitTime} variant="outlined" color="primary">Increase tag wait time</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -156,7 +184,7 @@ export default function FullScreenDialog(props:any) {
                 When you do detect an exepction in behaviour you should report it to a ticketing system.
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Report Bug</Button>
+          <Button onClick={handleBugReport} variant="outlined" color="primary">Report Bug</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -174,7 +202,7 @@ export default function FullScreenDialog(props:any) {
                 You can add this snapshot to the tag and it will check to see of one of the options is correct
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Add snaphsot to tag</Button>
+          <Button onClick={handleAddSnapshotToTag} variant="outlined" color="primary">Add snaphsot to tag</Button>
         </div>
         </AccordionDetails>
       </Accordion>
@@ -192,7 +220,7 @@ export default function FullScreenDialog(props:any) {
                 
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Skip tag</Button>
+          <Button onClick={handleSkipTag} variant="outlined" color="primary">Skip tag</Button>
          </div>
         </AccordionDetails>
       </Accordion>
@@ -211,7 +239,7 @@ export default function FullScreenDialog(props:any) {
                 from user and when he finishes it will continue the test.
             </Typography>
             <br/>
-          <Button variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={handleLiveSnapshot} variant="outlined" color="primary">Open Static Masking wizard</Button>
         </div>
         </AccordionDetails>
       </Accordion>
