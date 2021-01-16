@@ -119,6 +119,7 @@ export default function FullScreenDialog(props:any) {
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const [accountsView, setAccountsView] = React.useState(null);
   const [actionsView, setActionsView] = React.useState(null);
+  const [userNameView, setUserNameView] = React.useState(null);
   const { open, currentUserPicked } = props;
   setAccountsViewFunc = setAccountsView
   setActionsViewFunc = setActionsView
@@ -168,8 +169,9 @@ export default function FullScreenDialog(props:any) {
       lastcurrentUserPicked = currentUserPicked;
       setAccountsView(readUserAccounts());
       setActionsView(readUserActions());
+      setUserNameView(currentUserPicked.name)
     }
-    userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
+    //userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
   } 
 
   const deleteAccountOrAction = (collectionName:any, item:any) => {
@@ -204,10 +206,15 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleUserNameChange = (e:any) => {
+    const users = serviceStore.readDocs('users')
     const userNameKey = "userName"
     const newUserName = e.target.value
-    userNameTextFieldValue = newUserName;
+    setUserNameView(newUserName)
     serviceStore.upsertAppStateValue(userNameKey, newUserName);
+    if(currentUserPicked) {
+      users[currentUserPicked.id].name = newUserName
+      serviceStore.updateDocs('users', users)
+    }
   }
 
   const editAction = (action:any) => {
@@ -265,7 +272,7 @@ export default function FullScreenDialog(props:any) {
         <br/>
           <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={userNameTextFieldValue}
+             value={userNameView}
              onChange={handleUserNameChange} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
