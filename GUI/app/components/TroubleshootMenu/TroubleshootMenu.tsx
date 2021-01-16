@@ -73,31 +73,38 @@ export default function FullScreenDialog(props:any) {
   };
 
   const handleOpenMaksingWizard = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleUIChange = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleSetTagWaitTime = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleBugReport = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleAddSnapshotToTag = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleSkipTag = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
   const handleLiveSnapshot = (e:any) => {
-
+    //TODO: implment 
+    handleClose(false)
   }
 
 
