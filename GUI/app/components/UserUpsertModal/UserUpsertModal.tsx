@@ -104,6 +104,9 @@ serviceStoreEmitter.on(`DB-reread-users`,()=> {
 });
 
 
+let userNameTextFieldValue:any = null;
+let runonce:any = false;
+
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
 
@@ -117,7 +120,6 @@ export default function FullScreenDialog(props:any) {
   const [accountsView, setAccountsView] = React.useState(null);
   const [actionsView, setActionsView] = React.useState(null);
   const { open, currentUserPicked } = props;
-  let userNameTextFieldValue:any = null;
   setAccountsViewFunc = setAccountsView
   setActionsViewFunc = setActionsView
 
@@ -161,7 +163,8 @@ export default function FullScreenDialog(props:any) {
  readUserActionsFunc = readUserActions
   
   if(open) {
-    if(currentUserPicked && !accountsView && !actionsView) {
+    if(currentUserPicked && !accountsView && !actionsView && !runonce) {
+      runonce = true;
       lastcurrentUserPicked = currentUserPicked;
       setAccountsView(readUserAccounts());
       setActionsView(readUserActions());
@@ -188,6 +191,7 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleClose = (e:any) => {
+    runonce = false;
     setAccountsView(null);
     setActionsView(null);
     serviceStore.upsertAppStateValue('currentUser', null)
@@ -202,6 +206,7 @@ export default function FullScreenDialog(props:any) {
   const handleUserNameChange = (e:any) => {
     const userNameKey = "userName"
     const newUserName = e.target.value
+    userNameTextFieldValue = newUserName;
     serviceStore.upsertAppStateValue(userNameKey, newUserName);
   }
 
