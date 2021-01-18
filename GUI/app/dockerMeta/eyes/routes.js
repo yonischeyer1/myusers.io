@@ -29,9 +29,6 @@ router.get('/isCorrectImage', async (req, res) => {
         const { actionId } = req.query
         if(tagHashFillFlag) {
             await fillTagHashAndURI(res)
-        }
-        else if(recorderActionsPlaying) {
-            await getTagDistance(res, actionId)
         } else if(Object.keys(actionsPlaying).length > 0) {
             await isDistValid(res, actionId);
         }
@@ -110,7 +107,7 @@ async function isDistValid(res, actionId) {
     const dist = dynamicSnapHash ? distance(newCurrentTagHash,dynamicSnapHash) : distance(hashOfTag, frameHash)
     console.log("currentTag.distances[0]",currentTag.distances[0])
     console.log("dist",dist)
-    if(dist <= currentTag.distances[0]) {
+    if(currentTag.distances.find(dist)) {
         console.log("dist <= currentTag.distances[0]",currentTagIdx)
         currentTagIdx++;
         getTagDistanceAttemptIdx = 0;
@@ -118,7 +115,7 @@ async function isDistValid(res, actionId) {
     } else if(getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
         console.log("getTagDistanceAttemptIdx > MAX_ATTEMPTS",currentTagIdx, "getTagDistanceAttemptIdx",getTagDistanceAttemptIdx)
         getTagDistanceAttemptIdx = 0;
-        faildTestDataResp = {success:false, dist, uri:frameURI}
+        faildTestDataResp = {success:false, dist, uri:frameURI , currentTagIdx}
         res.status(200).send(false) 
     } else {
         await removeScreenShot(currentTagIdx);
@@ -132,33 +129,6 @@ async function isDistValid(res, actionId) {
     }
 }
 
-async function getTagDistance (res, actionId) {
-    console.log("currentTagIdx",currentTagIdx)
-    const tags = recorderActionsPlaying.tags
-    const currentTag = tags[currentTagIdx]
-    const hashOfTag = currentTag.hash;
-    await takeScreenshotOfDesktop(currentTagIdx);
-    const filePath = `${process.cwd()}/screenshot${currentTagIdx}.jpg`
-    const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
-    const dist = distance(hashOfTag, frameHash)
-    if(dist === 0 || getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
-        currentTag.distances = [dist];
-        currentTag.screenShotFromPlayURI = frameURI
-        currentTagIdx++;
-        getTagDistanceAttemptIdx = 0;
-        res.status(200).send(true) 
-    } else {
-        await removeScreenShot(currentTagIdx);
-        getTagDistanceAttemptIdx++;
-        await (()=>{
-            return new Promise((resolve,reject)=>{
-                setTimeout(()=>{resolve()}, ATTEMPT_DELAY)
-            })
-        })()
-        console.log("screenshot agian23")
-        await getTagDistance (res, actionId)
-    }
-}
 
 async function fillTagHashAndURI (res) {
     const tags = recorderActionsPlaying.tags
@@ -168,6 +138,7 @@ async function fillTagHashAndURI (res) {
     const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
     currentTag.hash = frameHash;
     currentTag.originalReferenceSnapshotURI = frameURI;
+    currentTag.distances = [0]
     currentTagIdx++;
     res.status(200).send(true) 
 }
@@ -177,3 +148,32 @@ async function fillTagHashAndURI (res) {
 //And enable the user to add manually picked screenshots.
 //And enable delete of messy screenshots from auto tag process ex: picture in the middle of loading.
 //So first run  presume its all fine just getting distances by screenshot 
+
+
+// async function getTagDistance (res, actionId) {
+//     console.log("currentTagIdx",currentTagIdx)
+//     const tags = recorderActionsPlaying.tags
+//     const currentTag = tags[currentTagIdx]
+//     const hashOfTag = currentTag.hash;
+//     await takeScreenshotOfDesktop(currentTagIdx);
+//     const filePath = `${process.cwd()}/screenshot${currentTagIdx}.jpg`
+//     const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
+//     const dist = distance(hashOfTag, frameHash)
+//     if(dist === 0 || getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
+//         currentTag.distances = [dist];
+//         currentTag.screenShotFromPlayURI = frameURI
+//         currentTagIdx++;
+//         getTagDistanceAttemptIdx = 0;
+//         res.status(200).send(true) 
+//     } else {
+//         await removeScreenShot(currentTagIdx);
+//         getTagDistanceAttemptIdx++;
+//         await (()=>{
+//             return new Promise((resolve,reject)=>{
+//                 setTimeout(()=>{resolve()}, ATTEMPT_DELAY)
+//             })
+//         })()
+//         console.log("screenshot agian23")
+//         await getTagDistance (res, actionId)
+//     }
+// }

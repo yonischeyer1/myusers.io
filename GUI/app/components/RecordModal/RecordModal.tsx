@@ -110,14 +110,14 @@ export default function FullScreenDialog(props:any) {
       setLiveViewPort(recorderContainer._port)
       setLiveViewPortModalOpen(true)
     })
-    actionWithHashes.tagHashFillFlag = false
-    const actionWithDists = await recorderContainer.playRecorderAction(actionWithHashes,()=>{
-      setLiveViewPort(recorderContainer._port)
-      setLiveViewPortModalOpen(true)
-    })
-    saveThis = {tags: actionWithDists.tags, ioActions:actionWithDists.ioActions} 
+    // actionWithHashes.tagHashFillFlag = false
+    // const actionWithDists = await recorderContainer.playRecorderAction(actionWithHashes,()=>{
+    //   setLiveViewPort(recorderContainer._port)
+    //   setLiveViewPortModalOpen(true)
+    // })
+    saveThis = {tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} 
     await removeContainerByName(recorderContainer._containerName)
-    setTags(actionWithDists.tags);
+    setTags(actionWithHashes.tags);
     setScreen(SCREENS.setTagsMaxTimeoutScreen)
   }
 

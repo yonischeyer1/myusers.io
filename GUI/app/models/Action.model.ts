@@ -13,11 +13,12 @@ export enum TagType {
 }
 
 export interface Tag {
+    dynamic?:any
+    skip:boolean
+    name:string
     type: TagType
     hash:string
     distances:number[]
-    maxWaitTimeUntilFail:number
+    waitTime:any
     originalReferenceSnapshotURI:string
-    screenShotFromPlayURI:string
-    dynamic?:any
 }
