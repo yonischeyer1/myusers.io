@@ -131,7 +131,7 @@ export default function FullScreenDialog(props:any) {
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
              />
             </div><br/><br/>
-            <div style={{display:'flex'}}>
+            <div style={{display:'flex', justifyContent:"space-around"}}>
             <div>
             <div> <label>Original:</label></div>
              <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
