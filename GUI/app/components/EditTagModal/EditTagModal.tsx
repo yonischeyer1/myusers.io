@@ -133,11 +133,13 @@ export default function FullScreenDialog(props:any) {
             </div><br/><br/>
             <div style={{display:'flex'}}>
             <div>
-              <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
+            <div> <label>Original:</label></div>
+             <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
             </div>
              {
                tag.dynamic && tag.dynamic.drawURI ? <div>
-                 <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
+                 <div> <label>Masked:</label></div>
+                <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
                </div> : null
              }
             </div><br/>
