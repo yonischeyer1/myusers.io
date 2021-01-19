@@ -66,7 +66,7 @@ export default function FullScreenDialog(props:any) {
       },
       originalReferenceSnapshotURI:"",
       dynamic:null,
-      
+      skip:false
   });
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
@@ -89,6 +89,11 @@ export default function FullScreenDialog(props:any) {
     const waitTime = state.waitTime
     waitTime.value = label
     setState({...state, waitTime})
+  }
+
+  const handleSkipChange = (e:any) => {
+    const skip = e.target.checked
+    setState({...state, skip})
   }
 
   const save = (e:any) => {
@@ -124,9 +129,11 @@ export default function FullScreenDialog(props:any) {
            <div className={styles["modal-content-container"]}>
             <div>
              <TextField disabled={false} 
-              label="Tag name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
+              label="Tag name:" variant="outlined" style={{width:"80%", height:"45px"}} size="small"/>
                 &nbsp; Skip: 
                <Checkbox
+                value={state.skip}
+                onChange={handleSkipChange}
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
              />
@@ -134,20 +141,23 @@ export default function FullScreenDialog(props:any) {
             <div style={{display:'flex', justifyContent:"space-around"}}>
             <div>
             <div> <label>Original:</label></div>
-             <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
+             <img src={tag.originalReferenceSnapshotURI} />
+            </div>
+            <div style={{alignSelf: "center"}}>
+              <Button onClick={(e)=>{ handleTagImageClick(tag)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
                tag.dynamic && tag.dynamic.drawURI ? <div>
                  <div> <label>Masked:</label></div>
-                <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
+                <img src={tag.dynamic.drawURI} />
                </div> : null
              }
             </div><br/>
              <div>
                  <h3>Set wait time until Fail:</h3>
-                 <FormControl component="fieldset">
+                 <FormControl component="fieldset" disabled={state.skip}>
                  <FormLabel component="legend"></FormLabel>
-                 <RadioGroup aria-label="waitTime" name="gender1" value={state.waitTime.label} onChange={handleSetTimeoutChange}>
+                 <RadioGroup  aria-label="waitTime" name="gender1" value={state.waitTime.label} onChange={handleSetTimeoutChange}>
                    <FormControlLabel value="forever" control={<Radio />} label="forever" />
                    <FormControlLabel value="custom" control={<Radio />} label="custom" />
                  </RadioGroup>
