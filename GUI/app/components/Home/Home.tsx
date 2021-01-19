@@ -201,12 +201,6 @@ export default function SimpleTabs(props:any) {
     setOpenDeletePopup(true);
   }
 
-  const handleFailClick = (test:any) => {
-    const lastTestRuningName = currentRuningTestName
-    setOpenTroubleshootMenu(true);
-    setTestTroubleshootPick(test)
-  }
-
   const handleUserMenuItemClick =  (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
@@ -227,6 +221,13 @@ export default function SimpleTabs(props:any) {
     //TODO: execute action by Index
     setOpenUserActionBtnGrp(false);
   };
+
+  const handleFailClick = (test:any) => {
+    const lastTestRuningName = currentRuningTestName
+    setOpenTroubleshootMenu(true);
+    setTestTroubleshootPick(test)
+  }
+
 
   const handleTestMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -260,8 +261,8 @@ export default function SimpleTabs(props:any) {
 
    const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
    const optionsUser = ['Edit','Delete'];
-   const anchorRefTest = React.useRef<HTMLDivElement>(null);
    const anchorRefUser = React.useRef<HTMLDivElement>(null);
+   const anchorRefTest = React.useRef<HTMLDivElement>(null);
     return (
       <div className={classes.root} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
