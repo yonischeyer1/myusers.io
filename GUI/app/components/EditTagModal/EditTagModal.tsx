@@ -130,7 +130,7 @@ export default function FullScreenDialog(props:any) {
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
              />
-            </div>
+            </div><br/><br/>
             <div style={{display:'flex'}}>
             <div>
               <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
@@ -140,7 +140,7 @@ export default function FullScreenDialog(props:any) {
                  <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
                </div> : null
              }
-            </div>
+            </div><br/>
              <div>
                  <h3>Set wait time until Fail:</h3>
                  <FormControl component="fieldset">
@@ -160,9 +160,9 @@ export default function FullScreenDialog(props:any) {
              </div>
             <br/><br/><br/>
             <div>
-            <Button size="small" variant="outlined" color="primary" onClick={save}>Save</Button>
-            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
             <Button size="small" variant="outlined" color="primary" onClick={handleClose}>cancel</Button>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+            <Button size="small" variant="outlined" color="primary" onClick={save}>Save</Button>
             </div>
        </div>
        <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
