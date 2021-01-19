@@ -7,7 +7,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import styles from './DeletePopup.css'
+import styles from './EditTagModal.css'
 import ServiceStore from '../../services /store.service';
 import { Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
@@ -73,8 +73,8 @@ export default function FullScreenDialog(props:any) {
 
   //**Functions */  
   const handleClose = (e:any) => {
-    const {handleDeletePopupClose} = props;
-    handleDeletePopupClose(false);
+    const {handleEditTagModalClose} = props;
+    handleEditTagModalClose(false);
   };
 
   const handleSetTimeoutChange = (e:any) => {
@@ -125,11 +125,13 @@ export default function FullScreenDialog(props:any) {
             <div>
              <TextField disabled={false} 
               label="Tag name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
-             <Checkbox
+                &nbsp; Skip: 
+               <Checkbox
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
              />
             </div>
+            <div style={{display:'flex'}}>
             <div>
               <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
             </div>
@@ -138,10 +140,11 @@ export default function FullScreenDialog(props:any) {
                  <img src={tag.dynamic.drawURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
                </div> : null
              }
+            </div>
              <div>
                  <h3>Set wait time until Fail:</h3>
                  <FormControl component="fieldset">
-                 <FormLabel component="legend">Wait Time</FormLabel>
+                 <FormLabel component="legend"></FormLabel>
                  <RadioGroup aria-label="waitTime" name="gender1" value={state.waitTime.label} onChange={handleSetTimeoutChange}>
                    <FormControlLabel value="forever" control={<Radio />} label="forever" />
                    <FormControlLabel value="custom" control={<Radio />} label="custom" />
@@ -150,9 +153,8 @@ export default function FullScreenDialog(props:any) {
                  {
                      state.waitTime.label !== "custom" ? null : 
                      <div>
-                        <TextField disabled={false} onChange={handleCustomWaitTimeChange}
-                        label="Insert wait time:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/> 
-                        (seconds)
+                        <TextField type="number" disabled={false} value={state.waitTime.value} onChange={handleCustomWaitTimeChange}
+                        label="Insert wait time(seconds):" variant="outlined" style={{width:"300px", height:"45px"}} size="small"/> 
                     </div>
                  }
              </div>

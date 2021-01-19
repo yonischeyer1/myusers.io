@@ -14,6 +14,7 @@ import ServiceStore from '../../services /store.service';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
 import styles from './ActionUpsertModal.css';
 import DeletePopup from '../DeletePopup/DeletePopup';
+import EditTagModal from '../EditTagModal/EditTagModal'
 
 const serviceStore = new ServiceStore();
 
@@ -65,6 +66,8 @@ export default function FullScreenDialog(props:any) {
   const [actionName, setActionName] = React.useState(false);
   const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
+  const [openEditTagModal, setOpenEditTagModal] = React.useState(false)
+  const [zeTag, setZeTag] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const { open, pickedAction } = props;
   const elRefs = React.useRef([]);
@@ -81,6 +84,11 @@ export default function FullScreenDialog(props:any) {
     setItemAndCollectionNameToDelete(null);
     setOpenDeletePopup(false)
   }
+
+  const handleEditTagModalClose = (e:any) => {
+    setOpenEditTagModal(false)
+  }
+ 
 
   const handleRecordingModalClose = () =>{
      setOpenRecordingModal(false)
@@ -111,13 +119,9 @@ export default function FullScreenDialog(props:any) {
   }
  
 
-const editTag = (collectionName:any, item:any) => {
-  if(collectionName === 'users') {
-    handleUserClick(item)
-  } else {
-    setCurrentTestPicked(item)
-    setOpenUpsertTestModal(true)
-  }
+const editTag = (tag:any) => {
+  setZeTag(tag)
+  setOpenEditTagModal(true)
 } 
 
 const deleteTag = (collectionName:any, item:any) => {
@@ -128,22 +132,23 @@ const deleteTag = (collectionName:any, item:any) => {
 const handleTagMenuItemClick =  (
   event: React.MouseEvent<HTMLLIElement, MouseEvent>,
   index: number,
-  user:any
+  tag:any
 ) => {
   switch (index) {
     case 0:
-      editTag('users', user);
+      editTag(tag);
     break;
 
     case 1:
-      deleteTag('users', user)
+      return;
+      //deleteTag('users', user)
     break;
   
     default:
       break;
   }
   //TODO: execute action by Index
-  setOpenUserActionBtnGrp(false);
+  //setOpenUserActionBtnGrp(false);
 };
 
  const saveCurrentActionTags = async (e:any) => {
@@ -273,6 +278,7 @@ const handleTagMenuItemClick =  (
          <Button size="small" variant="outlined" color="primary" onClick={saveCurrentActionTags}>Save</Button>
          </div>
      </div>
+     <EditTagModal open={openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} tag={zeTag}/>
      <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
      <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
         handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
