@@ -341,7 +341,7 @@ export default function SimpleTabs(props:any) {
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper open={openTestActionBtnGrp[index]} anchorEl={elRefsTest.current[index].current} role={undefined} transition disablePortal>
+                       <Popper style={{zIndex:1}} open={openTestActionBtnGrp[index]} anchorEl={elRefsTest.current[index].current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
@@ -402,7 +402,7 @@ export default function SimpleTabs(props:any) {
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper open={openUserActionBtnGrp[index]} anchorEl={elRefsUser.current[index].current} role={undefined} transition disablePortal>
+                       <Popper style={{zIndex:1}} open={openUserActionBtnGrp[index]} anchorEl={elRefsUser.current[index].current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
