@@ -57,20 +57,19 @@ const Transition = React.forwardRef(function Transition(
 });
 
 let onceflag = false;
-let anchorRefUser:any = []
 export default function FullScreenDialog(props:any) {
   const classes = useStyles();
   const [openRecordingModal, setOpenRecordingModal] = React.useState(false)
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
   const [actionName, setActionName] = React.useState(false);
-  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
   const [openEditTagModal, setOpenEditTagModal] = React.useState(false)
   const [zeTag, setZeTag] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const { open, pickedAction } = props;
   const elRefs = React.useRef([]);
+  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
   const optionsUser = ['Edit','Delete'];
 
   const handleClose = (e:any) => {
@@ -199,8 +198,8 @@ const handleTagMenuItemClick =  (
              <TextField disabled={false} value={actionName}
              onChange={handleActionNameChange} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
-        </div>
-             <br/>
+          </div>
+            <br/>
         <div style={{display:"flex", alignItems:"center"}}>
         <div className={styles["recoreder-control-button"]}>
                <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={handleRecordBtnClick}>

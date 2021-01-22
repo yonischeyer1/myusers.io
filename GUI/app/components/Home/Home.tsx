@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, {createRef, Suspense} from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -17,6 +17,7 @@ import DeletePopup from '../DeletePopup/DeletePopup'
 import {TEST_STATUS} from '../../models/Test.model'
 import ServiceStore from '../../services /store.service'
 import styles from './Home.css'
+
 
 const serviceStore = new ServiceStore();
 interface TabPanelProps {
@@ -59,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+let runOnceUser:any = false;
+let runOnceTest:any = false;
+
 export default function SimpleTabs(props:any) {
   const classes = useStyles();
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -73,10 +77,20 @@ export default function SimpleTabs(props:any) {
   const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
   const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const [currentRuningTestName, setCurrentRuningTestName] = React.useState("")
-  const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState(false)
-  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState(false)
   const [openTroubleshootMenu, setOpenTroubleshootMenu] = React.useState(false)
   const [testTroubleshootPick, setTestTroubleshootPick]= React.useState(false)
+
+
+  const elRefsUser = React.useRef([]);
+  const elRefsTest = React.useRef([]);
+
+  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
+  const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState([])
+  
+  const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
+  const optionsUser = ['Edit','Delete'];
+
+
   const tests = serviceStore.readDocs('tests');
   const users = serviceStore.readDocs('users');
 
@@ -164,27 +178,38 @@ export default function SimpleTabs(props:any) {
     }
   }
 
-  const handleToggleTest = () => {
-    setOpenTestActionBtnGrp(!openTestActionBtnGrp);
+  const handleToggleTest = (index:any) => {
+    const newArr = openTestActionBtnGrp.map((item:any,idx:any)=>{
+      if(idx === index){
+         return !item;
+      }
+      return false;
+   })
+   setOpenTestActionBtnGrp(newArr);
   };
 
-  const handleToggleUser = () => {
-    setOpenUserActionBtnGrp(!openUserActionBtnGrp);
+  const handleToggleUser = (index:any) => {
+    const newArr = openUserActionBtnGrp.map((item:any,idx:any)=>{
+      if(idx === index){
+         return !item;
+      }
+      return false;
+   })
+   setOpenUserActionBtnGrp(newArr);
   };
 
-  const handleCloseTest = (event: React.MouseEvent<Document, MouseEvent>) => {
-    if (anchorRefTest.current && anchorRefTest.current.contains(event.target as HTMLElement)) {
+  const handleCloseTest = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+    if (elRefsTest.current[index] && elRefsTest.current[index].current.contains(event.target as HTMLElement)) {
       return;
     }
-
-    setOpenTestActionBtnGrp(false);
+    setOpenTestActionBtnGrp(openTestActionBtnGrp.map(i => false));
   };
 
-  const handleCloseUser = (event: React.MouseEvent<Document, MouseEvent>) => {
-    if (anchorRefUser.current && anchorRefUser.current.contains(event.target as HTMLElement)) {
+  const handleCloseUser = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+    if (elRefsUser.current[index] && elRefsUser.current[index].current.contains(event.target as HTMLElement)) {
       return;
     }
-    setOpenUserActionBtnGrp(false);
+    setOpenUserActionBtnGrp(openUserActionBtnGrp.map(i => false));
   }
 
   const editUserOrTest = (collectionName:any, item:any) => {
@@ -258,11 +283,20 @@ export default function SimpleTabs(props:any) {
     setOpenTestActionBtnGrp(false);
   };
 
+  
+  if(Object.values(tests).length > 0 && !runOnceTest) {
+    runOnceTest = true;
+    elRefsTest.current = Array(Object.values(tests).length).fill(null).map((_, i) => elRefsTest.current[i] || createRef())
+    setOpenTestActionBtnGrp(Array(Object.values(tests).length).fill(false))
+  }
+  if(Object.values(users).length > 0 && !runOnceUser) {
+    runOnceUser = true;
+    elRefsUser.current = Array(Object.values(users)).fill(null).map((_, i) => elRefsUser.current[i] || createRef())
+    setOpenUserActionBtnGrp(Array(Object.values(users).length).fill(false))
 
-   const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
-   const optionsUser = ['Edit','Delete'];
-   const anchorRefUser = React.useRef<HTMLDivElement>(null);
-   const anchorRefTest = React.useRef<HTMLDivElement>(null);
+  }
+
+   
     return (
       <div className={classes.root} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
@@ -278,7 +312,7 @@ export default function SimpleTabs(props:any) {
                 {
                   !tests || Object.values(tests).length === 0 ? <div> 
                           You have 0 Tests
-                     </div>: Object.values(tests).map((testSuite:any)=> {
+                     </div>: Object.values(tests).map((testSuite:any, index:any)=> {
                     return (
                       <div className={styles["test-row"]}>
                          <div className={styles["test-name-container"]}>
@@ -293,21 +327,21 @@ export default function SimpleTabs(props:any) {
                               }}>FAIL</Button> : currentRuningTestName.status}
                          </div>
                          <div>
-                         <ButtonGroup variant="contained" color="primary" ref={anchorRefTest} aria-label="split button">
+                         <ButtonGroup variant="contained" color="primary" ref={elRefsTest.current[index]} aria-label="split button">
                         <Button style={{pointerEvents:"none"}} >{'Actions'}</Button>
                         <Button
                           color="primary"
                           size="small"
-                          aria-controls={openTestActionBtnGrp ? 'split-button-menu' : undefined}
-                          aria-expanded={openTestActionBtnGrp ? 'true' : undefined}
+                          aria-controls={openTestActionBtnGrp[index] ? `split-button-menu-${index}` : undefined}
+                          aria-expanded={openTestActionBtnGrp[index] ? 'true' : undefined}
                           aria-label="select merge strategy"
                           aria-haspopup="menu"
-                          onClick={handleToggleTest}
+                          onClick={(e)=>{handleToggleTest(index)}}
                         >
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper open={openTestActionBtnGrp} anchorEl={anchorRefTest.current} role={undefined} transition disablePortal>
+                       <Popper open={openTestActionBtnGrp[index]} anchorEl={elRefsTest.current[index].current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
@@ -348,27 +382,27 @@ export default function SimpleTabs(props:any) {
                 {
                   !users || Object.values(users).length === 0 ? <div>
                     You have 0 Users
-                  </div> :  Object.values(users).map((user:any)=> {
+                  </div> :  Object.values(users).map((user:any, index:any)=> {
                     return (<div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]}>
                          name : {user.name}
                        </div>
                        <div>
-                       <ButtonGroup variant="contained" color="primary" ref={anchorRefUser} aria-label="split button">
+                       <ButtonGroup variant="contained" color="primary" ref={elRefsUser.current[index]} aria-label="split button">
                         <Button style={{pointerEvents:"none"}} >{'Actions'}</Button>
                         <Button
                           color="primary"
                           size="small"
-                          aria-controls={openUserActionBtnGrp ? 'split-button-menu-test' : undefined}
-                          aria-expanded={openUserActionBtnGrp ? 'true' : undefined}
+                          aria-controls={openUserActionBtnGrp[index] ? `split-button-menu-test-${index}` : undefined}
+                          aria-expanded={openUserActionBtnGrp[index] ? 'true' : undefined}
                           aria-label="select merge strategy"
                           aria-haspopup="menu"
-                          onClick={handleToggleUser}
+                          onClick={(e)=>{handleToggleUser(index)}}
                         >
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper open={openUserActionBtnGrp} anchorEl={anchorRefUser.current} role={undefined} transition disablePortal>
+                       <Popper open={openUserActionBtnGrp[index]} anchorEl={elRefsUser.current[index].current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
