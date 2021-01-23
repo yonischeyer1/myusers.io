@@ -17,6 +17,7 @@ export interface Test {
     id?:string
     suiteName:string
     suite:TestModel[]
+    lastFailResult:any
 }
 
 export interface UserAction {

@@ -250,6 +250,15 @@ export default function FullScreenDialog(props:any) {
         </div>
         </AccordionDetails>
       </Accordion>
+      <div style={{display:"flex"}}>
+        <div>
+            faild frame image 
+            <img src={pickedTest.lastFailResult.uri}/>
+       </div>
+        <div>
+
+        </div>
+      </div>
       </div>
       </Dialog>
     </div>
