@@ -18,6 +18,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ServiceStore from '../../services /store.service';
 import styles from './TroubleshootMenu.css';
 
+const serviceStore = new ServiceStore();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,8 +62,9 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
+let runonce:any = false
 export default function FullScreenDialog(props:any) {
+  const [tagImage, setTagImage] = React.useState('');
   const classes = useStyles();
   const { open, pickedTest } = props;
 
@@ -105,6 +107,15 @@ export default function FullScreenDialog(props:any) {
   const handleLiveSnapshot = (e:any) => {
     //TODO: implment 
     handleClose(false)
+  }
+
+  if(!runonce && pickedTest) {
+    debugger
+    runonce = true; 
+    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
+    const actions = serviceStore.readDocs('actions');
+    const zeTagImage = actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx]
+    setTagImage(zeTagImage.originalReferenceSnapshotURI) 
   }
 
 
@@ -249,16 +260,17 @@ export default function FullScreenDialog(props:any) {
           <Button onClick={handleLiveSnapshot} variant="outlined" color="primary">Open Static Masking wizard</Button>
         </div>
         </AccordionDetails>
-      </Accordion>
-      <div style={{display:"flex"}}>
+      </Accordion><br/>
+      <div style={{display:"flex", justifyContent:"space-around"}}>
         <div>
             faild frame image 
             <img src={pickedTest.lastFailResult.uri}/>
        </div>
         <div>
-
+            tag image 
+            <img src={tagImage}/>
         </div>
-      </div>
+      </div><br/>
       </div>
       </Dialog>
     </div>

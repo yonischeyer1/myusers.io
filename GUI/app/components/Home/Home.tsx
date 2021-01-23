@@ -466,7 +466,7 @@ export default function SimpleTabs(props:any) {
         handleUpsertUserModalClose={handleUpsertUserModalClose} open={openUpsertUserModal}/>
 
         <TroubleshootMenu open={openTroubleshootMenu} 
-        testTroubleshootPick={testTroubleshootPick}
+        pickedTest={testTroubleshootPick}
         handleTroubleshootMenuClose={handleTroubleshootMenuClose} />
       </div>
     );
