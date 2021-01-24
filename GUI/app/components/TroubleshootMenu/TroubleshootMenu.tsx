@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 //** Others **
 import ServiceStore from '../../services /store.service';
 import styles from './TroubleshootMenu.css';
+import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
 
 const serviceStore = new ServiceStore();
 
@@ -64,7 +65,9 @@ const Transition = React.forwardRef(function Transition(
 
 let runonce:any = false
 export default function FullScreenDialog(props:any) {
-  const [tagImage, setTagImage] = React.useState('');
+  const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
+  const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
+  const [tagState, setTagState] = React.useState('');
   const classes = useStyles();
   const { open, pickedTest } = props;
 
@@ -75,9 +78,16 @@ export default function FullScreenDialog(props:any) {
   };
 
   const handleOpenMaksingWizard = (e:any) => {
-    //TODO: implment 
-    handleClose(false)
+    setdynamicSnapshotModalData(tagState)
+    setDynamicSnapshotOpen(true)
   }
+  const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
+    tag["dynamic"] = {coords, drawURI}
+  }
+
+  const handleDynamicSnapshotModalClose = (e:any) => {
+    setDynamicSnapshotOpen(false)
+   }
 
   const handleUIChange = (e:any) => {
     //TODO: implment 
@@ -109,13 +119,14 @@ export default function FullScreenDialog(props:any) {
     handleClose(false)
   }
 
+
+
   if(!runonce && pickedTest) {
-    debugger
     runonce = true; 
     const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
     const actions = serviceStore.readDocs('actions');
-    const zeTagImage = actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx]
-    setTagImage(zeTagImage.originalReferenceSnapshotURI) 
+    const zeTag = actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx]
+    setTagState(zeTag) 
   }
 
 
@@ -268,10 +279,12 @@ export default function FullScreenDialog(props:any) {
        </div>
         <div>
             tag image 
-            <img src={tagImage}/>
+            <img src={tagState.originalReferenceSnapshotURI}/>
         </div>
       </div><br/>
       </div>
+      <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
+        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>
