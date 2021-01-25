@@ -87,7 +87,7 @@ export default function SimpleTabs(props:any) {
   const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
   const [openTestActionBtnGrp, setOpenTestActionBtnGrp] = React.useState([])
   
-  const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete'];
+  const optionsTest = ['Actions','Play', 'Live view' ,'Edit', 'Delete','Export'];
   const optionsUser = ['Edit','Delete'];
 
 

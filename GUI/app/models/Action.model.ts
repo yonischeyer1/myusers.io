@@ -21,4 +21,5 @@ export interface Tag {
     distances:number[]
     waitTime:any
     originalReferenceSnapshotURI:string
+    moreSnapshots?:any;
 }

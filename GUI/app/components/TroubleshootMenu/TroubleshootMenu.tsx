@@ -18,6 +18,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ServiceStore from '../../services /store.service';
 import styles from './TroubleshootMenu.css';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
+import EditTagModal from '../EditTagModal/EditTagModal';
 
 const serviceStore = new ServiceStore();
 
@@ -68,6 +69,7 @@ export default function FullScreenDialog(props:any) {
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
   const [tagState, setTagState] = React.useState('');
+  const [openEditTagModal, setOpenEditTagModal] = React.useState(false)
   const classes = useStyles();
   const { open, pickedTest } = props;
 
@@ -77,34 +79,49 @@ export default function FullScreenDialog(props:any) {
     handleTroubleshootMenuClose(false);
   };
 
+  const handleDynamicSnapshotModalClose = (e:any) => {
+    setDynamicSnapshotOpen(false)
+  }
+
+  const handleEditTagModalClose = (e:any) => {
+    setOpenEditTagModal(false)
+  }
+
   const handleOpenMaksingWizard = (e:any) => {
     setdynamicSnapshotModalData(tagState)
     setDynamicSnapshotOpen(true)
   }
   const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
     tag["dynamic"] = {coords, drawURI}
+    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
+    const actions = serviceStore.readDocs('actions')
+    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx] = tag;
+    serviceStore.updateDocs('actions', actions);
   }
 
-  const handleDynamicSnapshotModalClose = (e:any) => {
-    setDynamicSnapshotOpen(false)
-   }
-
   const handleUIChange = (e:any) => {
-    //TODO: implment 
+    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
+    const actions = serviceStore.readDocs('actions')
+    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].originalReferenceSnapshotURI = pickedTest.lastFailResult.uri;
+    serviceStore.updateDocs('actions', actions);
+    handleClose(false)
+  }
+
+  const handleAddSnapshotToTag = (e:any) => {//moreSnapshots distances
+    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
+    const actions = serviceStore.readDocs('actions')
+    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].moreSnapshots.push(pickedTest.lastFailResult.uri);
+    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].distances.push(pickedTest.lastFailResult.dist);
+    serviceStore.updateDocs('actions', actions);
     handleClose(false)
   }
 
   const handleSetTagWaitTime = (e:any) => {
-    //TODO: implment 
-    handleClose(false)
+    setOpenEditTagModal(true)
+    //handleClose(false)
   }
 
   const handleBugReport = (e:any) => {
-    //TODO: implment 
-    handleClose(false)
-  }
-
-  const handleAddSnapshotToTag = (e:any) => {
     //TODO: implment 
     handleClose(false)
   }
@@ -283,6 +300,7 @@ export default function FullScreenDialog(props:any) {
         </div>
       </div><br/>
       </div>
+      <EditTagModal open={openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} tag={tagState}/>
       <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
         handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
       </Dialog>
