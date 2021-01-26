@@ -51,7 +51,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
+let runonce:any = false;
 export default function FullScreenDialog(props:any) {
   //**Consts */
   const classes = useStyles();
@@ -73,6 +73,7 @@ export default function FullScreenDialog(props:any) {
 
   //**Functions */  
   const handleClose = (e:any) => {
+    runonce = false;
     const {handleEditTagModalClose} = props;
     handleEditTagModalClose(false);
   };
@@ -111,15 +112,21 @@ export default function FullScreenDialog(props:any) {
 
  const handleDynamicSnapshotModalClose = (e:any) => {
     setDynamicSnapshotOpen(false)
- }  
-
+ }
+ 
+ if(open && !runonce) {
+   runonce = true;
+   setState({...state, ...tag})
+   console.log("editTagModal state", state)
+ }
+ console.log("editTagModal state", state)
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" className={classes.title}>
-                Edit Tag: {tag.name}
+                Edit Tag: {state.name}
             </Typography>
             <Button color="inherit" onClick={handleClose}>
                 Close
@@ -132,7 +139,7 @@ export default function FullScreenDialog(props:any) {
               label="Tag name:" variant="outlined" style={{width:"80%", height:"45px"}} size="small"/>
                 &nbsp; Skip: 
                <Checkbox
-                value={state.skip}
+                checked={state.skip}
                 onChange={handleSkipChange}
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -141,15 +148,15 @@ export default function FullScreenDialog(props:any) {
             <div style={{display:'flex', justifyContent:"space-around"}}>
             <div>
             <div> <label>Original:</label></div>
-             <img src={tag.originalReferenceSnapshotURI} />
+             <img src={state.originalReferenceSnapshotURI} />
             </div>
             <div style={{alignSelf: "center"}}>
-              <Button onClick={(e)=>{ handleTagImageClick(tag)}} variant="outlined" color="primary">OPEN EDITOR</Button>
+              <Button onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
-               tag.dynamic && tag.dynamic.drawURI ? <div>
+               state.dynamic && state.dynamic.drawURI ? <div>
                  <div> <label>Masked:</label></div>
-                <img src={tag.dynamic.drawURI} />
+                <img src={state.dynamic.drawURI} />
                </div> : null
              }
             </div><br/>

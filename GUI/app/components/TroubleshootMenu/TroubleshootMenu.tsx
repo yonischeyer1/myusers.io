@@ -118,15 +118,17 @@ export default function FullScreenDialog(props:any) {
 
   const handleSetTagWaitTime = (e:any) => {
     setOpenEditTagModal(true)
-    //handleClose(false)
-  }
-
-  const handleBugReport = (e:any) => {
-    //TODO: implment 
-    handleClose(false)
   }
 
   const handleSkipTag = (e:any) => {
+    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
+    const actions = serviceStore.readDocs('actions')
+    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].skip = true
+    serviceStore.updateDocs('actions', actions);
+    handleClose(false)
+  }
+
+  const handleBugReport = (e:any) => {
     //TODO: implment 
     handleClose(false)
   }
