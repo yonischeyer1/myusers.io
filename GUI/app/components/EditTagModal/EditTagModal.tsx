@@ -114,12 +114,11 @@ export default function FullScreenDialog(props:any) {
     setDynamicSnapshotOpen(false)
  }
  
- if(open && !runonce) {
-   runonce = true;
-   setState({...state, ...tag})
-   console.log("editTagModal state", state)
- }
- console.log("editTagModal state", state)
+   if(open && !runonce) {
+     runonce = true;
+     setState({...state, ...tag})
+   }
+
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -135,7 +134,7 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
            <div className={styles["modal-content-container"]}>
             <div>
-             <TextField disabled={false} 
+             <TextField disabled={state.skip} 
               label="Tag name:" variant="outlined" style={{width:"80%", height:"45px"}} size="small"/>
                 &nbsp; Skip: 
                <Checkbox
@@ -151,7 +150,7 @@ export default function FullScreenDialog(props:any) {
              <img src={state.originalReferenceSnapshotURI} />
             </div>
             <div style={{alignSelf: "center"}}>
-              <Button onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
+              <Button disabled={state.skip} onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
                state.dynamic && state.dynamic.drawURI ? <div>
