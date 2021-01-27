@@ -95,15 +95,21 @@ export default function SimpleTabs(props:any) {
   const users = serviceStore.readDocs('users');
 
   const handleTroubleshootMenuClose = (e:any) => {
+    runOnceUser = false;
+    runOnceTest = false;
     setOpenTroubleshootMenu(false)
   }
 
   const handleUpsertTestModalClose = (e:any) =>{
+    runOnceUser = false;
+    runOnceTest = false;
     setCurrentTestPicked(null)
     setOpenUpsertTestModal(false)
   }
 
   const handleUpsertUserModalClose = (e:any) =>{
+    runOnceUser = false;
+    runOnceTest = false;
     setOpenUpsertUserModal(false)
   }
 
@@ -125,6 +131,8 @@ export default function SimpleTabs(props:any) {
   }
 
   const handleDeletePopupClose = (e:any) =>{
+    runOnceUser = false;
+    runOnceTest = false;
     setItemAndCollectionNameToDelete(null);
     setOpenDeletePopup(false)
   }

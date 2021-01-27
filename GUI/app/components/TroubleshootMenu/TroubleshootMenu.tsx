@@ -65,6 +65,8 @@ const Transition = React.forwardRef(function Transition(
 });
 
 let runonce:any = false
+let pickedTestActionAndTagIdx:any = false;
+
 export default function FullScreenDialog(props:any) {
   const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
   const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
@@ -145,10 +147,10 @@ export default function FullScreenDialog(props:any) {
     const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
     const actions = serviceStore.readDocs('actions');
     const zeTag = actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx]
+    pickedTestActionAndTagIdx = {actionId : pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId, tagIdx: pickedTest.lastFailResult.currentTagIdx}
     setTagState(zeTag) 
   }
 
-  const pickedTestActionAndTagIdx = {actionId : pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId, tagIdx: pickedTest.lastFailResult.currentTagIdx}
 
 
    //** HTML */
