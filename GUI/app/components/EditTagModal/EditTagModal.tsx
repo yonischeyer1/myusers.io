@@ -13,6 +13,8 @@ import { Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, 
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
 
 
+const serviceStore = new ServiceStore();
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
@@ -55,7 +57,7 @@ let runonce:any = false;
 export default function FullScreenDialog(props:any) {
   //**Consts */
   const classes = useStyles();
-  const { open, tag } = props;
+  const { open, tag, pickedTestActionAndTagIdx } = props;
 
   //**Hooks */
   const [state, setState] = React.useState({
@@ -97,10 +99,6 @@ export default function FullScreenDialog(props:any) {
     setState({...state, skip})
   }
 
-  const save = (e:any) => {
-
-  }
-
   const handleTagImageClick = (tag:any) => {
     setdynamicSnapshotModalData(tag)
     setDynamicSnapshotOpen(true)
@@ -113,11 +111,17 @@ export default function FullScreenDialog(props:any) {
  const handleDynamicSnapshotModalClose = (e:any) => {
     setDynamicSnapshotOpen(false)
  }
+
+ const save = (e:any) => {
+  const actions = serviceStore.readDocs('actions')
+  actions[pickedTestActionAndTagIdx.actionId].tags[pickedTestActionAndTagIdx.tagIdx] = state;
+  serviceStore.updateDocs('actions', actions)
+}
  
-   if(open && !runonce) {
-     runonce = true;
-     setState({...state, ...tag})
-   }
+if(open && !runonce) {
+  runonce = true;
+  setState({...state, ...tag})
+}
 
   return open ? (
     <div>

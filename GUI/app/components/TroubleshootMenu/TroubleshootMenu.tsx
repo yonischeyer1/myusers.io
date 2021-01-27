@@ -148,6 +148,8 @@ export default function FullScreenDialog(props:any) {
     setTagState(zeTag) 
   }
 
+  const pickedTestActionAndTagIdx = {actionId : pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId, tagIdx: pickedTest.lastFailResult.currentTagIdx}
+
 
    //** HTML */
   return open ? (
@@ -302,7 +304,7 @@ export default function FullScreenDialog(props:any) {
         </div>
       </div><br/>
       </div>
-      <EditTagModal open={openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} tag={tagState}/>
+      <EditTagModal open={openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} pickedTestActionAndTagIdx={pickedTestActionAndTagIdx} tag={tagState}/>
       <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
         handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
       </Dialog>
