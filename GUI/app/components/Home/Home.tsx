@@ -101,44 +101,44 @@ export default function SimpleTabs(props:any) {
   })
   }
 
-  const handleTroubleshootMenuClose = (e:any) => {
+  const handleTroubleshootMenuClose = async (e:any) => {
     runOnceUser = false;
     runOnceTest = false;
-    setState({...state, openTroubleshootMenu:false})
+    await setState({...state, openTroubleshootMenu:false})
   }
 
-  const handleUpsertTestModalClose = (e:any) =>{
+  const handleUpsertTestModalClose = async (e:any) =>{
     runOnceUser = false;
     runOnceTest = false;
-    setState({...state, currentTestPicked:null, openUpsertTestModal:false})
+    await setState({...state, currentTestPicked:null, openUpsertTestModal:false})
   }
 
-  const handleUpsertUserModalClose = (e:any) =>{
+  const handleUpsertUserModalClose = async (e:any) =>{
     runOnceUser = false;
     runOnceTest = false;
-    setState({...state, openUpsertTestModal:false})
+    await setState({...state, openUpsertUserModal:false})
   }
 
-  const handleLivePreviewModalClose = (e:any) => {
-    setState({...state, stopLiveView:true})
-    setTimeout(()=>{
-      setState({...state, liveViewPort:null})
+  const handleLivePreviewModalClose = async (e:any) => {
+    await setState({...state, stopLiveView:true})
+    setTimeout(async ()=>{
+      await setState({...state, liveViewPort:null})
     }, 300)
   }
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setState({...state, tabIndex:newValue})
+  const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {
+    await setState({...state, tabIndex:newValue})
   };
 
-  const handleLiveViewClick = (test:any) => {
-    setState({...state, liveViewPort:state.portsPlaying[test.id], 
+  const handleLiveViewClick = async (test:any) => {
+    await setState({...state, liveViewPort:state.portsPlaying[test.id], 
       stopLiveView:false, liveViewPortModalOpen:true})
   }
 
-  const handleDeletePopupClose = (e:any) =>{
+  const handleDeletePopupClose = async (e:any) =>{
     runOnceUser = false;
     runOnceTest = false;
-    setState({...state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
+    await setState({...state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
   }
 
   const playTestSuite = async (testSuite:any, testSuiteIdx:any) => {
@@ -161,7 +161,7 @@ export default function SimpleTabs(props:any) {
     const action = actions[test.actionId]
     const playingContainerInstance = new Container(CONTAINER_MODE.player);
     await playingContainerInstance.init(action.startUrl, user.id);
-    setState({...state, portsPlaying:{...state.portsPlaying, [testSuiteId]:playingContainerInstance._port}})
+    await setState({...state, portsPlaying:{...state.portsPlaying, [testSuiteId]:playingContainerInstance._port}})
     const testResp:any = await (await playingContainerInstance.play(true, action)).json()
     if(testResp.success) {
       await changeTestStatus(test, TEST_STATUS.SUCCESS)
@@ -172,72 +172,72 @@ export default function SimpleTabs(props:any) {
       //TODO : save failed testResp
       //pop up troubleshoot menu 
     }
-    setState({...state, portsPlaying:{...state.portsPlaying, [test.id]:false}})
+    await setState({...state, portsPlaying:{...state.portsPlaying, [test.id]:false}})
   }
 
   const changeTestStatus = async (test:any, status:any) => {
-    setState({...state, currentRuningTestName:{name:test.testName, status }})
+    await setState({...state, currentRuningTestName:{name:test.testName, status }})
   }
 
   const handleUserClick = async (user:any) => {
     serviceStore.upsertAppStateValue('currentUser', user)
-    setState({...state, currentUserPicked:user, openUpsertUserModal:true})
+    await setState({...state, currentUserPicked:user, openUpsertUserModal:true})
     //TODO: open upsert user Modal with user 
   }
 
-  const handleFloatingButtonClick = (e:any) => {
+  const handleFloatingButtonClick = async (e:any) => {
     if(state.tabIndex === 0) {
-      setState({...state, openUpsertTestModal:!state.openUpsertTestModal})
+      await setState({...state, openUpsertTestModal:!state.openUpsertTestModal})
     } else {
-      setState({...state, currentUserPicked:null, openUpsertUserModal:!state.openUpsertUserModal})
+      await setState({...state, currentUserPicked:null, openUpsertUserModal:!state.openUpsertUserModal})
       serviceStore.upsertAppStateValue('userName', null)
     }
   }
 
-  const handleToggleTest = (index:any) => {
+  const handleToggleTest = async (index:any) => {
     const newArr = state.openTestActionBtnGrp.map((item:any,idx:any)=>{
       if(idx === index){
          return !item;
       }
       return false;
    })
-   setState({...state, openTestActionBtnGrp:newArr})
+   await setState({...state, openTestActionBtnGrp:newArr})
   };
 
-  const handleToggleUser = (index:any) => {
+  const handleToggleUser = async (index:any) => {
     const newArr = state.openUserActionBtnGrp.map((item:any,idx:any)=>{
       if(idx === index){
          return !item;
       }
       return false;
    })
-   setState({...state, openUserActionBtnGrp:newArr})
+   await setState({...state, openUserActionBtnGrp:newArr})
   };
 
-  const handleCloseTest = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+  const handleCloseTest = async (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
     if (elRefsTest.current[index] && elRefsTest.current[index].current.contains(event.target as HTMLElement)) {
       return;
     }
-    setState({...state, openTestActionBtnGrp:state.openTestActionBtnGrp.map(i => false)})
+    await setState({...state, openTestActionBtnGrp:state.openTestActionBtnGrp.map(i => false)})
   };
 
-  const handleCloseUser = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+  const handleCloseUser = async (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
     if (elRefsUser.current[index] && elRefsUser.current[index].current.contains(event.target as HTMLElement)) {
       return;
     }
-    setState({...state, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
+    await setState({...state, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
   }
 
-  const editUserOrTest = (collectionName:any, item:any) => {
+  const editUserOrTest = async (collectionName:any, item:any) => {
     if(collectionName === 'users') {
       handleUserClick(item)
     } else {
-      setState({...state, currentTestPicked:item, openUpsertTestModal:true})
+      await setState({...state, currentTestPicked:item, openUpsertTestModal:true})
     }
   } 
 
-  const deleteUserOrTest = (collectionName:any, item:any) => {
-    setState({...state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
+  const deleteUserOrTest = async (collectionName:any, item:any) => {
+    await setState({...state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
   }
 
   const handleUserMenuItemClick =  (
@@ -259,12 +259,12 @@ export default function SimpleTabs(props:any) {
     }
   };
 
-  const handleFailClick = (testSuite:any) => {
-    setState({...state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
+  const handleFailClick = async (testSuite:any) => {
+    await setState({...state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
   }
 
 
-  const handleTestMenuItemClick = (
+  const handleTestMenuItemClick = async (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     optionIdx: number,
     test:any,
@@ -291,7 +291,7 @@ export default function SimpleTabs(props:any) {
         break;
     }
     //TODO: execute action by Index
-    setState({...state, openTestActionBtnGrp:false})
+    await setState({...state, openTestActionBtnGrp:false})
   };
 
   (async ()=>{

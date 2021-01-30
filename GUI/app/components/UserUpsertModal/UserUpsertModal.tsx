@@ -142,48 +142,40 @@ export default function FullScreenDialog(props:any) {
  readUserAccountsFunc = readUserAccounts;
  readUserActionsFunc = readUserActions
   
-  if(open) {
-    if(currentUserPicked && !state.accountsView && !state.actionsView && !runonce) {
-      runonce = true;
-      lastcurrentUserPicked = currentUserPicked;
-      setState({...state, userName:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
-    }
-    //userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
-  } 
 
-  const deleteAccountOrAction = (collectionName:any, item:any) => {
-    setState({...state, openDeletePopup:true, itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
+  const deleteAccountOrAction = async (collectionName:any, item:any) => {
+    await setState({...state, openDeletePopup:true, itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
   }
 
-  const handleDeletePopupClose = (e:any) =>{
-    setState({...state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
+  const handleDeletePopupClose = async (e:any) =>{
+    await setState({...state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
   }
 
-  const handleUpsertAccountModalClose = (e:any) =>{
-    setState({...state, openUpsertAccountModal:false})
+  const handleUpsertAccountModalClose = async (e:any) =>{
+    await setState({...state, openUpsertAccountModal:false})
   }
 
-  const handleUpsertActionModalClose = (e:any) =>{
-    setState({...state, openUpsertActionModal:false})
+  const handleUpsertActionModalClose = async (e:any) =>{
+    await setState({...state, openUpsertActionModal:false})
   }
 
-  const handleClose = (e:any) => {
+  const handleClose = async (e:any) => {
     runonce = false;
-    setState({...state, accountsView:null, actionsView:null});
+    await setState({...state, accountsView:null, actionsView:null});
     serviceStore.upsertAppStateValue('currentUser', null)
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setState({...state, tabIndex:newValue})
+  const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {
+    await setState({...state, tabIndex:newValue})
   }
 
-  const handleUserNameChange = (e:any) => {
+  const handleUserNameChange = async (e:any) => {
     const users = serviceStore.readDocs('users')
     const userNameKey = "userName"
     const newUserName = e.target.value
-    setState({...state, userNameView:newUserName});
+    await setState({...state, userNameView:newUserName});
     serviceStore.upsertAppStateValue(userNameKey, newUserName);
     if(currentUserPicked) {
       users[currentUserPicked.id].name = newUserName
@@ -191,12 +183,12 @@ export default function FullScreenDialog(props:any) {
     }
   }
 
-  const editAction = (action:any) => {
-     setState({...state, openUpsertActionModal:true, pickedAction:action});
+  const editAction = async (action:any) => {
+     await setState({...state, openUpsertActionModal:true, pickedAction:action});
   }
 
-  const editAccount = (account:any) => {
-    setState({...state, openUpsertAccountModal:account, pickedAccount:account})
+  const editAccount = async (account:any) => {
+    await setState({...state, openUpsertAccountModal:account, pickedAccount:account})
  }
 
   const handleFloatingButtonClick = (e:any) => {
@@ -217,6 +209,14 @@ export default function FullScreenDialog(props:any) {
       setState({...state, pickedAction:null, openUpsertActionModal: !state.openUpsertActionModal})
     }
   }
+
+  if(open) {
+    if(currentUserPicked && !state.accountsView && !state.actionsView && !runonce) {
+      runonce = true;
+      lastcurrentUserPicked = currentUserPicked;
+      setState({...state, userName:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
+    }
+  } 
 
 
   return open ? (
