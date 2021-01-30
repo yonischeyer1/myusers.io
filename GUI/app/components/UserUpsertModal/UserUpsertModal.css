@@ -41,7 +41,7 @@
 }
 
 .app-bar {
-    position: relative;
+    position: relative !important;
  }
  .title {
      margin-left: 2px;
