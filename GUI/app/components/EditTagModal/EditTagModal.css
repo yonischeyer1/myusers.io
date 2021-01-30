@@ -6,7 +6,7 @@
     width: 70%;
 }
 .app-bar {
-    position: 'relative',
+    position: relative;
  }
  .title {
      margin-left: 2px;
