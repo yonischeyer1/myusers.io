@@ -4,3 +4,10 @@
     top: 20px;
     position: relative;
 }
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }

@@ -26,5 +26,17 @@
     position: relative;
     height: 500px;
     overflow: auto;
-
 }
+
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }
+ .form-control {
+     margin: 1px;
+     min-width: 120;
+     width:200;
+ }

@@ -34,3 +34,16 @@
 .user-upsert-row-item-name {
     width: 33% !important;
 }
+
+.root {
+    flex-grow: 1;
+    background-color: firebrick;
+}
+
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }

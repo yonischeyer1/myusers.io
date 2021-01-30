@@ -5,3 +5,10 @@
     position: relative;
     width: 70%;
 }
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }

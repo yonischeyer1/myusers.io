@@ -15,3 +15,21 @@
 .done-cancel-btns {
     position: relative;
 }
+
+.root {
+    flex-grow: 1;
+    background-color: firebrick;
+}
+
+.heading {
+    font-size: large;
+    font-weight: bold;
+}
+
+.app-bar {
+    position: relative !important;
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }

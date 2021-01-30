@@ -6,6 +6,9 @@ declare const styles: {
   readonly "test-due-date-container": string;
   readonly "play-button-container": string;
   readonly "add-test-floating-btn": string;
+  readonly "root": string;
+  readonly "app-bar": string;
+  readonly "title": string;
 };
 export = styles;
 

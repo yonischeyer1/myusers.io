@@ -51,3 +51,30 @@
     overflow-x: hidden;
     border-top: 1px dotted;
 }
+
+.user-action-select-container {
+    display: flex;
+    justify-content:right;
+    margin-left:100px;
+    position:relative;
+    width: 93%;
+}
+
+.done-cancel-btns-contianer {
+    display:flex;
+    justify-content:right;
+    margin-left:100px;
+}
+
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }
+ .form-control {
+     margin: 1px;
+     min-width: 120;
+     width:200;
+ }

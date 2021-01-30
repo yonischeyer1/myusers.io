@@ -1,7 +1,4 @@
 import React from 'react';
-
-// ** Material **
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,36 +15,6 @@ import styles from './AccountUpsertModal.css';
 
 const serviceStore = new ServiceStore();
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
-
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
@@ -58,59 +25,69 @@ const Transition = React.forwardRef(function Transition(
 
 let onceflag = false
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
-  const [openRecordingModal, setOpenRecordingMoal] = React.useState(false);
-  const [accountName, setAccountName] = React.useState(false);
-  const [loginURL, setLoginURL] = React.useState(false);
   const { open, pickedAccount } = props;
+  const [state, _setState] = React.useState({
+    openRecordingModal:false,
+    accountName:false,
+    loginURL:false,
+  });
 
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
+  }
 
-  const handleClose = (e:any) => {
+  const handleClose = async (e:any) => {
     const {handleUpsertAccountModalClose} = props;
     handleUpsertAccountModalClose(false);
     onceflag = false;
-    setAccount(null)
-    setLoginURL(null)
+    await setState({})
   };
-  const handleRecordingModalClose = () => {
-    setOpenRecordingMoal(false)
+
+  const handleRecordingModalClose = async () => {
+    await setState({...state,openRecordingModal:false});
     const {handleUpsertAccountModalClose} = props;
     handleUpsertAccountModalClose(false);
   }
 
-  const handleAccountNameChange = (e:any) => {
+  const handleAccountNameChange = async (e:any) => {
     const key = "accountName"
     const newAccountName = e.target.value
-    setAccountName(newAccountName)
+    await setState({...state, accountName:newAccountName})
     serviceStore.upsertAppStateValue(key, newAccountName)
   }
 
-  const handleLoginUrlChange = (e:any) => {
+  const handleLoginUrlChange = async (e:any) => {
     const key = "loginURL"
     const newLoginUrl = e.target.value
-    setLoginURL(newLoginUrl)
+    await setState({...state, loginURL:newLoginUrl})
     serviceStore.upsertAppStateValue(key, newLoginUrl)
   }
 
-  const handleLoginClick = (e:any) => {
+  const handleLoginClick = async (e:any) => {
     serviceStore.upsertAppStateValue('isLoginMode', true)
-    setOpenRecordingMoal(true)  
+    await setState({...state, openRecordingModal:false});
   }
 
-  if(open && pickedAccount && !onceflag) {
-     onceflag = true;
-     setAccountName(pickedAccount.name)
-     setLoginURL(pickedAccount.loginURL)
-  } 
+  (async ()=>{
+    if(open && pickedAccount && !onceflag) {
+      onceflag = true;
+      await setState({...state, accountName:pickedAccount.name, loginURL:pickedAccount.loginURL})
+   } 
+  })()
 
 
    //** HTML */
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               Account Upsert 
             </Typography>
             <Button color="inherit" onClick={handleClose}>
@@ -120,17 +97,17 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} value={accountName}
+             <TextField disabled={false} value={state.accountName}
              onChange={handleAccountNameChange} 
              label="Account name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} value={loginURL}
+             <TextField disabled={false} value={state.loginURL}
              onChange={handleLoginUrlChange} 
              label="Login URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
          </div>
          <div className={styles["pick-action-combobox-container"]}>
-             <FormControl className={classes.formControl}>
+             <FormControl className={styles["form-control"]}>
              <Button size="small" variant="outlined" color="primary" onClick={handleLoginClick}>Login</Button>
         </FormControl>
        </div>
@@ -142,7 +119,7 @@ export default function FullScreenDialog(props:any) {
          </div>
       </div>
       </Dialog>
-      <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={openRecordingModal}/>
+      <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={state.openRecordingModal}/>
     </div>
   ) : <div></div>
 }

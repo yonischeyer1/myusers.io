@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,40 +14,6 @@ import ServiceStore from '../../services /store.service'
 
 const serviceStore = new ServiceStore();
 
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex",
-      justifyContent:"right",
-      marginLeft:"100px",
-      position:'relative',
-      width: "93%"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex",
-      justifyContent:"right",
-      marginLeft:"100px"
-    }
-  }),
-);
-
-
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
@@ -58,42 +23,35 @@ const Transition = React.forwardRef(function Transition(
 
 let onceflag = false;
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
-  const [testName, setTestName] = React.useState("");
-
-  //Main test hooks
-  const [pickedUserId, setPickedUser] = React.useState("");
-  const [pickedUserActions, setPickedUserActions] = React.useState(null);
-  const [pickedUserAction, setPickedUserAction] = React.useState("");
-
-  //Test suite
-  const [suite, setSuite] = React.useState([]);
-  const [suiteName, setSuiteName] = React.useState("");
-
-
-  const { open, currentTestPicked } = props;
   let users:any = []
   let actions:any = []
+  const { open, currentTestPicked } = props;
+  const [state, _setState] = React.useState({
+    testName:"",
+    pickedUserId:"",
+    pickedUserActions:null,
+    pickedUserAction:"",
+    suite:[],
+    suiteName:""
+  });
 
-  if(open) {
-    users = serviceStore.readDocs('users');
-    actions = serviceStore.readDocs('actions');
-    if(currentTestPicked && !onceflag) {
-      onceflag = true;
-      setSuite(currentTestPicked.suite)
-      setSuiteName(currentTestPicked.suiteName)
-    }
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
   }
 
-  const handleClose = (e:any) => {
+  const handleClose = async (e:any) => {
     onceflag = false;
     const {handleUpsertTestModalClose} = props;
     handleUpsertTestModalClose(false);
-    setSuite([])
-    setSuiteName(null)
+    await setState({...state, suite:[], suiteName:''})
   };
 
-  const getUserActions = (e:any) => {
+  const getUserActions = async (e:any) => {
     const menuItemSelected = e.target.value;
     const user:any = users[menuItemSelected];
     let userActions = []
@@ -103,59 +61,59 @@ export default function FullScreenDialog(props:any) {
     return {userActions, user};
   }
 
-  const handleUserPick = (e:any) => {
+  const handleUserPick = async (e:any) => {
     const {userActions, user} = getUserActions(e);
-    setPickedUser(user.id)
-    setPickedUserActions(userActions)
-  }
-
-  const handleUserPickSuite = (e:any) => {
-    const {userActions, user} = getUserActions(e);
-    setPickedUser(user.id)
-    setPickedUserActions(userActions)
+    await setState({...state, pickedUserId:user.id, pickedUserActions:userActions});
   }
 
   const handleActionPick = async (e:any) => {
     const pickedAction = e.target.value
-    setPickedUserAction(pickedAction)
+    await setState({...state, pickedUserAction:pickedAction})
   }
 
   const save = async (e:any) => {
     const test:Test = {
-      suiteName,
-      suite
+      suiteName:state.suiteName,
+      suite:state.suite,
+      lastFailResult:null
     }
     serviceStore.createDoc('tests', test);
     handleClose(null)
   }
 
-  const addTestToSuite = (e:any) => {
+  const addTestToSuite = async (e:any) => {
     const test:TestModel = {
-      testName,
-      userId:pickedUserId,
-      actionId:pickedUserAction,
+      testName:state.testName,
+      userId:state.pickedUserId,
+      actionId:state.pickedUserAction,
       schedule:{},
       status:TEST_STATUS.IDLE
     }
-    setSuite([...suite, test])
-    setTestName("")
-    setPickedUser(null)
-    setPickedUserAction(null)
-    setPickedUserActions(null)
+    await setState({...state, suite:[...state.suite, test], testName:"", pickedUserId:"", pickedUserAction:"", pickedUserActions:null});
   }
-  const deleteTestFromSuite = (test:any) => {
-    const newSuite = suite.filter(item => item.testName !== test.testName)
-    setSuite(newSuite)
+  const deleteTestFromSuite = async (test:any) => {
+    const newSuite = state.suite.filter(item => item.testName !== test.testName)
+    await setState({...state, suite:newSuite})
   }
+
+  (async ()=>{
+    if(open) {
+      users = serviceStore.readDocs('users');
+      actions = serviceStore.readDocs('actions');
+      if(currentTestPicked && !onceflag) {
+        onceflag = true;
+        await setState({...state, suite:currentTestPicked.suite, suiteName:currentTestPicked.suiteName})
+      }
+    }
+  })()
   
-  console.log("suite", suite)
   return open ? (
     <div style={{overflow:"hidden"}}>
       <Dialog style={{overflow:"hidden"}} fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              {suiteName ? `Edit suite: ${suiteName}` : "Create new test suite"}
+            <Typography variant="h6" className={styles["title"]}>
+              {state.suiteName ? `Edit suite: ${state.suiteName}` : "Create new test suite"}
             </Typography>
             <Button color="inherit" onClick={handleClose}>
                 Close
@@ -166,25 +124,25 @@ export default function FullScreenDialog(props:any) {
           <br/>
              <div className={styles["test-name-container-suite"]}>
             <TextField disabled={false}
-             value={suiteName} 
-             onChange={( e => setSuiteName(e.target.value)) } 
+             value={state.suiteName} 
+             onChange={( e => setState({...state, suiteName:e.target.value})) } 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
              <br/>   <br/>
              <div className={styles["test-name-container"]}>
             <TextField disabled={false} 
-             value={testName}
-             onChange={( e => setTestName(e.target.value)) } 
+             value={state.testName}
+             onChange={( e => setState({...state, testName:e.target.value})) } 
              label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
         </div>
-        <div className={classes.userActionSelectContainer}>
+        <div className={styles["user-action-select-container"]}>
              <div className={styles["pick-user-combobox-container"]}>     
-             <FormControl className={classes.formControl}>
+             <FormControl className={styles["form-control"]}>
               <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
               <Select
                labelId="demo-simple-select-label"
                id="demo-simple-select"
-               value={pickedUserId}
+               value={state.pickedUserId}
                onChange={handleUserPick}>
                {
                  !users ? null : Object.values(users).map((user:any)=>{
@@ -195,15 +153,15 @@ export default function FullScreenDialog(props:any) {
             </FormControl>
            </div>
            <div className={styles["pick-action-combobox-container"]}>
-           <FormControl className={classes.formControl}>
+           <FormControl className={styles["form-control"]}>
             <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={pickedUserAction}
+              value={state.pickedUserAction}
               onChange={handleActionPick}>
               {
-                !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
+                !state.pickedUserActions ? null : state.pickedUserActions.map((userAction:any)=>{
                   return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
                 })
               }
@@ -217,26 +175,26 @@ export default function FullScreenDialog(props:any) {
              <br/> <br/>
         <div className={styles["suite-container"]}>
            {
-           suite.length === 0 ? null : suite.map((test:any) => {
+           state.suite.length === 0 ? null : state.suite.map((test:any) => {
                return (
                  <div>
                   <br/>  <br/>
                  <div className={styles["test-name-container"]}>
                  <TextField disabled={true} 
                   value={test.testName}
-                  onChange={( e => setTestName(e.target.value)) } 
+                  onChange={( e => setState({...state, testName:e.target.value})) } 
                   label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
                 </div> <br/>
-                <div className={classes.userActionSelectContainer}>
+                <div className={styles["user-action-select-container"]}>
                 <div className={styles["pick-user-combobox-container"]}>     
-                <FormControl className={classes.formControl}>
+                <FormControl className={styles["form-control"]}>
                  <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
                  <Select 
                   disabled={true}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={test.userId}
-                  onChange={handleUserPickSuite}>
+                  onChange={handleUserPick}>
                   {
                     !users ? null : Object.values(users).map((user:any)=>{
                       return <MenuItem  value={user.id}>{user.name}</MenuItem>
@@ -246,7 +204,7 @@ export default function FullScreenDialog(props:any) {
                </FormControl>
               </div>
               <div className={styles["pick-action-combobox-container"]}>
-              <FormControl className={classes.formControl}>
+              <FormControl className={styles["form-control"]}>
                <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
                <Select
                  disabled={true}

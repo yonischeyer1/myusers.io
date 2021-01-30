@@ -29,3 +29,16 @@
   bottom: 0;
   margin: 15px;
 }
+
+.root {
+  flex-grow: 1;
+  background-color: white;
+}
+
+.app-bar {
+  position: 'relative',
+}
+.title {
+   margin-left: 2px;
+   flex: 1;
+}

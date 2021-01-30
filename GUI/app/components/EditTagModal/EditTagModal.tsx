@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -8,43 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import styles from './EditTagModal.css'
-import ServiceStore from '../../services /store.service';
 import { Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
-
-
-const serviceStore = new ServiceStore();
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
-
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
@@ -55,23 +19,33 @@ const Transition = React.forwardRef(function Transition(
 
 let runonce:any = false;
 export default function FullScreenDialog(props:any) {
-  //**Consts */
-  const classes = useStyles();
-  const { open, tag, pickedTestActionAndTagIdx } = props;
+
+  const { open, tag } = props;
 
   //**Hooks */
-  const [state, setState] = React.useState({
-      name:"",
-      waitTime: {
-          label: "forever",
-          value: -1
+  const [state, _setState] = React.useState({
+      tag: {
+        name:"",
+        waitTime: {
+            label: "forever",
+            value: -1
+        },
+        originalReferenceSnapshotURI:"",
+        dynamic:null,
+        skip:false
       },
-      originalReferenceSnapshotURI:"",
-      dynamic:null,
-      skip:false
+      dynamicSnapshotModalData: false,
+      dynamicSnapshotOpen:false
   });
-  const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
-  const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
+
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
+  }
 
   //**Functions */  
   const handleClose = (e:any) => {
@@ -80,56 +54,58 @@ export default function FullScreenDialog(props:any) {
     handleEditTagModalClose(false);
   };
 
-  const handleSetTimeoutChange = (e:any) => {
+  const handleSetTimeoutChange = async (e:any) => {
       const label = e.target.value
-      const waitTime = state.waitTime
-      waitTime.label = label
-      setState({...state, waitTime})
+      const tag = state.tag
+      tag.waitTime.label = label;
+      await setState({...state, tag})
   };
 
-  const handleCustomWaitTimeChange = (e:any) => {
-    const label = e.target.value
-    const waitTime = state.waitTime
-    waitTime.value = label
-    setState({...state, waitTime})
+  const handleCustomWaitTimeChange = async (e:any) => {
+    const value = e.target.value
+    const tag = state.tag
+    tag.waitTime.value = value
+    await setState({...state, tag})
   }
 
-  const handleSkipChange = (e:any) => {
+  const handleSkipChange = async (e:any) => {
     const skip = e.target.checked
-    setState({...state, skip})
+    const tag = state.tag
+    tag.skip = skip
+    await setState({...state, tag})
   }
 
-  const handleTagImageClick = (tag:any) => {
-    setdynamicSnapshotModalData(tag)
-    setDynamicSnapshotOpen(true)
+  const handleTagImageClick = async (tag:any) => {
+    await setState({...state, dynamicSnapshotOpen:true, dynamicSnapshotModalData:tag})
   }
 
   const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
-     tag["dynamic"] = {coords, drawURI}
+    tag["dynamic"] = {coords, drawURI}
   }
 
- const handleDynamicSnapshotModalClose = (e:any) => {
-    setDynamicSnapshotOpen(false)
+ const handleDynamicSnapshotModalClose = async (e:any) => {
+    await setState({...state, dynamicSnapshotOpen:true}) 
  }
 
  const save = (e:any) => {
-  const actions = serviceStore.readDocs('actions')
-  actions[pickedTestActionAndTagIdx.actionId].tags[pickedTestActionAndTagIdx.tagIdx] = state;
-  serviceStore.updateDocs('actions', actions)
+   const { handleEditTagSave } = props
+   handleEditTagSave(state);
 }
- 
-if(open && !runonce) {
-  runonce = true;
-  setState({...state, ...tag})
-}
+
+(async ()=>{
+  if(open && !runonce) {
+    runonce = true;
+    await setState({...state, tag:{...state.tag, ...tag}})
+  }
+})()
 
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-                Edit Tag: {state.name}
+            <Typography variant="h6" className={styles["title"]}>
+                Edit Tag: {state.tag.name}
             </Typography>
             <Button color="inherit" onClick={handleClose}>
                 Close
@@ -138,11 +114,11 @@ if(open && !runonce) {
           </AppBar>
            <div className={styles["modal-content-container"]}>
             <div>
-             <TextField disabled={state.skip} 
+             <TextField disabled={state.tag.skip} 
               label="Tag name:" variant="outlined" style={{width:"80%", height:"45px"}} size="small"/>
                 &nbsp; Skip: 
                <Checkbox
-                checked={state.skip}
+                checked={state.tag.skip}
                 onChange={handleSkipChange}
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -151,31 +127,31 @@ if(open && !runonce) {
             <div style={{display:'flex', justifyContent:"space-around"}}>
             <div>
             <div> <label>Original:</label></div>
-             <img src={state.originalReferenceSnapshotURI} />
+             <img src={state.tag.originalReferenceSnapshotURI} />
             </div>
             <div style={{alignSelf: "center"}}>
-              <Button disabled={state.skip} onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
+              <Button disabled={state.tag.skip} onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
-               state.dynamic && state.dynamic.drawURI ? <div>
+               state.tag.dynamic && state.tag.dynamic.drawURI ? <div>
                  <div> <label>Masked:</label></div>
-                <img src={state.dynamic.drawURI} />
+                <img src={state.tag.dynamic.drawURI} />
                </div> : null
              }
             </div><br/>
              <div>
                  <h3>Set wait time until Fail:</h3>
-                 <FormControl component="fieldset" disabled={state.skip}>
+                 <FormControl component="fieldset" disabled={state.tag.skip}>
                  <FormLabel component="legend"></FormLabel>
-                 <RadioGroup  aria-label="waitTime" name="gender1" value={state.waitTime.label} onChange={handleSetTimeoutChange}>
+                 <RadioGroup  aria-label="waitTime" name="gender1" value={state.tag.waitTime.label} onChange={handleSetTimeoutChange}>
                    <FormControlLabel value="forever" control={<Radio />} label="forever" />
                    <FormControlLabel value="custom" control={<Radio />} label="custom" />
                  </RadioGroup>
                  </FormControl>
                  {
-                     state.waitTime.label !== "custom" ? null : 
+                     state.tag.waitTime.label !== "custom" ? null : 
                      <div>
-                        <TextField type="number" disabled={false} value={state.waitTime.value} onChange={handleCustomWaitTimeChange}
+                        <TextField type="number" disabled={false} value={state.tag.waitTime.value} onChange={handleCustomWaitTimeChange}
                         label="Insert wait time(seconds):" variant="outlined" style={{width:"300px", height:"45px"}} size="small"/> 
                     </div>
                  }
@@ -188,7 +164,7 @@ if(open && !runonce) {
             </div>
        </div>
        <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
+        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>;

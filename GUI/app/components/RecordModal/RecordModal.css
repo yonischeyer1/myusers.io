@@ -34,3 +34,10 @@
     margin-top: 40px;
     margin-bottom: 20px;
 }
+.app-bar {
+    position: 'relative',
+ }
+ .title {
+     margin-left: 2px;
+     flex: 1;
+ }

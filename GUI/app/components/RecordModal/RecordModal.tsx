@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,30 +11,13 @@ import { Tag, TagType, Action } from '../../models/Action.model';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal'
 import ServiceStore from '../../services /store.service'
-import { User } from '../../models/User.model';
 import { removeContainerByName } from '../../utils/IHost';
 import styles from './RecordModal.css'
 
 const serviceStore = new ServiceStore();
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
-const state = {
-  imageArray:[],
-  totalRecordTime:null,
-  screen: "validate"
-}
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-  }),
-);
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
@@ -47,36 +29,49 @@ const Transition = React.forwardRef(function Transition(
 let saveThis:any = null 
 
 export default function FullScreenDialog(props:any) {
-  const [liveViewPort, setLiveViewPort] = React.useState(null)
-  const [liveViewPortModalOpen, setLiveViewPortModalOpen] = React.useState(false)
-  const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
-  const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
-  const [screen, setScreen] = React.useState('validate');
-  const [tagsPresent, setTags] = React.useState(null);
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
-  const { open, totalRecordTime, recorderContainer } = props;
-  const classes = useStyles();
-  state["totalRecordTime"] = totalRecordTime
+  const { open, recorderContainer } = props;
+
+  const [state, _setState] = React.useState({
+    liveViewPort:null,
+    liveViewPortModalOpen:false,
+    dynamicSnapshotModalData:null,
+    dynamicSnapshotOpen:null,
+    screen:null,
+    tagsPresent:null,
+  })
+
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
+  }
+
   const handleClose = (e:any) => {
     const {handleModalClose} = props;
     handleModalClose(state, false);
   };
 
-  const handleLivePreviewModalClose = (e:any) => {
-    setLiveViewPortModalOpen(false)
+  const handleLivePreviewModalClose = async (e:any) => {
+    await setState({...state, liveViewPortModalOpen:false});
   }
-  const handleDynamicSnapshotModalClose = (e:any) => {
-    setDynamicSnapshotOpen(false)
+
+  const handleDynamicSnapshotModalClose = async (e:any) => {
+    await setState({...state, dynamicSnapshotOpen:false});
   }
-  const handleTagTimeoutChange = (e:any, tagChanged:any) => {
+
+  const handleTagTimeoutChange = async (e:any, tagChanged:any) => {
     const value = e.target.value
-    const newTags = tags.map((tag:any)=>{
+    const newTags = state.tagsPresent.map((tag:any)=>{
       if(tag.hash === tagChanged.hash) {
          tag.maxWaitTimeUntilFail = value;
       }
       return tag;
     })
-    setTags(newTags)
+    await setState({...state, tagsPresent:newTags})
   }
 
   const handleDynamicSnapshotModalSave = ({tag, coords}) => {
@@ -91,9 +86,10 @@ export default function FullScreenDialog(props:any) {
          type: TagType.NOROMAL,
          originalReferenceSnapshotURI: "",
          distances:[0],
-         maxWaitTimeUntilFail: -1,
+         waitTime: -1,
          hash:"",
-         screenShotFromPlayURI:""
+         skip:false,
+         name:`tag-${bbb}`
        })
      }
      return tags;
@@ -106,24 +102,16 @@ export default function FullScreenDialog(props:any) {
       ioActions:recorderContainer._ioActions,
       tags
     }
-    const actionWithHashes = await recorderContainer.playRecorderAction(action,()=>{
-      setLiveViewPort(recorderContainer._port)
-      setLiveViewPortModalOpen(true)
+    const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
+      await setState({...state, liveViewPort:recorderContainer._port, liveViewPortModalOpen:true})
     })
-    // actionWithHashes.tagHashFillFlag = false
-    // const actionWithDists = await recorderContainer.playRecorderAction(actionWithHashes,()=>{
-    //   setLiveViewPort(recorderContainer._port)
-    //   setLiveViewPortModalOpen(true)
-    // })
     saveThis = {tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} 
     await removeContainerByName(recorderContainer._containerName)
-    setTags(actionWithHashes.tags);
-    setScreen(SCREENS.setTagsMaxTimeoutScreen)
+    await setState({...state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
   }
 
-  const handleTagImageClick = (tag:any) => {
-      setdynamicSnapshotModalData(tag)
-      setDynamicSnapshotOpen(true)
+  const handleTagImageClick = async (tag:any) => {
+      await setState({...state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
   }
 
   async function saveTags(tags:any, ioActions:any) {
@@ -147,9 +135,9 @@ export default function FullScreenDialog(props:any) {
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               Validate & Save 
             </Typography>
             <Button color="inherit" onClick={handleClose}>
@@ -167,7 +155,7 @@ export default function FullScreenDialog(props:any) {
            </video>
            </div>
            {
-             screen === SCREENS.validate ?
+             state.screen === SCREENS.validate ?
              <div className={styles["modal-verifaction-buttons-controls"]}>
              <Button size="small" variant="outlined" color="secondary"  onClick={handleClose}>record again</Button>
                  <div className={styles["yes-button"]}>
@@ -176,10 +164,10 @@ export default function FullScreenDialog(props:any) {
                </div> : null
            }
            {
-             screen === SCREENS.setTagsMaxTimeoutScreen ? 
+             state.screen === SCREENS.setTagsMaxTimeoutScreen ? 
              <div className={styles["screen-setMaxTimeout-container"]}>
                {
-                 tagsPresent.map((tag)=>{
+                 state.tagsPresent.map((tag)=>{
                    return <div style={{display:'flex'}}>
                      <div>
                      <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ handleTagImageClick(tag)}}/>
@@ -202,8 +190,8 @@ export default function FullScreenDialog(props:any) {
         </div>
       </Dialog>
       <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
-      <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={liveViewPortModalOpen} stopPlaying={false} port={liveViewPort}/>
+        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+      <PlayerLiveViewModal handleLivePreviewModalClose={handleLivePreviewModalClose} open={state.liveViewPortModalOpen} stopPlaying={false} port={state.liveViewPort}/>
     </div>
   ) : <div></div>
 }

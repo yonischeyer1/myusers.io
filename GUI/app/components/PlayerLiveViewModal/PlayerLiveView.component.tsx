@@ -9,37 +9,6 @@ import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
 import styles from './PlayerLiveViewModal.css'
-import ServiceStore from './services /store.service'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
 
 
 const Transition = React.forwardRef(function Transition(
@@ -50,7 +19,6 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
   const { open, port, stopPlaying } = props;
   const handleClose = (e:any) => {
     const {handleLivePreviewModalClose} = props;
@@ -60,9 +28,9 @@ export default function FullScreenDialog(props:any) {
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
              Player Live view 
             </Typography>
             <Button color="inherit" onClick={handleClose}>

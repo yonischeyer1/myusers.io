@@ -9,6 +9,11 @@ declare const styles: {
   readonly "done-cancel-btns": string;
   readonly "add-button-container": string;
   readonly "suite-container": string;
+  readonly "user-action-select-container": string;
+  readonly "done-cancel-btns-contianer": string;
+  readonly "app-bar": string;
+  readonly "title": string;
+  readonly "form-control": string;
 };
 export = styles;
 

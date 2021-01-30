@@ -6,6 +6,9 @@ declare const styles: {
   readonly "recoreder-control-button": string;
   readonly "live-snapshot-controls": string;
   readonly "tags-editor-container": string;
+  readonly "app-bar": string;
+  readonly "title": string;
+  readonly "form-control": string;
 };
 export = styles;
 

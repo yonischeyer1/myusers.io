@@ -1,5 +1,4 @@
 import React, { createRef } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -18,36 +17,6 @@ import EditTagModal from '../EditTagModal/EditTagModal'
 
 const serviceStore = new ServiceStore();
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
-
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
@@ -58,74 +27,76 @@ const Transition = React.forwardRef(function Transition(
 
 let onceflag = false;
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
-  const [openRecordingModal, setOpenRecordingModal] = React.useState(false)
-  const [dynamicSnapshotModalData, setdynamicSnapshotModalData] = React.useState(null)
-  const [dynamicSnapshotOpen, setDynamicSnapshotOpen] = React.useState(false)
-  const [actionName, setActionName] = React.useState(false);
-  const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
-  const [openEditTagModal, setOpenEditTagModal] = React.useState(false)
-  const [zeTag, setZeTag] = React.useState(false)
-  const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
   const { open, pickedAction } = props;
   const elRefs = React.useRef([]);
-  const [openUserActionBtnGrp, setOpenUserActionBtnGrp] = React.useState([])
   const optionsUser = ['Edit','Delete'];
+  const [state, _setState] = React.useState({
+    openRecordingModal:false,
+    dynamicSnapshotModalData:false,
+    dynamicSnapshotOpen:false,
+    actionName:false,
+    openDeletePopup:false,
+    openEditTagModal:false,
+    zeTag:false,
+    itemAndCollectionNameToDelete:false,
+    openUserActionBtnGrp:[]
+  })
 
-  const handleClose = (e:any) => {
-    const {handleUpsertActionModalClose} = props;
-    handleUpsertActionModalClose(false);
-    onceflag = false
-    setActionName(null)
-  };
-
-  const handleDeletePopupClose = (e:any) =>{
-    setItemAndCollectionNameToDelete(null);
-    setOpenDeletePopup(false)
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
   }
 
-  const handleEditTagModalClose = (e:any) => {
-    setOpenEditTagModal(false)
+  const handleClose = async (e:any) => {
+    const {handleUpsertActionModalClose} =  props;
+    handleUpsertActionModalClose(false);
+    onceflag = false
+    await setState({})
+  };
+
+  const handleDeletePopupClose = async (e:any) =>{
+    await setState({...state, itemAndCollectionNameToDelete:false, openDeletePopup:false})
+  }
+
+  const handleEditTagModalClose = async (e:any) => {
+    await setState({...state, openEditTagModal:false})
   }
  
 
-  const handleRecordingModalClose = () =>{
-     setOpenRecordingModal(false)
+  const handleRecordingModalClose = async () =>{
+    await setState({...state, openRecordingModal:false})
   }
 
-  const handleRecordBtnClick = (e:any) => {
-    setOpenRecordingModal(true)
-  }
-
-  const handleAddLiveSnapshotClick = (e:any) => {
-
+  const handleRecordBtnClick = async (e:any) => {
+    await setState({...state, openRecordingModal:true})
   }
 
 
-  const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
+ const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
     tag["dynamic"] = {coords, drawURI}
  }
 
- const handleDynamicSnapshotModalClose = (e:any) => {
-  setDynamicSnapshotOpen(false)
+ const handleDynamicSnapshotModalClose = async (e:any) => {
+    await setState({...state, dynamicSnapshotOpen:false})
  }
 
-  const handleActionNameChange = (e:any) => {
+ const handleActionNameChange = async (e:any) => {
     const key = "actionName"
     const newActionName = e.target.value
-    setActionName(newActionName)
+    await setState({...state, actionName:newActionName})
     serviceStore.upsertAppStateValue(key, newActionName)
-  }
+ }
  
-
-const editTag = (tag:any) => {
-  setZeTag(tag)
-  setOpenEditTagModal(true)
+ const editTag = async (tag:any) => {
+  await setState({...state, zeTag:tag, openEditTagModal:true})
 } 
 
-const deleteTag = (collectionName:any, item:any) => {
-  setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
-  setOpenDeletePopup(true);
+const deleteTag = async (collectionName:any, item:any) => {
+  await setState({...state, openDeletePopup:true ,itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
 }
 
 const handleTagMenuItemClick =  (
@@ -146,8 +117,6 @@ const handleTagMenuItemClick =  (
     default:
       break;
   }
-  //TODO: execute action by Index
-  //setOpenUserActionBtnGrp(false);
 };
 
  const saveCurrentActionTags = async (e:any) => {
@@ -156,36 +125,37 @@ const handleTagMenuItemClick =  (
    serviceStore.updateDocs('actions', actions);
  }
 
- const handleCloseTag = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+ const handleCloseTag = async (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
   if (elRefs.current[index] && elRefs.current[index].current.contains(event.target as HTMLElement)) {
     return;
   }
-  setOpenUserActionBtnGrp(openUserActionBtnGrp.map(i => false));
+  await setState({...state, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
 }
 
- const handleToggleTag = (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
-  const newArr = openUserActionBtnGrp.map((item:any,idx:any)=>{
+ const handleToggleTag = async (event: React.MouseEvent<Document, MouseEvent>, index:any) => {
+  const newArr = state.openUserActionBtnGrp.map((item:any,idx:any)=>{
      if(idx === index){
         return !item;
      }
      return false;
   })
-  setOpenUserActionBtnGrp(newArr);
+  await setState({...state, openUserActionBtnGrp:newArr})
 };
 
- if(open && pickedAction && !onceflag) {
-   elRefs.current = Array(pickedAction.tags.length).fill(null).map((_, i) => elRefs.current[i] || createRef())
-   setOpenUserActionBtnGrp(Array(pickedAction.tags.length).fill(false))
-   onceflag = true;
-   setActionName(pickedAction.name)
- }
+(async ()=>{
+  if(open && pickedAction && !onceflag) {
+    onceflag = true;
+    elRefs.current = Array(pickedAction.tags.length).fill(null).map((_, i) => elRefs.current[i] || createRef())
+    await setState({...state, actionName:pickedAction.name ,openUserActionBtnGrp:Array(pickedAction.tags.length).fill(false)})
+  }
+})()
 
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               Action Upsert 
             </Typography>
             <Button color="inherit" onClick={handleClose}>
@@ -195,7 +165,7 @@ const handleTagMenuItemClick =  (
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} value={actionName}
+             <TextField disabled={false} value={state.actionName}
              onChange={handleActionNameChange} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
@@ -220,7 +190,7 @@ const handleTagMenuItemClick =  (
                   return (
                   <div style={{display:'flex', marginTop:'20px'}}>
                     <div>
-                       Tag name : {tag.name}
+                       Tag name : {state.tag.name}
                     </div>
                     <div style={{marginLeft:'250px'}}>
                     <ButtonGroup variant="contained" color="primary" ref={elRefs.current[index]} aria-label="split button">
@@ -228,8 +198,8 @@ const handleTagMenuItemClick =  (
                         <Button
                           color="primary"
                           size="small"
-                          aria-controls={openUserActionBtnGrp[index] ? `split-button-menu-test-${index}` : undefined}
-                          aria-expanded={openUserActionBtnGrp[index] ? 'true' : undefined}
+                          aria-controls={state.openUserActionBtnGrp[index] ? `split-button-menu-test-${index}` : undefined}
+                          aria-expanded={state.openUserActionBtnGrp[index] ? 'true' : undefined}
                           aria-label="select merge strategy"
                           aria-haspopup="menu"
                           onClick={(e)=>{handleToggleTag(e,index)}}
@@ -277,11 +247,11 @@ const handleTagMenuItemClick =  (
          <Button size="small" variant="outlined" color="primary" onClick={saveCurrentActionTags}>Save</Button>
          </div>
      </div>
-     <EditTagModal open={openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} tag={zeTag}/>
-     <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
+     <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} tag={state.zeTag}/>
+     <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
      <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={dynamicSnapshotOpen} dataURI={dynamicSnapshotModalData}/>
-     <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={openRecordingModal}/>
+        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+     <RecordingModal handleRecordingModalClose={handleRecordingModalClose} open={state.openRecordingModal}/>
       </Dialog>
     </div>
   ) : <div></div>

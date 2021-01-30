@@ -1,5 +1,4 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,37 +13,6 @@ import { APP_CWD } from '../../utils/general';
 
 const serviceStore = new ServiceStore()
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
-
-
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
@@ -54,8 +22,7 @@ const Transition = React.forwardRef(function Transition(
 
 
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
-  const { open, itemAndCollectionName, currentUserPicked } = props;
+  const { open, itemAndCollectionName } = props;
 
   const handleClose = (e:any) => {
     const {handleDeletePopupClose} = props;
@@ -106,9 +73,9 @@ export default function FullScreenDialog(props:any) {
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               Remove {itemAndCollectionName.item.name} 
             </Typography>
             <Button color="inherit" onClick={handleClose}>

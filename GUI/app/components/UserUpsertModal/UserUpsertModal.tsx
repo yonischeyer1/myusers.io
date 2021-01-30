@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -47,38 +47,7 @@ function a11yProps(index: any) {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     };
-  }
-
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    },
-    root: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-      },
-  }),
-);
+}
 
 
 const Transition = React.forwardRef(function Transition(
@@ -104,25 +73,35 @@ serviceStoreEmitter.on(`DB-reread-users`,()=> {
 });
 
 
-let userNameTextFieldValue:any = null;
+
 let runonce:any = false;
 
 export default function FullScreenDialog(props:any) {
-  const classes = useStyles();
-
-  const [tabIndex, setTabIndex] = React.useState(0);
-  const [openUpsertAccountModal, setOpenUpsertAccountModal] = React.useState(false)
-  const [openUpsertActionModal, setOpenUpsertActionModal] = React.useState(false)
-  const [pickedAction, setPickedAction] = React.useState(null)
-  const [pickedAccount, setPickedAccount] = React.useState(null)
-  const [openDeletePopup, setOpenDeletePopup] = React.useState(false)
-  const [itemAndCollectionNameToDelete, setItemAndCollectionNameToDelete] = React.useState(null)
-  const [accountsView, setAccountsView] = React.useState(null);
-  const [actionsView, setActionsView] = React.useState(null);
-  const [userNameView, setUserNameView] = React.useState(null);
   const { open, currentUserPicked } = props;
-  setAccountsViewFunc = setAccountsView
-  setActionsViewFunc = setActionsView
+  const [state, _setState] = React.useState({
+    tabIndex:0,
+    openUpsertAccountModal:false,
+    openUpsertActionModal:false,
+    pickedAction:null,
+    pickedAccount:null,
+    openDeletePopup:false,
+    itemAndCollectionNameToDelete:null,
+    accountsView:null,
+    actionsView:null,
+    userNameView:null,
+  })
+
+  setAccountsViewFunc = state.accountsView
+  setActionsViewFunc = state.actionsView
+
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
+  }
 
   const readUserAccounts = () => {
     const users = serviceStore.readDocs('users')
@@ -164,52 +143,47 @@ export default function FullScreenDialog(props:any) {
  readUserActionsFunc = readUserActions
   
   if(open) {
-    if(currentUserPicked && !accountsView && !actionsView && !runonce) {
+    if(currentUserPicked && !state.accountsView && !state.actionsView && !runonce) {
       runonce = true;
       lastcurrentUserPicked = currentUserPicked;
-      setAccountsView(readUserAccounts());
-      setActionsView(readUserActions());
-      setUserNameView(currentUserPicked.name)
+      setState({...state, userName:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
     }
     //userNameTextFieldValue = currentUserPicked ?  currentUserPicked.name : serviceStore.getAppStateValue('userName')  
   } 
 
   const deleteAccountOrAction = (collectionName:any, item:any) => {
-    setItemAndCollectionNameToDelete({collectionName, item, currentUserPicked})
-    setOpenDeletePopup(true);
+    setState({...state, openDeletePopup:true, itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
   }
 
   const handleDeletePopupClose = (e:any) =>{
-    setItemAndCollectionNameToDelete(null);
-    setOpenDeletePopup(false)
+    setState({...state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
   }
 
   const handleUpsertAccountModalClose = (e:any) =>{
-    setOpenUpsertAccountModal(false)
+    setState({...state, openUpsertAccountModal:false})
   }
 
   const handleUpsertActionModalClose = (e:any) =>{
-    setOpenUpsertActionModal(false)
+    setState({...state, openUpsertActionModal:false})
   }
 
   const handleClose = (e:any) => {
     runonce = false;
-    setAccountsView(null);
-    setActionsView(null);
+    setState({...state, accountsView:null, actionsView:null});
     serviceStore.upsertAppStateValue('currentUser', null)
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setTabIndex(newValue);
+    setState({...state, tabIndex:newValue})
   }
 
   const handleUserNameChange = (e:any) => {
     const users = serviceStore.readDocs('users')
     const userNameKey = "userName"
     const newUserName = e.target.value
-    setUserNameView(newUserName)
+    setState({...state, userNameView:newUserName});
     serviceStore.upsertAppStateValue(userNameKey, newUserName);
     if(currentUserPicked) {
       users[currentUserPicked.id].name = newUserName
@@ -218,13 +192,11 @@ export default function FullScreenDialog(props:any) {
   }
 
   const editAction = (action:any) => {
-     setOpenUpsertActionModal(true)
-     setPickedAction(action)
+     setState({...state, openUpsertActionModal:true, pickedAction:action});
   }
 
   const editAccount = (account:any) => {
-    setOpenUpsertAccountModal(account)
-    setPickedAccount(account)
+    setState({...state, openUpsertAccountModal:account, pickedAccount:account})
  }
 
   const handleFloatingButtonClick = (e:any) => {
@@ -239,12 +211,10 @@ export default function FullScreenDialog(props:any) {
       userToInsert["id"] = userId;
       serviceStore.upsertAppStateValue('currentUser', userToInsert);
     }
-    if(tabIndex === 0) {
-      setPickedAccount(null)
-      setOpenUpsertAccountModal(!openUpsertAccountModal)
+    if(state.tabIndex === 0) {
+      setState({...state, pickedAccount:null, openUpsertAccountModal: !state.openUpsertAccountModal})
     } else {
-      setPickedAction(null)
-      setOpenUpsertActionModal(!openUpsertActionModal)
+      setState({...state, pickedAction:null, openUpsertActionModal: !state.openUpsertActionModal})
     }
   }
 
@@ -252,9 +222,9 @@ export default function FullScreenDialog(props:any) {
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               {currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user'}
             </Typography>
             <Button color="inherit" onClick={handleClose}>
@@ -272,25 +242,25 @@ export default function FullScreenDialog(props:any) {
         <br/>
           <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={userNameView}
+             value={state.userNameView}
              onChange={handleUserNameChange} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>
-          <div className={classes.root} style={{height:"100vh",color:"white"}}>
+          <div className={styles["root"]} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
-          <Tabs  indicatorColor="primary"  textColor="inherit" value={tabIndex} onChange={handleChange} aria-label="simple tabs example">
+          <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={handleChange} aria-label="simple tabs example">
             <Tab label="Accounts" {...a11yProps(0)} />
             <Tab label="Actions" {...a11yProps(1)} />
           </Tabs>
         </AppBar>
-        <TabPanel value={tabIndex} index={tabIndex}>
+        <TabPanel value={state.tabIndex} index={state.tabIndex}>
         <Suspense fallback={<div>Loading...</div>}>
-          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 0 ? 'flex' : 'none'}}> 
+          <div className={styles["user-upsert-row-container"]} style={{display: state.tabIndex === 0 ? 'flex' : 'none'}}> 
           {
-              !accountsView ||  accountsView.length === 0 ? <div>
+              !state.accountsView ||  state.accountsView.length === 0 ? <div>
                    User have 0 Accounts
-              </div> : accountsView.map((account:any)=>{
+              </div> : state.accountsView.map((account:any)=>{
                 
                 return <div className={styles["user-upsert-row"]}> <div>
                   Account Name: {account.name}
@@ -309,11 +279,11 @@ export default function FullScreenDialog(props:any) {
               })
           }
           </div>
-          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 1 ? 'flex' : 'none'}}>
+          <div className={styles["user-upsert-row-container"]} style={{display: state.tabIndex === 1 ? 'flex' : 'none'}}>
             {
-              !actionsView ||  actionsView.length === 0 ? <div>
+              !state.actionsView ||  state.actionsView.length === 0 ? <div>
                 User have 0 Actions
-              </div> : actionsView.map((action:any)=>{
+              </div> : state.actionsView.map((action:any)=>{
                 return <div className={styles["user-upsert-row"]}>
                   <div className={styles["user-upsert-row-item-name"]}>
                   Action Name: {action.name || null}
@@ -335,9 +305,9 @@ export default function FullScreenDialog(props:any) {
           </Suspense>
         </TabPanel>
       </div>
-      <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
-      <AccountUpsertModal handleUpsertAccountModalClose={handleUpsertAccountModalClose} open={openUpsertAccountModal} pickedAccount={pickedAccount}/>
-      <ActionUpsertModal handleUpsertActionModalClose={handleUpsertActionModalClose} open={openUpsertActionModal} pickedAction={pickedAction}/>
+      <DeletePopup handleDeletePopupClose={handleDeletePopupClose} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
+      <AccountUpsertModal handleUpsertAccountModalClose={handleUpsertAccountModalClose} open={state.openUpsertAccountModal} pickedAccount={state.pickedAccount}/>
+      <ActionUpsertModal handleUpsertActionModalClose={handleUpsertActionModalClose} open={state.openUpsertActionModal} pickedAction={state.pickedAction}/>
       </Dialog>
     </div>
   ) : <div></div>

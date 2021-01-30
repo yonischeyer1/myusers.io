@@ -20,33 +20,6 @@ import styles from './RecordingModal.css'
 
 const serviceStore = new ServiceStore()
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      position: 'relative',
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      width:200
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2),
-    },
-    userActionSelectContainer: {
-      display: "flex"
-    },
-    doneCancelBtnsContianer: {
-      display:"flex"
-    }
-  }),
-);
-
-
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
   ref: React.Ref<unknown>,
@@ -57,7 +30,9 @@ const Transition = React.forwardRef(function Transition(
 let loginFlagOnce:any = false;
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
+  const { open } = props;
+  
+  const [state, _setState] = React.useState({
     record: false,
     port: null,
     loading:false,
@@ -74,8 +49,15 @@ export default function FullScreenDialog(props:any) {
     imageTest: null,
     startUrl:null
   });
-  const classes = useStyles();
-  const { open } = props;
+
+  const setState = (newState:any) => {
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
+  }
 
   const startLogin = async (e:any) => {
     const user = serviceStore.getAppStateValue('currentUser');
@@ -84,7 +66,7 @@ export default function FullScreenDialog(props:any) {
     await loginContainer.init()
     loginContainer.loadingFunction = setLoadingState;
     await loginContainer.login(loginURL, user.id)
-    setState({...state,record:true, port:loginContainer._port,
+    await setState({...state,record:true, port:loginContainer._port,
       recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
  }
 
@@ -105,12 +87,11 @@ export default function FullScreenDialog(props:any) {
     recorderContainer.loadingFunction = setLoadingState;
     await recorderContainer.record(state.startUrl, user.id)
     serviceStore.upsertAppStateValue('startUrl',state.startUrl)
-    console.log("recorderContainer",recorderContainer)
-    setState({...state,record:true, port:recorderContainer._port,
+    await setState({...state,record:true, port:recorderContainer._port,
         recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:recorderContainer})
   }
-  const setLoadingState = (loading:boolean) => {
-    setState({...state,loading})
+  const setLoadingState = async (loading:boolean) => {
+    await setState({...state,loading})
   }
   const startRecording = async () => {
     await initRecorder()
@@ -118,27 +99,25 @@ export default function FullScreenDialog(props:any) {
    const stopRecording = async (e:any) => {
       const totalRecordTime = moment(new Date()).diff(moment(state.startRecordingDateTime))
       const { recorderContainer } = state;
-      setState({...state,stopRecord: true, stopButtonDisable:true});
+      await setState({...state,stopRecord: true, stopButtonDisable:true});
       setTimeout(async ()=>{
        await recorderContainer.stopRecording();
-       setState({...state, record:false, stopRecord: false, openModal:true, totalRecordTime, recordButtonDisable:false})
+       await setState({...state, record:false, stopRecord: false, openModal:true, totalRecordTime, recordButtonDisable:false})
       },2000)
    }
 
    const handleModalClosing = async (state?:any, recordAgain?:any) => {
     if(recordAgain) {
-      setState(Object.assign(state,{openModal:false}))
+      await setState(Object.assign(state,{openModal:false}))
       startRecording();
       return
     }
-    setState(Object.assign(state,{openModal:false}))
+    await setState(Object.assign(state,{openModal:false}))
    }
 
-   const abort = (e:any) => {
-     const { recorderContainer } = state;
-    setState(Object.assign(state,{loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true}))
-    // await recorderContainer.abort();
-    setState(Object.assign(state,{loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false}))
+   const abort = async (e:any) => {
+    await setState(Object.assign(state,{loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true}))
+    await setState(Object.assign(state,{loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false}))
    }
 
    const finishLogin = async (e:any) => {
@@ -154,8 +133,8 @@ export default function FullScreenDialog(props:any) {
      handleRecordingModalClose()
     }
 
-    const handleURLChange = (e:any) => {
-      setState(Object.assign(state,{startUrl: e.target.value}))
+    const handleURLChange = async (e:any) => {
+      await setState(Object.assign(state,{startUrl: e.target.value}))
     }
 
    const saveAccount = async () => {
@@ -184,9 +163,9 @@ export default function FullScreenDialog(props:any) {
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
-        <AppBar className={classes.appBar}>
+        <AppBar className={styles["app-bar"]}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h6" className={styles["title"]}>
               {serviceStore.getAppStateValue('isLoginMode') ? 'Login Account' : ' Recording wizard '}
             
             </Typography>
