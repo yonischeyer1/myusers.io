@@ -84,7 +84,7 @@ export default function FullScreenDialog(props:any) {
   }
 
  const handleDynamicSnapshotModalClose = async (e:any) => {
-    await setState({...state, dynamicSnapshotOpen:true}) 
+    await setState({...state, dynamicSnapshotOpen:false}) 
  }
 
  const save = (e:any) => {
@@ -130,7 +130,7 @@ export default function FullScreenDialog(props:any) {
              <img src={state.tag.originalReferenceSnapshotURI} />
             </div>
             <div style={{alignSelf: "center"}}>
-              <Button disabled={state.tag.skip} onClick={(e)=>{ handleTagImageClick(state)}} variant="outlined" color="primary">OPEN EDITOR</Button>
+              <Button disabled={state.tag.skip} onClick={(e)=>{ handleTagImageClick(state.tag)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
                state.tag.dynamic && state.tag.dynamic.drawURI ? <div>

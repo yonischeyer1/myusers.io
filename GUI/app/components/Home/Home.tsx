@@ -257,7 +257,6 @@ export default function SimpleTabs(props:any) {
       default:
         break;
     }
-    setState({...state, openUserActionBtnGrp:false})
   };
 
   const handleFailClick = (testSuite:any) => {
