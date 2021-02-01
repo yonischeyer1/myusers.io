@@ -98,7 +98,7 @@ export default function FullScreenDialog(props:any) {
       setTimeout(()=>{
         _setState(newState)
         resolve(null);
-      },0)
+      },300)
     })
   }
 
@@ -164,9 +164,10 @@ export default function FullScreenDialog(props:any) {
   const handleClose = async (e:any) => {
     await setState({...state, accountsView:null, actionsView:null, userNameView:''});
     serviceStore.upsertAppStateValue('currentUser', null)
-    runonce = false;
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
+    runonce = false;
+    currentState = false;
   };
 
   const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {
