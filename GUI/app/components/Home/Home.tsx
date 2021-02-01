@@ -95,7 +95,7 @@ export default function SimpleTabs(props:any) {
     setTimeout(()=>{
       _setState(newState)
       resolve(null);
-    },0)
+    },300)
   })
   }
 
