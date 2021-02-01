@@ -164,10 +164,10 @@ export default function FullScreenDialog(props:any) {
   const handleClose = async (e:any) => {
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
-    //runonce = false;
+    runonce = false;
+    await setState({...state, accountsView:[], actionsView:[], userNameView:''});
     // currentState = null;
     // setStateFunc = null
-    // await setState({...state, accountsView:[], actionsView:[], userNameView:''});
     // runonce = false;
     // serviceStore.upsertAppStateValue('currentUser', null)
   };

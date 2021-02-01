@@ -91,12 +91,12 @@ export default function SimpleTabs(props:any) {
   });
 
   const setState = (newState:any) => {
-  return new Promise((resolve,reject)=>{
-    setTimeout(()=>{
-      _setState(newState)
-      resolve(null);
-    },0)
-  })
+    return new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        _setState(newState)
+        resolve(null);
+      },0)
+    })
   }
 
   const handleTroubleshootMenuClose = async (e:any) => {
@@ -113,7 +113,6 @@ export default function SimpleTabs(props:any) {
 
   const handleUpsertUserModalClose = async (e:any) =>{
     await setState({...state, openUpsertUserModal:false, currentUserPicked:null})
-    console.log("state",state)
   }
 
   const handleLivePreviewModalClose = async (e:any) => {
@@ -166,8 +165,6 @@ export default function SimpleTabs(props:any) {
       testResp.testIdx = testIdx;
       saveTestFail(testResp, testSuiteIdx)
       await changeTestStatus(test, TEST_STATUS.FAIL)
-      //TODO : save failed testResp
-      //pop up troubleshoot menu 
     }
     await setState({...state, portsPlaying:{...state.portsPlaying, [test.id]:false}})
   }
@@ -177,9 +174,7 @@ export default function SimpleTabs(props:any) {
   }
 
   const handleUserClick = async (user:any) => {
-    serviceStore.upsertAppStateValue('currentUser', user)
     await setState({...state, currentUserPicked:user, openUpsertUserModal:true, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
-    //TODO: open upsert user Modal with user 
   }
 
   const handleFloatingButtonClick = async (e:any) => {
@@ -229,7 +224,7 @@ export default function SimpleTabs(props:any) {
     if(collectionName === 'users') {
       await handleUserClick(item)
     } else {
-      await setState({...state, currentTestPicked:item, openUpsertTestModal:true})
+      await setState({...state, currentTestPicked:item, openUpsertTestModal:true, openTestActionBtnGrp:state.openTestActionBtnGrp.map(i => false)})
     }
   } 
 
@@ -270,26 +265,24 @@ export default function SimpleTabs(props:any) {
   ) => {
     switch (optionIdx) {
       case 1:
-        playTestSuite(test, testSuiteIdx)
+        await playTestSuite(test, testSuiteIdx)
       break;
 
       case 2:
-        handleLiveViewClick(test)
+        await handleLiveViewClick(test)
       break;
 
       case 3:
-        editUserOrTest('tests', test)
+        await editUserOrTest('tests', test)
       break;
 
       case 4:
-        deleteUserOrTest('tests', test)
+        await deleteUserOrTest('tests', test)
       break;
     
       default:
         break;
     }
-    //TODO: execute action by Index
-    await setState({...state, openTestActionBtnGrp:false})
   };
 
   (async ()=>{
