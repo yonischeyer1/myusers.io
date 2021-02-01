@@ -28,8 +28,8 @@ export default function FullScreenDialog(props:any) {
   const { open, pickedAccount } = props;
   const [state, _setState] = React.useState({
     openRecordingModal:false,
-    accountName:false,
-    loginURL:false,
+    accountName:'',
+    loginURL:'',
   });
 
   const setState = (newState:any) => {

@@ -64,12 +64,12 @@ let lastcurrentUserPicked:any = null
 let serviceStoreEmitter:any = serviceStore.getEventEmitter()
 let readUserAccountsFunc:any = null;
 let readUserActionsFunc:any = null;
-let setAccountsViewFunc:any = null;
-let setActionsViewFunc:any = null;
+let setStateFunc:any = null;
+let currentState:any = null;
 
 serviceStoreEmitter.on(`DB-reread-users`,()=> {
-  setAccountsViewFunc(readUserAccountsFunc());
-  setActionsViewFunc(readUserActionsFunc());
+  setStateFunc({...currentState, accountsView:readUserAccountsFunc()});
+  setStateFunc({...currentState, actionsView:readUserActionsFunc()});
 });
 
 
@@ -88,11 +88,10 @@ export default function FullScreenDialog(props:any) {
     itemAndCollectionNameToDelete:null,
     accountsView:null,
     actionsView:null,
-    userNameView:null,
+    userNameView:'',
   })
 
-  setAccountsViewFunc = state.accountsView
-  setActionsViewFunc = state.actionsView
+  currentState = state;
 
   const setState = (newState:any) => {
     return new Promise((resolve)=>{
@@ -102,6 +101,8 @@ export default function FullScreenDialog(props:any) {
       },0)
     })
   }
+
+  setStateFunc = setState;
 
   const readUserAccounts = () => {
     const users = serviceStore.readDocs('users')
@@ -156,13 +157,14 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleUpsertActionModalClose = async (e:any) =>{
+    runonce = false;
     await setState({...state, openUpsertActionModal:false})
   }
 
   const handleClose = async (e:any) => {
-    runonce = false;
-    await setState({...state, accountsView:null, actionsView:null});
+    await setState({...state, accountsView:null, actionsView:null, userNameView:''});
     serviceStore.upsertAppStateValue('currentUser', null)
+    runonce = false;
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
   };
@@ -214,7 +216,7 @@ export default function FullScreenDialog(props:any) {
     if(currentUserPicked && !state.accountsView && !state.actionsView && !runonce) {
       runonce = true;
       lastcurrentUserPicked = currentUserPicked;
-      setState({...state, userName:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
+      setState({...state, userNameView:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
     }
   } 
 

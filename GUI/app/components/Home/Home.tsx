@@ -1,5 +1,4 @@
 import React, {createRef, Suspense} from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -16,8 +15,7 @@ import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component
 import DeletePopup from '../DeletePopup/DeletePopup'
 import {TEST_STATUS} from '../../models/Test.model'
 import ServiceStore from '../../services /store.service'
-import styles from './Home.css'
-import { truncate } from 'lodash';
+import styles from './Home.css';
 
 
 const serviceStore = new ServiceStore();
@@ -114,9 +112,7 @@ export default function SimpleTabs(props:any) {
   }
 
   const handleUpsertUserModalClose = async (e:any) =>{
-    runOnceUser = false;
-    runOnceTest = false;
-    await setState({...state, openUpsertUserModal:false})
+    await setState({...state, openUpsertUserModal:false, currentUserPicked:null})
   }
 
   const handleLivePreviewModalClose = async (e:any) => {
@@ -449,7 +445,7 @@ export default function SimpleTabs(props:any) {
         </TabPanel>
         <div className={styles["add-test-floating-btn"]}>
           
-        <Fab color="primary" aria-label="add" onClick={handleFloatingButtonClick}>
+        <Fab disabled={state.tabIndex === 0 && Object.values(users).length === 0} color="primary" aria-label="add" onClick={handleFloatingButtonClick}>
          <AddIcon />
         </Fab>
         </div>

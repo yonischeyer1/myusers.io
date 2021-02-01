@@ -34,7 +34,7 @@ export default function FullScreenDialog(props:any) {
     openRecordingModal:false,
     dynamicSnapshotModalData:false,
     dynamicSnapshotOpen:false,
-    actionName:false,
+    actionName:'',
     openDeletePopup:false,
     openEditTagModal:false,
     zeTag:false,
@@ -55,7 +55,6 @@ export default function FullScreenDialog(props:any) {
     const {handleUpsertActionModalClose} =  props;
     handleUpsertActionModalClose(false);
     onceflag = false
-    await setState({})
   };
 
   const handleDeletePopupClose = async (e:any) =>{
@@ -63,12 +62,14 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleEditTagModalClose = async (e:any) => {
-    await setState({...state, openEditTagModal:false})
+    await setState({...state, openEditTagModal:false, zeTag:null})
+    onceflag = false;
   }
  
 
   const handleRecordingModalClose = async () =>{
     await setState({...state, openRecordingModal:false})
+    onceflag = false;
   }
 
   const handleRecordBtnClick = async (e:any) => {
@@ -89,6 +90,10 @@ export default function FullScreenDialog(props:any) {
     const newActionName = e.target.value
     await setState({...state, actionName:newActionName})
     serviceStore.upsertAppStateValue(key, newActionName)
+ }
+
+ const handleAddLiveSnapshotClick = (e:any) =>{
+
  }
  
  const editTag = async (tag:any) => {
@@ -144,6 +149,7 @@ const handleTagMenuItemClick =  (
 
 (async ()=>{
   if(open && pickedAction && !onceflag) {
+    console.log("hara")
     onceflag = true;
     elRefs.current = Array(pickedAction.tags.length).fill(null).map((_, i) => elRefs.current[i] || createRef())
     await setState({...state, actionName:pickedAction.name ,openUserActionBtnGrp:Array(pickedAction.tags.length).fill(false)})
@@ -190,7 +196,7 @@ const handleTagMenuItemClick =  (
                   return (
                   <div style={{display:'flex', marginTop:'20px'}}>
                     <div>
-                       Tag name : {state.tag.name}
+                       Tag name : {tag.name}
                     </div>
                     <div style={{marginLeft:'250px'}}>
                     <ButtonGroup variant="contained" color="primary" ref={elRefs.current[index]} aria-label="split button">
@@ -207,7 +213,7 @@ const handleTagMenuItemClick =  (
                         <ArrowDropDownIcon />
                        </Button>
                        </ButtonGroup>
-                       <Popper style={{zIndex:1}} open={openUserActionBtnGrp[index]} anchorEl={elRefs.current[index].current} role={undefined} transition disablePortal>
+                       <Popper style={{zIndex:1}} open={state.openUserActionBtnGrp[index]} anchorEl={elRefs.current[index].current} role={undefined} transition disablePortal>
                        {({ TransitionProps, placement }) => (
                          <Grow
                            {...TransitionProps}
