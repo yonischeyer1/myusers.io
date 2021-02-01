@@ -55,7 +55,7 @@ export default function FullScreenDialog(props:any) {
       setTimeout(()=>{
         _setState(newState)
         resolve(null);
-      },300)
+      },0)
     })
   }
 

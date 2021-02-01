@@ -67,10 +67,10 @@ let readUserActionsFunc:any = null;
 let setStateFunc:any = null;
 let currentState:any = null;
 
-serviceStoreEmitter.on(`DB-reread-users`,()=> {
-  setStateFunc({...currentState, accountsView:readUserAccountsFunc()});
-  setStateFunc({...currentState, actionsView:readUserActionsFunc()});
-});
+// serviceStoreEmitter.on(`DB-reread-users`,()=> {
+//   setStateFunc({...currentState, accountsView:readUserAccountsFunc()});
+//   setStateFunc({...currentState, actionsView:readUserActionsFunc()});
+// });
 
 
 
@@ -86,8 +86,8 @@ export default function FullScreenDialog(props:any) {
     pickedAccount:null,
     openDeletePopup:false,
     itemAndCollectionNameToDelete:null,
-    accountsView:null,
-    actionsView:null,
+    accountsView:[],
+    actionsView:[],
     userNameView:'',
   })
 
@@ -98,7 +98,7 @@ export default function FullScreenDialog(props:any) {
       setTimeout(()=>{
         _setState(newState)
         resolve(null);
-      },300)
+      },0)
     })
   }
 
@@ -162,12 +162,14 @@ export default function FullScreenDialog(props:any) {
   }
 
   const handleClose = async (e:any) => {
-    await setState({...state, accountsView:null, actionsView:null, userNameView:''});
-    serviceStore.upsertAppStateValue('currentUser', null)
     const {handleUpsertUserModalClose} = props;
     handleUpsertUserModalClose(false);
-    runonce = false;
-    currentState = false;
+    //runonce = false;
+    // currentState = null;
+    // setStateFunc = null
+    // await setState({...state, accountsView:[], actionsView:[], userNameView:''});
+    // runonce = false;
+    // serviceStore.upsertAppStateValue('currentUser', null)
   };
 
   const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -194,7 +196,7 @@ export default function FullScreenDialog(props:any) {
     await setState({...state, openUpsertAccountModal:account, pickedAccount:account})
  }
 
-  const handleFloatingButtonClick = (e:any) => {
+  const handleFloatingButtonClick = async (e:any) => {
     if(!currentUserPicked) {
       const userName = serviceStore.getAppStateValue('userName');
       const userToInsert:User = {
@@ -207,19 +209,22 @@ export default function FullScreenDialog(props:any) {
       serviceStore.upsertAppStateValue('currentUser', userToInsert);
     }
     if(state.tabIndex === 0) {
-      setState({...state, pickedAccount:null, openUpsertAccountModal: !state.openUpsertAccountModal})
+      await setState({...state, pickedAccount:null, openUpsertAccountModal: !state.openUpsertAccountModal})
     } else {
-      setState({...state, pickedAction:null, openUpsertActionModal: !state.openUpsertActionModal})
+      await setState({...state, pickedAction:null, openUpsertActionModal: !state.openUpsertActionModal})
     }
   }
 
-  if(open) {
-    if(currentUserPicked && !state.accountsView && !state.actionsView && !runonce) {
-      runonce = true;
-      lastcurrentUserPicked = currentUserPicked;
-      setState({...state, userNameView:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
-    }
-  } 
+
+    if(open && !runonce) {
+      console.log("currentUserPicked", state ,currentUserPicked)
+      if(currentUserPicked && state.accountsView.length === 0 && state.actionsView.length === 0) {
+        runonce = true;
+        lastcurrentUserPicked = currentUserPicked;
+        console.log("setting state", state ,currentUserPicked)
+        setState({...state, userNameView:currentUserPicked.name ,accountsView:readUserAccounts(), actionsView:readUserActions()})
+      }
+    } 
 
 
   return open ? (

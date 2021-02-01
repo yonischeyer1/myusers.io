@@ -95,7 +95,7 @@ export default function SimpleTabs(props:any) {
     setTimeout(()=>{
       _setState(newState)
       resolve(null);
-    },300)
+    },0)
   })
   }
 
@@ -113,13 +113,14 @@ export default function SimpleTabs(props:any) {
 
   const handleUpsertUserModalClose = async (e:any) =>{
     await setState({...state, openUpsertUserModal:false, currentUserPicked:null})
+    console.log("state",state)
   }
 
   const handleLivePreviewModalClose = async (e:any) => {
     await setState({...state, stopLiveView:true})
     setTimeout(async ()=>{
       await setState({...state, liveViewPort:null})
-    }, 300)
+    }, 0)
   }
 
   const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -177,7 +178,7 @@ export default function SimpleTabs(props:any) {
 
   const handleUserClick = async (user:any) => {
     serviceStore.upsertAppStateValue('currentUser', user)
-    await setState({...state, currentUserPicked:user, openUpsertUserModal:true})
+    await setState({...state, currentUserPicked:user, openUpsertUserModal:true, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
     //TODO: open upsert user Modal with user 
   }
 
@@ -226,7 +227,7 @@ export default function SimpleTabs(props:any) {
 
   const editUserOrTest = async (collectionName:any, item:any) => {
     if(collectionName === 'users') {
-      handleUserClick(item)
+      await handleUserClick(item)
     } else {
       await setState({...state, currentTestPicked:item, openUpsertTestModal:true})
     }
@@ -236,23 +237,24 @@ export default function SimpleTabs(props:any) {
     await setState({...state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
   }
 
-  const handleUserMenuItemClick =  (
+  const handleUserMenuItemClick =  async (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     optionIdx: number,
     user:any
   ) => {
     switch (optionIdx) {
       case 0:
-        editUserOrTest('users', user);
+        await editUserOrTest('users', user);
       break;
 
       case 1:
-        deleteUserOrTest('users', user)
+        await deleteUserOrTest('users', user)
       break;
     
       default:
         break;
     }
+    //await setState({...state, openUserActionBtnGrp:state.openUserActionBtnGrp.map(i => false)})
   };
 
   const handleFailClick = async (testSuite:any) => {

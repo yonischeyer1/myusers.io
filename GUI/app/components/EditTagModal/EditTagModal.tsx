@@ -43,7 +43,7 @@ export default function FullScreenDialog(props:any) {
       setTimeout(()=>{
         _setState(newState)
         resolve(null);
-      },300)
+      },0)
     })
   }
 
@@ -152,7 +152,7 @@ export default function FullScreenDialog(props:any) {
                      state.tag.waitTime.label !== "custom" ? null : 
                      <div>
                         <TextField type="number" disabled={false} value={state.tag.waitTime.value} onChange={handleCustomWaitTimeChange}
-                        label="Insert wait time(seconds):" variant="outlined" style={{width:"300px", height:"45px"}} size="small"/> 
+                        label="Insert wait time(seconds):" variant="outlined" style={{width:"0px", height:"45px"}} size="small"/> 
                     </div>
                  }
              </div>
