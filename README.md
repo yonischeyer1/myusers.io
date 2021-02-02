@@ -160,15 +160,19 @@ You can skip tag snapshot matching (Be carful with this option it can lead to un
 If there is a match the test will wait for live action input from the user and after the user finished it will continue from where it stopped
 
 
-#### Terminology :
+### Terminology :
 
-Action: Containing tags and mouse and keyboard actions from myusers recording session.
+#### Action: 
+ Containing tags and mouse and keyboard actions from myusers recording session.
 
-Tags : Array of screenshots from a validated Action recording session.
+#### Tags: 
+Array of screenshots from a validated Action recording session.
 
-Eyes: A server that runs inside the container and matches tags one by one against current screenshots at real time of playing the test.
+#### Eyes: 
+A server that runs inside the container and matches tags one by one against current screenshots at real time of playing the test.
 
-Hands : A server that runs inside the container that either records keyboard and mouse actions or plays them.
+#### Hands: 
+A server that runs inside the container that either records keyboard and mouse actions or plays them.
   
 
 ## Install
