@@ -160,7 +160,7 @@ You can skip tag snapshot matching (Be carful with this option it can lead to un
 If there is a match the test will wait for live action input from the user and after the user finished it will continue from where it stopped
 
 
-### Terminology :
+# Terminology :
 
 #### Action: 
  Containing tags and mouse and keyboard actions from myusers recording session.
