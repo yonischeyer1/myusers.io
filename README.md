@@ -1,6 +1,6 @@
 ## MyUsers.io the web/os testing software -
 
-My users is a forever free web/os testing software that aims to automate tests by simulation of a human user
+My users is a forever free web/os testing software that aims to automate tests on websites in the most relible, easy and user friendly way.
 
   
   
