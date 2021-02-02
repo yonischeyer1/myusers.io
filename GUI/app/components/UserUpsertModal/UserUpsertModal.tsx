@@ -1,5 +1,4 @@
 import React, {Suspense} from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -166,10 +165,6 @@ export default function FullScreenDialog(props:any) {
     handleUpsertUserModalClose(false);
     runonce = false;
     await setState({...state, accountsView:[], actionsView:[], userNameView:''});
-    // currentState = null;
-    // setStateFunc = null
-    // runonce = false;
-    // serviceStore.upsertAppStateValue('currentUser', null)
   };
 
   const handleChange = async (event: React.ChangeEvent<{}>, newValue: number) => {

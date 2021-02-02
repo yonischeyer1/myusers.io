@@ -9,13 +9,11 @@ My users is a forever free web/os testing software that aims to automate tests o
 
   
 
-1. Test your website without the need to know how to code.
+1. Automate Tests on your website without the need to know how to code.
 
-2. Test your website without the need to add spacial attributes to your html elements.
+2. Automate Tests on your website without the need to add spacial attributes to your html elements.
 
-3. Test your website on production environments.
-
-4. Automate tests on your website.
+3. Automate Tests on your website on production environments.
 
 5. Run tests in a schedule
 
