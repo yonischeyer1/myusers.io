@@ -15,11 +15,11 @@ My users is a forever free web/os testing software that aims to automate tests o
 
 3. Automate Tests on your website on production environments.
 
-5. Run tests in a schedule
+4. Run tests in a schedule
 
-6. Interact with tests when live actions required
+5. Interact with tests when live actions required
 
-7. Automate tests on any environment that supports vnc.
+6. Automate tests on any environment that supports vnc.
 
   
 
