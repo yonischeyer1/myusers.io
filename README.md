@@ -1,4 +1,4 @@
-## MyUsers.io the web/os testing software -
+# MyUsers.io the web/os testing software -
 
 My users is a forever free web/os testing software that aims to automate tests on websites in the most relible, easy and user friendly way.
 
@@ -160,7 +160,7 @@ You can skip tag snapshot matching (Be carful with this option it can lead to un
 If there is a match the test will wait for live action input from the user and after the user finished it will continue from where it stopped
 
 
-# Terminology :
+## Terminology :
 
 #### Action: 
  Containing tags and mouse and keyboard actions from myusers recording session.
