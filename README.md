@@ -87,36 +87,11 @@ That will be composed from the automated tests results and reports.
 
 7. If distance is not 0 the test failed if it is 0 test succeeded.
 
-  
-
-## Terminology :
-
-Action: Containing tags and mouse and keyboard actions from myusers recording session.
-
-Tags : Array of screenshots from a validated Action recording session.
-
-Eyes: A server that runs inside the container and matches tags one by one against current screenshots at real time of playing the test.
-
-Hands : A server that runs inside the container that either records keyboard and mouse actions or plays them.
-
-  
-  
-
-This is the first half of the solution.
-
-  
-
-The other half is the troubleshoot menu :
-
-  
-
-This interactive menu guides the user on how to correct a failed test with one of the tools available or report it via email/ ticketing system API etc.
-
-  
+8. troubleshoot menu guidenece if test failed to either try solve the test issue or report a bug.
 
 ## Troubleshoot Menu options :
 
-  
+  This interactive menu guides the user on how to correct a failed test with one of the tools available or report it via email/ ticketing system API etc.
 
 ### Dynamic snapshot :
 
@@ -184,7 +159,16 @@ You can skip tag snapshot matching (Be carful with this option it can lead to un
 
 If there is a match the test will wait for live action input from the user and after the user finished it will continue from where it stopped
 
-  
+
+#### Terminology :
+
+Action: Containing tags and mouse and keyboard actions from myusers recording session.
+
+Tags : Array of screenshots from a validated Action recording session.
+
+Eyes: A server that runs inside the container and matches tags one by one against current screenshots at real time of playing the test.
+
+Hands : A server that runs inside the container that either records keyboard and mouse actions or plays them.
   
 
 ## Install
