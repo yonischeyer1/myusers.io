@@ -23,7 +23,9 @@ My users is a forever free web/os testing software based on electron and docker 
 
 7. Automate Tests 3rd party websites
 
-  
+8. You can record intractions with any website and play it later multiple times one after the other and in parallel (dependes on host resources).
+
+9. export tests as files and play them programmatically via sdk or with this software  
 
 ## GOALS:
 
@@ -68,7 +70,6 @@ That will be composed from the automated tests results and reports.
 
   
  ## How it works  :
-  You can record intractions with any website and play it later multiple times one after the other and in parallel.
   Classic web testing depends on html selectors in order to intract with an element of a website
   Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been done correctly by:
    first sampling images from user validated recording session of intraction with the target website. 
