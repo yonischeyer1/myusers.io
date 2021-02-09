@@ -1,65 +1,78 @@
 import { TEST_STATUS } from "../../models/Test.model";
 import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
+import { setStatePromisifed } from "../../utils/general";
 
-let _state:any = null;
-let _setState:any = null; 
 
 const serviceStore = new ServiceStore();
-export default class HomeEvents {
-    constructor() {}
 
-    setConstructor(state:any, setState:any) {
-         _state = state;
-        _setState = setState;
+let instance :any = null;
+export default class HomeEvents {
+    initFlag:any
+    setState:any
+    state:any
+    props:any
+    constructor() {
+        if(instance) {
+            return instance;
+        }
+        this.initFlag = false;
+        instance = this;
+        return this;
     }
+
+    async setConstructor(state:any, setState:any, props:any) {
+        this.state = state;
+        this.setState = setStatePromisifed.bind(null, setState);
+        this.props = props;
+   }
 
     //*** Modals Close events */
 
     async handleTroubleshootMenuClose () {
-        await _setState({..._state, openTroubleshootMenu:false})
+        await this.setState({...this.state, openTroubleshootMenu:false})
     }
 
     async handleUpsertTestModalClose () {
-        await _setState({..._state, currentTestPicked:null, openUpsertTestModal:false})
+        await this.setState({...this.state, currentTestPicked:null, openUpsertTestModal:false})
     }
 
     async handleUpsertUserModalClose () {
-        await _setState({..._state, openUpsertUserModal:false, currentUserPicked:null})
+        await this.setState({...this.state, openUpsertUserModal:false, currentUserPicked:null})
     }
 
     async handleDeletePopupClose () {
-        await _setState({..._state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
+        await this.setState({...this.state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
     }
 
     async handleLivePreviewModalClose () {
-        await _setState({_state, stopLiveView:true})
+        await this.setState({...this.state, stopLiveView:true})
         setTimeout(async ()=>{
-          await _setState({..._state, liveViewPort:null})
+          await this.setState({...this.state, liveViewPort:null})
         }, 0)
     }
 
     //*** Inputs handles */
 
     async handleChangeTab (event: React.ChangeEvent<{}>, newValue: number) {
-        await _setState({..._state, tabIndex:newValue})
+        await this.setState({...this.state, tabIndex:newValue})
     }
 
     async handleLiveViewClick (test:any) {
-        await _setState({..._state, liveViewPort:_state.portsPlaying[test.id], 
+        await this.setState({...this.state, liveViewPort:this.state.portsPlaying[test.id], 
             stopLiveView:false, liveViewPortModalOpen:true})
     }
 
     async handleFloatingButtonClick (e:any)  {
-        if(_state.tabIndex === 0) {
-            await _setState({..._state, openUpsertTestModal: !_state.openUpsertTestModal})
+        if(this.state.tabIndex === 0) {
+            await this.setState({...this.state, openUpsertTestModal: !this.state.openUpsertTestModal})
           } else {
-            await _setState({..._state, currentUserPicked:null, openUpsertUserModal:!_state.openUpsertUserModal})
+            await this.setState({...this.state, currentUserPicked:null, openUpsertUserModal:!this.state.openUpsertUserModal})
           }
     }
 
     async handleFailClick (testSuite:any) {
-        await _setState({..._state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
+        await this.setState({...this.state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
     }
 
     async handleTestMenuItemClick (e:any, option:any, test:any, testSuiteIdx:any) {
@@ -103,24 +116,24 @@ export default class HomeEvents {
     //*** Output handles */
 
     async changeTestStatus (test:any, status:any ) {
-        await _setState({..._state, currentRuningTestName:{name:test.testName, status }})
+        await this.setState({...this.state, currentRuningTestName:{name:test.testName, status }})
     }
 
     async editUser (user:any) {
-        await _setState({..._state, currentUserPicked:user, openUpsertUserModal:true})
+        await this.setState({...this.state, currentUserPicked:user, openUpsertUserModal:true})
     }
 
     async editTest (test:any) {
-        await _setState({..._state, currentTestPicked:test, openUpsertTestModal:true})
+        await this.setState({...this.state, currentTestPicked:test, openUpsertTestModal:true})
     }
 
     async deleteUser (user:any) {
-        const { currentUserPicked } = _state;
-        await _setState({..._state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item:user, currentUserPicked}})
+        const { currentUserPicked } = this.state;
+        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item:user, currentUserPicked}})
     }
 
     async deleteTest (test:any) {
-        await _setState({..._state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
+        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
     }
 
     async playTestSuite (testSuite:any, testSuiteIdx:any)  {
@@ -145,7 +158,7 @@ export default class HomeEvents {
         const action = actions[test.actionId]
         const playingContainerInstance = new Container(CONTAINER_MODE.player);
         await playingContainerInstance.init(action.startUrl, user.id);
-        await _setState({..._state, portsPlaying:{..._state.portsPlaying, [testSuiteId]:playingContainerInstance._port}})
+        await this.setState({...this.state, portsPlaying:{...this.state.portsPlaying, [testSuiteId]:playingContainerInstance._port}})
         const testResp:any = await (await playingContainerInstance.play(true, action)).json()
         if(testResp.success) {
           await this.changeTestStatus(test, TEST_STATUS.SUCCESS)
@@ -154,7 +167,7 @@ export default class HomeEvents {
           this.saveTestFail(testResp, testSuiteIdx)
           await this.changeTestStatus(test, TEST_STATUS.FAIL)
         }
-        await _setState({..._state, portsPlaying:{..._state.portsPlaying, [test.id]:false}})
+        await this.setState({...this.state, portsPlaying:{...this.state.portsPlaying, [test.id]:false}})
     }
 
     

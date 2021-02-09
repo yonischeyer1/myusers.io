@@ -81,9 +81,9 @@ That will be composed from the automated tests results and reports.
 
 5. Play validated actions inside container And capture screen shots before each user mouse click or enter keystroke and create a reference perceptual hash out of it.
 
-6. Play actions with java robot library on the container and before every click Eyes will take screenshot of the browser and calculate levenstien distance between the images using it.
+6. Play actions with java robot library on the container and before every click Eyes will take screenshot of the browser and calculate levenstien distance between the perceptual hash of the current screenshot and the orginal validated recored session screenshot of that action.
 
-7. If distance is not 0 the test failed if it is 0 test succeeded.
+7. If distance between the hashes is not 0 the test failed if it is 0 test succeeded.
 
 8. troubleshoot menu guidenece if test failed to either try solve the test issue or report a bug.
 

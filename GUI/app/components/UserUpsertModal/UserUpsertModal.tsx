@@ -17,7 +17,7 @@ const _events = new UserUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
   const { open } = props;
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
     tabIndex:0,
     openUpsertAccountModal:false,
     openUpsertActionModal:false,
@@ -31,7 +31,7 @@ export default function FullScreenDialog(props:any) {
     currentUserPicked:null
   })
 
-  _events.setConstructor(state, _setState, props);
+  _events.setConstructor(state, setState, props);
 
 
   return open ? (
