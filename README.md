@@ -185,15 +185,7 @@ A server that runs inside the container that either records keyboard and mouse a
 
 ## Install
 You need docker to be installed on the host
-  
-### GUI
-```bash
 
-yarn
-
-yarn run dev
-
-```
 
 ### Build iocore jar
 ```bash
@@ -201,6 +193,14 @@ yarn run dev
 Open io-core folder with intellij
 Create artifact (make sure you save manifest in resources folder)
 Build artifact and copy the jar file output to dockerMeta folder in GUI/app/dockerMeta
+```
+### GUI
+```bash
+
+yarn
+
+yarn run dev
+
 ```
 
 ## Docs
