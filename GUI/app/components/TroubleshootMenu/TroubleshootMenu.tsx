@@ -6,8 +6,6 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
 import Accordion from '@material-ui/core/ExpansionPanel';
 import AccordionSummary from '@material-ui/core/ExpansionPanelSummary';
 import AccordionDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -16,20 +14,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 //** Others **
 import ServiceStore from '../../services /store.service';
 import styles from './TroubleshootMenu.css';
-import DynamicSnapshotModal from '../DynamicSnapshotModal/DynamicSnapshotModal';
+import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard';
 import EditTagModal from '../EditTagModal/EditTagModal';
+import { Transition } from '../../utils/general';
+import TroubleshootMenuEvents from './TroubleshootMenu.events';
 
-const serviceStore = new ServiceStore();
-
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-let runonce:any = false
+const _events = new TroubleshootMenuEvents();
 
 export default function FullScreenDialog(props:any) {
   const { open, pickedTest } = props;
@@ -50,93 +40,10 @@ export default function FullScreenDialog(props:any) {
     })
   }
 
-  const handleClose = (e:any) => {
-    const {handleTroubleshootMenuClose} = props;
-    handleTroubleshootMenuClose(false);
-  };
-
-  const handleDynamicSnapshotModalClose = async (e:any) => {
-    await setState({...state, dynamicSnapshotOpen:false})
-  }
-
-  const handleEditTagModalClose = async (e:any) => {
-    await setState({...state, openEditTagModal:false})
-  }
-
-  const handleOpenMaksingWizard = async (e:any) => {
-    await setState({...state, dynamicSnapshotModalData:state.failedTag.tag, dynamicSnapshotOpen:true})
-  }
-
-  const handleDynamicSnapshotModalSave = ({tag, coords, drawURI}) => {
-    tag["dynamic"] = {coords, drawURI}
-    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-    const actions = serviceStore.readDocs('actions')
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx] = tag;
-    serviceStore.updateDocs('actions', actions);
-  }
-
-  const handleUIChange = (e:any) => {
-    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-    const actions = serviceStore.readDocs('actions')
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].originalReferenceSnapshotURI = pickedTest.lastFailResult.uri;
-    serviceStore.updateDocs('actions', actions);
-    handleClose(false)
-  }
-
-  const handleAddSnapshotToTag = (e:any) => {
-    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-    const actions = serviceStore.readDocs('actions')
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].moreSnapshots.push(pickedTest.lastFailResult.uri);
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].distances.push(pickedTest.lastFailResult.dist);
-    serviceStore.updateDocs('actions', actions);
-    handleClose(false)
-  }
-
-  const handleSetTagWaitTime = async (e:any) => {
-    await setState({...state, openEditTagModal:true});
-  }
-
-  const handleSkipTag = (e:any) => {
-    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-    const actions = serviceStore.readDocs('actions')
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].skip = true
-    serviceStore.updateDocs('actions', actions);
-    handleClose(false)
-  }
-
-  const handleBugReport = (e:any) => {
-    handleClose(false)
-  }
-
-  const handleLiveSnapshot = (e:any) => {
-    handleClose(false)
-  }
-
-  const handleEditTagSave = (tag:any) => { 
-    const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-    const actions = serviceStore.readDocs('actions')
-    actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx] = tag;
-    serviceStore.updateDocs('actions', actions);
-  }
+  _events.setConstructor(state, _setState, props);
 
 
-  (async ()=>{
-    if(!runonce && pickedTest) {
-      runonce = true; 
-      const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-      const actions = serviceStore.readDocs('actions');
-      const failedTag:any = {
-        tag:actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx],
-        idx:pickedTest.lastFailResult.currentTagIdx
-      }
-      const failedTest:any = {
-        test:pickedTest.suite[pickedTest.lastFailResult.testIdx],
-        idx:pickedTest.lastFailResult.testIdx
-      }
-      await setState({...state, failedTag: {...failedTag},failedTest: {...failedTest}})
-      console.log("state",state)
-    }
-  })()
+
 
 
 
@@ -149,7 +56,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Troubleshoot Menu
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
+            <Button color="inherit" onClick={_events.handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -169,7 +76,7 @@ export default function FullScreenDialog(props:any) {
              You can use static masking wizard in order to cover those parts 
           </Typography>
           <br/>
-          <Button onClick={handleOpenMaksingWizard} variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={_events.handleOpenMaksingWizard} variant="outlined" color="primary">Open Static Masking wizard</Button>
           </div>
         </AccordionDetails>
       </Accordion>
@@ -186,7 +93,7 @@ export default function FullScreenDialog(props:any) {
                 Replace current tag image with the faild tag image.
             </Typography>
             <br/>
-          <Button onClick={handleUIChange} variant="outlined" color="primary">Replace tag snapshot</Button>
+          <Button onClick={_events.handleUIChange} variant="outlined" color="primary">Replace tag snapshot</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -203,7 +110,7 @@ export default function FullScreenDialog(props:any) {
                 You can increase the wait time of each tag and number of attempts
             </Typography>
             <br/>
-          <Button onClick={handleSetTagWaitTime} variant="outlined" color="primary">Increase tag wait time</Button>
+          <Button onClick={_events.handleSetTagWaitTime} variant="outlined" color="primary">Increase tag wait time</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -223,7 +130,7 @@ export default function FullScreenDialog(props:any) {
                 When you do detect an exepction in behaviour you should report it to a ticketing system.
             </Typography>
             <br/>
-          <Button onClick={handleBugReport} variant="outlined" color="primary">Report Bug</Button>
+          <Button onClick={_events.handleBugReport} variant="outlined" color="primary">Report Bug</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -241,7 +148,7 @@ export default function FullScreenDialog(props:any) {
                 You can add this snapshot to the tag and it will check to see of one of the options is correct
             </Typography>
             <br/>
-          <Button onClick={handleAddSnapshotToTag} variant="outlined" color="primary">Add snaphsot to tag</Button>
+          <Button onClick={_events.handleAddSnapshotToTag} variant="outlined" color="primary">Add snaphsot to tag</Button>
         </div>
         </AccordionDetails>
       </Accordion>
@@ -258,7 +165,7 @@ export default function FullScreenDialog(props:any) {
                 You can skip tag snapshot matching (Be carful with this option it can lead to unexpeceted behaviour). 
             </Typography>
             <br/>
-          <Button onClick={handleSkipTag} variant="outlined" color="primary"> Skip tag</Button>
+          <Button onClick={_events.handleSkipTag} variant="outlined" color="primary"> Skip tag</Button>
          </div>
         </AccordionDetails>
       </Accordion>
@@ -277,7 +184,7 @@ export default function FullScreenDialog(props:any) {
                 from user and when he finishes it will continue the test.
             </Typography>
             <br/>
-          <Button onClick={handleLiveSnapshot} variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={_events.handleLiveSnapshot} variant="outlined" color="primary">Open Static Masking wizard</Button>
         </div>
         </AccordionDetails>
       </Accordion><br/>
@@ -292,10 +199,10 @@ export default function FullScreenDialog(props:any) {
         </div>
       </div><br/>
       </div>
-      <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={handleEditTagModalClose} 
-       handleEditTagSave={handleEditTagSave} tag={state.failedTag ? state.failedTag.tag : null}/>
-      <DynamicSnapshotModal handleDynamicSnapshotModalSave={handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+      <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose} 
+       handleEditTagSave={_events.handleEditTagSave} tag={state.failedTag ? state.failedTag.tag : null}/>
+      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>

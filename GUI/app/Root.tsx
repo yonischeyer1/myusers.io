@@ -1,6 +1,6 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
-import Routes from '../Routes';
+import Routes from './Routes';
 
 
 const Root = () => (

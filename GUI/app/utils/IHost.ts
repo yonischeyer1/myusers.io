@@ -1,8 +1,7 @@
 import { APP_CWD, isWindows, getRandomArbitrary, APP_DOCKER_META_PATH, ExtractFrames } from "./general";
-import { IMAGE_NAME } from "./Container.controller";
+import { IMAGE_NAME } from "../services /container.service";
 const { spawn } = require("child_process");
 import config from '../config'
-import fs from 'fs'
 
 export function runLocalCMD(cmd:string, condToReturn?:any, onExit?:boolean, onData?:any) {
     try {
@@ -75,7 +74,7 @@ export async function buildDockerImage(imageName:string) {
 
 export async function isDockerImageBuilt(imageName: string) {
     const cmd = `docker inspect --type=image ${imageName}`;
-    let response = await runLocalCMD(cmd);
+    let response:any = await runLocalCMD(cmd);
     if(response.err) {
         return false;
     }
@@ -88,15 +87,6 @@ export async function runDockerImage(ports:any, containerName:string ,imageName:
     const response = await runLocalCMD(cmd);
     return response;
 }
-
-// export async function runDockerImage(port:number, containerName:string ,imageName: string) {
-//     const cmd = `docker run --name ${containerName} -d -p ${ports.vnc}:${config.CONTAINER_VNC_PORT} -p ${ports.iocore}:${config.CONTAINER_IOCORE_PORT} -p ${ports.videoAnalayzer}:${config.CONTAINER_VIDEO_ANALYZER_PORT} -p ${ports.devCustom}:${config.CONTAINER_DEV_CUSTOM_PORT} ${imageName} `;
-//     const response = await runLocalCMD(cmd);
-//     return response;
-// }
-
-
-
 
 export async function copyFileFromContainer(containerId:string, containerFileName:string, newFileName?:string) {
     const cotainerIoFilePath = `${containerId}:/usr/src/app/${containerFileName}`
@@ -165,7 +155,7 @@ export async function copyLocalIoFile(ioFilePath: string) {
 
 export async function isPortUsed(port:any) {
     const command = isWindows() ? `netstat -ano | findStr "${port}" `  : `lsof -Pi :${port} -sTCP:LISTEN -t`;
-    const response = await runLocalCMD(command);
+    const response:any = await runLocalCMD(command);
     return response['exit'] ? false : true;
 }
 
@@ -186,6 +176,6 @@ export async function genaratePortNumber() {
 
 export async function removeUserSessionFolder(userSessionFolderPath:any) {
     const cmd = `rm -rf ${userSessionFolderPath}`;
-    let response = await runLocalCMD(cmd);
+    await runLocalCMD(cmd);
     return;
 }

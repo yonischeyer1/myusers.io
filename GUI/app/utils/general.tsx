@@ -1,4 +1,8 @@
+import { Box, Slide, Typography } from "@material-ui/core";
+import { TransitionProps } from "@material-ui/core/transitions";
+import React from "react";
 import { Transform } from "stream";
+import crypto from 'crypto';
 
 
 let appPath = require('electron').remote.app.getAppPath()
@@ -16,9 +20,9 @@ export function isWindows( ) {
 }
 
 export const sleep = (timeInMs:number) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(()=>{
-      resolve()
+      resolve(null)
     }, timeInMs)
   })
 }
@@ -45,13 +49,13 @@ export function toDataURL(url:any, callback:any) {
 export class ExtractFrames extends Transform {
   delimiter: any;
   buffer: any;
-  constructor(delimiter) {
+  constructor(delimiter:any) {
     super({ readableObjectMode: true })
     this.delimiter = Buffer.from(delimiter, "hex")
     this.buffer = Buffer.alloc(0)
   }
 
-  _transform(data, enc, cb) {
+  _transform(data:any, enc:any, cb:any) {
     // Add new data to buffer
     this.buffer = Buffer.concat([this.buffer, data])
     while (true) {
@@ -68,4 +72,60 @@ export class ExtractFrames extends Transform {
     }
     cb()
   }
+}
+
+export interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+
+export function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+
+export function a11yProps(index: any) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
+export const Transition = React.forwardRef(function Transition(
+props: TransitionProps & { children?: React.ReactElement },
+ref: React.Ref<unknown>,
+) {
+return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+export const getRandomId = () => {
+  return crypto.randomBytes(20).toString('hex');
+}
+
+export const setStatePromisifed = (newState:any) => {
+  return new Promise((resolve)=>{
+    setTimeout(()=>{
+      this(newState)
+      resolve(null);
+    },0)
+  })
 }

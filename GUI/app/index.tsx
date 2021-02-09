@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
-import Root from './components/Root';
+import Root from './Root';
 import './app.global.css';
 import { buildDockerImage, isDockerImageBuilt } from './utils/IHost';
-import { IMAGE_NAME } from './utils/Container.controller';
+import { IMAGE_NAME } from './services /container.service';
 import ServiceStore from './services /store.service'
 
 

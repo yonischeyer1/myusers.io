@@ -33,10 +33,14 @@
 .root {
   flex-grow: 1;
   background-color: white;
+  height:100vh;
+  color:white;
 }
 
 .app-bar {
   position: relative !important;
+  backgroundColor: #232c39;
+  color:white;
 }
 .title {
    margin-left: 2px;

@@ -1,29 +1,21 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
 import styles from './PlayerLiveViewModal.css'
+import { Transition } from '../../utils/general';
+import PlayerLiveViewModalEvents from './PlayerLiveViewModal.events';
 
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const _events = new PlayerLiveViewModalEvents();
 
 export default function FullScreenDialog(props:any) {
   const { open, port, stopPlaying } = props;
-  const handleClose = (e:any) => {
-    const {handleLivePreviewModalClose} = props;
-    handleLivePreviewModalClose(false);
-  };
+
+  _events.setConstructor(null, null, props)
 
   return open ? (
     <div>
@@ -33,7 +25,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
              Player Live view 
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
+            <Button color="inherit" onClick={_events.handleClose}>
                 Close
               </Button>
             </Toolbar>

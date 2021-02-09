@@ -23,7 +23,6 @@ connectedToServer(e:any) {
 
 componentDidUpdate(prevProps) {
     if(this.props.stopRecord) {
-        console.log("stopRecord")
         this.stopRecording();
     } else if (this.props.port && prevProps.port !== this.props.port) {
       this.connectToContainerVnc();
@@ -61,7 +60,6 @@ readQueryVariable(name:any, defaultValue:any) {
 }
 connectToContainerVnc() {
 const { port } = this.props
-console.log("port",port)
 return new Promise((resolve, reject)=>{
         const host = "localhost"
         const password = this.readQueryVariable('password',"");

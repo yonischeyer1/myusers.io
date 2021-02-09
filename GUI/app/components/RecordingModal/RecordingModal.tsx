@@ -1,33 +1,21 @@
 import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
 import { TextField, CircularProgress } from '@material-ui/core';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
-import moment from 'moment'
-import Container, { CONTAINER_MODE } from '../../utils/Container.controller';
-import RecordModal from '../RecordModal/RecordModal'
-import ServiceStore from '../../services /store.service'
-import { User } from '../../models/User.model';
-import { Account } from '../../models/Account.model';
-import { removeContainerByName } from '../../utils/IHost';
+import RecordModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
+import { Transition } from '../../utils/general';
+import RecordingModalEvents from './RecordingModal.events';
+import ServiceStore from '../../services /store.service';
 
-const serviceStore = new ServiceStore()
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const serviceStore = new ServiceStore();
+const _events = new RecordingModalEvents();
 
-let loginFlagOnce:any = false;
 
 export default function FullScreenDialog(props:any) {
   const { open } = props;
@@ -57,108 +45,12 @@ export default function FullScreenDialog(props:any) {
         resolve(null);
       },0)
     })
-  }
+  } 
 
-  const startLogin = async (e:any) => {
-    const user = serviceStore.getAppStateValue('currentUser');
-    const loginURL = serviceStore.getAppStateValue('loginURL')
-    const loginContainer = new Container(CONTAINER_MODE.login);
-    await loginContainer.init()
-    loginContainer.loadingFunction = setLoadingState;
-    await loginContainer.login(loginURL, user.id)
-    await setState({...state,record:true, port:loginContainer._port,
-      recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
- }
+  const isLoginMode = serviceStore.getAppStateValue('isLoginMode');
 
-  const handleClose = async (e:any) => {
-    loginFlagOnce = false;
-    const loginContainer:any = state.recorderContainer;
-    if(loginContainer) {
-      await removeContainerByName(loginContainer._containerName)
-    }
-    serviceStore.upsertAppStateValue('isLoginMode', false)
-    const {handleRecordingModalClose} = props;
-    handleRecordingModalClose(false);
-  };
-  const  initRecorder = async () => {
-    const user = serviceStore.getAppStateValue('currentUser')
-    const recorderContainer = new Container(CONTAINER_MODE.recorder);
-    await recorderContainer.init()
-    recorderContainer.loadingFunction = setLoadingState;
-    await recorderContainer.record(state.startUrl, user.id)
-    serviceStore.upsertAppStateValue('startUrl',state.startUrl)
-    await setState({...state,record:true, port:recorderContainer._port,
-        recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:recorderContainer})
-  }
-  const setLoadingState = async (loading:boolean) => {
-    await setState({...state,loading})
-  }
-  const startRecording = async () => {
-    await initRecorder()
-   }
-   const stopRecording = async (e:any) => {
-      const totalRecordTime = moment(new Date()).diff(moment(state.startRecordingDateTime))
-      const { recorderContainer } = state;
-      await setState({...state,stopRecord: true, stopButtonDisable:true});
-      setTimeout(async ()=>{
-       await recorderContainer.stopRecording();
-       await setState({...state, record:false, stopRecord: false, openModal:true, totalRecordTime, recordButtonDisable:false})
-      },2000)
-   }
+  _events.setConstructor(state, setState, props)
 
-   const handleModalClosing = async (state?:any, recordAgain?:any) => {
-    if(recordAgain) {
-      await setState(Object.assign(state,{openModal:false}))
-      startRecording();
-      return
-    }
-    await setState(Object.assign(state,{openModal:false}))
-   }
-
-   const abort = async (e:any) => {
-    await setState(Object.assign(state,{loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true}))
-    await setState(Object.assign(state,{loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false}))
-   }
-
-   const finishLogin = async (e:any) => {
-     loginFlagOnce = false;
-     serviceStore.upsertAppStateValue('isLoginMode', false)
-     const {handleRecordingModalClose} = props
-     const user = serviceStore.getAppStateValue('currentUser')
-     const loginContainer = state.recorderContainer;
-     const userId:any = await saveAccount() 
-     await loginContainer.finishLogin(user.id, userId);
-     await removeContainerByName(loginContainer._containerName)
-
-     handleRecordingModalClose()
-    }
-
-    const handleURLChange = async (e:any) => {
-      await setState(Object.assign(state,{startUrl: e.target.value}))
-    }
-
-   const saveAccount = async () => {
-    const users:any = serviceStore.readDocs('users');
-    const currentUser = serviceStore.getAppStateValue('currentUser')
-    const accountName = serviceStore.getAppStateValue('accountName')
-    const loginURL = serviceStore.getAppStateValue('loginURL')
-    const accountToInsert:Account = {
-      name: accountName,
-      loginURL
-    }
-    const createdAccountId:any = serviceStore.createDoc('accounts', accountToInsert);
-    let userIdToReturn = null;
-    userIdToReturn = currentUser.id
-    users[currentUser.id].accountsIds.push(createdAccountId)
-    serviceStore.updateDocs('users', users)
-    return userIdToReturn
-   }
-   
-   const isLoginMode:any = serviceStore.getAppStateValue('isLoginMode')
-   if(open && isLoginMode && !loginFlagOnce) {
-      loginFlagOnce = true;
-      startLogin(null);
-   }
    
   return open ? (
     <div>
@@ -166,10 +58,10 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {serviceStore.getAppStateValue('isLoginMode') ? 'Login Account' : ' Recording wizard '}
+              {isLoginMode ? 'Login Account' : ' Recording wizard '}
             
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
+            <Button color="inherit" onClick={_events.handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -179,28 +71,28 @@ export default function FullScreenDialog(props:any) {
          <br/>
            <div style={{color:"black",display:"flex",width:"100%",height:"auto", justifyContent:"center"}}>
              {
-               serviceStore.getAppStateValue('isLoginMode') ?              
+               isLoginMode ?              
                <div className={styles["buttons-container"]}>
                 <div className={styles["recoreder-control-button"]}> 
-               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={finishLogin}>Finish</Button>      
+               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin}>Finish</Button>      
                </div>
                </div> : 
                  <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
-                    <Button size="small" variant="outlined" color="secondary" disabled={state.recordButtonDisable} onClick={startRecording}>record</Button> 
+                    <Button size="small" variant="outlined" color="secondary" disabled={state.recordButtonDisable} onClick={_events.startRecording}>record</Button> 
                  </div>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={stopRecording}>stop</Button>
+                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={_events.stopRecording}>stop</Button>
                  </div>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={abort}>abort</Button>
+                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={_events.abort}>abort</Button>
                  </div>
                </div>
              }
              <div style={{width:"auto"}}>
              {
-               serviceStore.getAppStateValue('isLoginMode') ? null : <TextField disabled={state.recordButtonDisable} 
-               onChange={handleURLChange} 
+               isLoginMode ? null : <TextField disabled={state.recordButtonDisable} 
+               onChange={_events.handleURLChange} 
                label="URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              }
                  {
@@ -213,7 +105,7 @@ export default function FullScreenDialog(props:any) {
                  }
               </div>
            </div>
-           <RecordModal recorderContainer={state.recorderContainer} totalRecordTime={state.totalRecordTime} open={state.openModal} handleModalClose={handleModalClosing}/>
+           <RecordModal recorderContainer={state.recorderContainer} totalRecordTime={state.totalRecordTime} open={state.openModal} handleModalClose={_events.handleModalClosing}/>
          </div>
         </div>
       </Dialog>

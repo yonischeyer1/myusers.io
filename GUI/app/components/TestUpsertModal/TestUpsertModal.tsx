@@ -4,28 +4,19 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
 import { TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-import { Test, TestModel, TEST_STATUS } from '../../models/Test.model';
 import styles from './TestUpsertModal.css'
 
-import ServiceStore from '../../services /store.service'
+import { Transition } from '../../utils/general';
+import TestUpsertModalEvents from './TestUpsertModal.event';
+ 
+const _events = new TestUpsertModalEvents();
 
-const serviceStore = new ServiceStore();
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-let onceflag = false;
 export default function FullScreenDialog(props:any) {
   let users:any = []
   let actions:any = []
-  const { open, currentTestPicked } = props;
+  const { open } = props;
   const [state, _setState] = React.useState({
     testName:"",
     pickedUserId:"",
@@ -44,68 +35,8 @@ export default function FullScreenDialog(props:any) {
     })
   }
 
-  const handleClose = async (e:any) => {
-    onceflag = false;
-    const {handleUpsertTestModalClose} = props;
-    handleUpsertTestModalClose(false);
-    await setState({...state, suite:[], suiteName:''})
-  };
+  _events.setConstructor(state, setState, props)
 
-  const getUserActions = async (e:any) => {
-    const menuItemSelected = e.target.value;
-    const user:any = users[menuItemSelected];
-    let userActions = []
-    for(const userActionId of user.actionsIds) {
-      userActions.push(actions[userActionId])
-    }
-    return {userActions, user};
-  }
-
-  const handleUserPick = async (e:any) => {
-    const {userActions, user} = getUserActions(e);
-    await setState({...state, pickedUserId:user.id, pickedUserActions:userActions});
-  }
-
-  const handleActionPick = async (e:any) => {
-    const pickedAction = e.target.value
-    await setState({...state, pickedUserAction:pickedAction})
-  }
-
-  const save = async (e:any) => {
-    const test:Test = {
-      suiteName:state.suiteName,
-      suite:state.suite,
-      lastFailResult:null
-    }
-    serviceStore.createDoc('tests', test);
-    handleClose(null)
-  }
-
-  const addTestToSuite = async (e:any) => {
-    const test:TestModel = {
-      testName:state.testName,
-      userId:state.pickedUserId,
-      actionId:state.pickedUserAction,
-      schedule:{},
-      status:TEST_STATUS.IDLE
-    }
-    await setState({...state, suite:[...state.suite, test], testName:"", pickedUserId:"", pickedUserAction:"", pickedUserActions:null});
-  }
-  const deleteTestFromSuite = async (test:any) => {
-    const newSuite = state.suite.filter(item => item.testName !== test.testName)
-    await setState({...state, suite:newSuite})
-  }
-
-  (async ()=>{
-    if(open) {
-      users = serviceStore.readDocs('users');
-      actions = serviceStore.readDocs('actions');
-      if(currentTestPicked && !onceflag) {
-        onceflag = true;
-        await setState({...state, suite:currentTestPicked.suite, suiteName:currentTestPicked.suiteName})
-      }
-    }
-  })()
   
   return open ? (
     <div style={{overflow:"hidden"}}>
@@ -115,7 +46,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               {state.suiteName ? `Edit suite: ${state.suiteName}` : "Create new test suite"}
             </Typography>
-            <Button color="inherit" onClick={handleClose}>
+            <Button color="inherit" onClick={_events.handleClose}>
                 Close
               </Button>
             </Toolbar>
@@ -143,7 +74,7 @@ export default function FullScreenDialog(props:any) {
                labelId="demo-simple-select-label"
                id="demo-simple-select"
                value={state.pickedUserId}
-               onChange={handleUserPick}>
+               onChange={_events.handleUserPick}>
                {
                  !users ? null : Object.values(users).map((user:any)=>{
                    return <MenuItem value={user.id}>{user.name}</MenuItem>
@@ -159,7 +90,7 @@ export default function FullScreenDialog(props:any) {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={state.pickedUserAction}
-              onChange={handleActionPick}>
+              onChange={_events.handleActionPick}>
               {
                 !state.pickedUserActions ? null : state.pickedUserActions.map((userAction:any)=>{
                   return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
@@ -169,7 +100,7 @@ export default function FullScreenDialog(props:any) {
           </FormControl>
           </div> 
           <div className={styles["add-button-container"]} >
-             <Button size="small" variant="outlined" color="primary" onClick={addTestToSuite}>ADD TEST +</Button>
+             <Button size="small" variant="outlined" color="primary" onClick={_events.addTestToSuite}>ADD TEST +</Button>
           </div>
         </div> 
              <br/> <br/>
@@ -194,7 +125,7 @@ export default function FullScreenDialog(props:any) {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={test.userId}
-                  onChange={handleUserPick}>
+                  onChange={_events.handleUserPick}>
                   {
                     !users ? null : Object.values(users).map((user:any)=>{
                       return <MenuItem  value={user.id}>{user.name}</MenuItem>
@@ -211,13 +142,13 @@ export default function FullScreenDialog(props:any) {
                  labelId="demo-simple-select-label"
                  id="demo-simple-select"
                  value={test.actionId}
-                 onChange={handleActionPick}>
+                 onChange={_events.handleActionPick}>
                     <MenuItem value={test.actionId}>{actions[test.actionId].name}</MenuItem>
                </Select>
              </FormControl>
              </div>
              <div className={styles["add-button-container"]} >
-             <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=> { deleteTestFromSuite(test) }}>Delete</Button>
+             <Button size="small" variant="outlined" color="secondary" onClick={(e:any)=> { _events.deleteTestFromSuite(test) }}>Delete</Button>
              </div>
              </div>
            </div>  
@@ -227,9 +158,9 @@ export default function FullScreenDialog(props:any) {
         </div>
         <br/><br/>    
          <div className={styles["done-cancel-btns"]}>
-         <Button size="small" variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>
+         <Button size="small" variant="outlined" color="secondary" onClick={_events.handleClose}>Cancel</Button>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-         <Button style={{position:"absolute", right:0}} size="small" variant="outlined" color="primary" onClick={save}>Done</Button>
+         <Button style={{position:"absolute", right:0}} size="small" variant="outlined" color="primary" onClick={_events.save}>Done</Button>
          </div>
         </div>
       </Dialog>

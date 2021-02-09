@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs'
-import { APP_CWD } from '../utils/general'
+import { APP_CWD, getRandomId } from '../utils/general'
 import EventEmitter from 'events'
 
 
@@ -51,7 +51,7 @@ export default class ServiceStore {
     createDoc(collectionName:any, newDoc:any) {
         console.log("createDoc")
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
-        copyOfDoc["id"] = crypto.randomBytes(20).toString('hex');// create random id
+        copyOfDoc["id"] = getRandomId();// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;
         this.save(collectionName, this._store.DB[collectionName])
         this._myEmitter.emit(`DB-reread-${collectionName}`)
