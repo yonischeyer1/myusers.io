@@ -1,6 +1,6 @@
 # MyUsers.io - web/os testing software [WIP]
 
-My users is a forever free web/os testing software that aims to automate tests on websites in the most relible, easy and user friendly way.
+My users is a forever free web/os testing software based on electron and docker that aims to automate tests on websites in the most relible, easy and user friendly way.
 
   
   
@@ -21,7 +21,7 @@ My users is a forever free web/os testing software that aims to automate tests o
 
 6. Automate tests on any environment that supports vnc.
 
-7. Testing 3rd party websites
+7. Automate Tests 3rd party websites
 
   
 
