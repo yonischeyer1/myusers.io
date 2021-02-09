@@ -200,7 +200,7 @@ yarn run dev
 
 Open io-core folder with intellij
 Create artifact (make sure you save manifest in resources folder)
-Build artifact and copy it to dockerMeta folder in GUI/app/dockerMeta
+Build artifact and copy the jar file output to dockerMeta folder in GUI/app/dockerMeta
 ```
 
 ## Docs
