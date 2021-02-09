@@ -67,9 +67,16 @@ If every website owner starts using this testing software we can accumulate a sc
 That will be composed from the automated tests results and reports.
 
   
-  
+ ## How it works  :
+  You can record intractions with any website and play it later multiple times one after the other and in parallel.
+  Classic web testing depends on html selectors in order to intract with an element of a website
+  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been done correctly by:
+   first sampling images from user validated recording session of intraction with the target website. 
+   Then playing the recorded intractions on the targetd website checking every action (click or enter) image is matching the image of the current runing session.
+  The image matching method has it share of quircks but to midigate we have an interactive troubleshoot menu that guides the user on what tool to use in order to fix the failed the test or report a bug to the ticketing system, email or IM app. 
 
-## How it Works :
+
+## Detailed :
 
   
 
