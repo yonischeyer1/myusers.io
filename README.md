@@ -21,6 +21,8 @@ My users is a forever free web/os testing software that aims to automate tests o
 
 6. Automate tests on any environment that supports vnc.
 
+7. Testing 3rd party websites
+
   
 
 ## GOALS:
