@@ -121,10 +121,10 @@ export const getRandomId = () => {
   return crypto.randomBytes(20).toString('hex');
 }
 
-export const setStatePromisifed = (newState:any) => {
+export const setStatePromisifed = (setState:any, newState:any) => {
   return new Promise((resolve)=>{
     setTimeout(()=>{
-      this(newState)
+      setState(newState)
       resolve(null);
     },0)
   })

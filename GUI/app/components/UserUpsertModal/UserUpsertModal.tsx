@@ -58,7 +58,7 @@ export default function FullScreenDialog(props:any) {
           <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
              value={state.userNameView}
-             onChange={_events.handleUserNameChange} 
+             onChange={_events.handleUserNameChange.bind(_events)} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>

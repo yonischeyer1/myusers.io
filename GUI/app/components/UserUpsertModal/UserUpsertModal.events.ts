@@ -25,7 +25,7 @@ export default class UserUpsertModalEvents {
 
     async setConstructor(state:any, setState:any, props:any) {
          this.state = state;
-         this.setState = setStatePromisifed.bind(setState);
+         this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
          if(!this.initFlag) {
             this.initFlag = true;
