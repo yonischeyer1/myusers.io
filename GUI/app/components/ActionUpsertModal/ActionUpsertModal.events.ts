@@ -1,38 +1,56 @@
 import ServiceStore from "../../services /store.service";
-
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
+import { setStatePromisifed } from "../../utils/general";
 
 const serviceStore = new ServiceStore();
+let instance:any = null;
 export default class ActionsUpsertModalEvents {
-    constructor() {}
-
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+    initFlag:any
+    setState:any
+    state:any
+    props:any
+    constructor() {
+        if(instance) {
+            return instance;
+        }
+        this.initFlag = false;
+        instance = this;
+        return this;
     }
+  
+     async setConstructor(state:any, setState:any, props:any) {
+         this.state = state;
+         this.setState = setStatePromisifed.bind(null, setState);
+         this.props = props;
+         if(!this.initFlag) {
+            this.initFlag = true;
+            await this.init();
+         }
+      }
+  
+      async init () {
+       
+      }
+  
 
     async handleClose (e:any)  {
-        const {handleUpsertActionModalClose} = _props;
+        const {handleUpsertActionModalClose} = this.props;
         handleUpsertActionModalClose(false);
     };
     
     async handleDeletePopupClose (e:any) {
-        await _setState({..._state, itemAndCollectionNameToDelete:false, openDeletePopup:false})
+        await this.setState({...this.state, itemAndCollectionNameToDelete:false, openDeletePopup:false})
       }
     
     async handleEditTagModalClose (e:any) {
-        await _setState({..._state, openEditTagModal:false, zeTag:null})
+        await this.setState({...this.state, openEditTagModal:false, zeTag:null})
     }
      
     async handleRecordingModalClose () {
-        await _setState({..._state, openRecordingModal:false})
+        await this.setState({...this.state, openRecordingModal:false})
     }
     
     async handleRecordBtnClick  (e:any) {
-        await _setState({..._state, openRecordingModal:true})
+        await this.setState({...this.state, openRecordingModal:true})
     }
 
     async handleDynamicSnapshotModalSave ({tag, coords, drawURI}) {
@@ -40,13 +58,13 @@ export default class ActionsUpsertModalEvents {
     }
 
     async handleDynamicSnapshotModalClose (e:any) {
-        await _setState({..._state, dynamicSnapshotOpen:false})
+        await this.setState({...this.state, dynamicSnapshotOpen:false})
     }
 
     async handleActionNameChange (e:any) {
         const key = "actionName"
         const newActionName = e.target.value
-        await _setState({..._state, actionName:newActionName})
+        await this.setState({...this.state, actionName:newActionName})
         serviceStore.upsertAppStateValue(key, newActionName)
     }
 
@@ -55,11 +73,11 @@ export default class ActionsUpsertModalEvents {
     }
 
     async editTag (tag:any) {
-        await _setState({..._state, zeTag:tag, openEditTagModal:true})
+        await this.setState({...this.state, zeTag:tag, openEditTagModal:true})
     }
 
     async deleteTag (collectionName:any, item:any) {
-        await _setState({..._state, openDeletePopup:true ,itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
+        await this.setState({...this.state, openDeletePopup:true ,itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
     }
     
     async handleTagMenuItemClick (e: any, index: number,tag:any)  {
@@ -79,7 +97,7 @@ export default class ActionsUpsertModalEvents {
     };
 
     async saveCurrentActionTags (e:any) {
-        const { pickedAction } = _props;
+        const { pickedAction } = this.props;
         const actions = serviceStore.readDocs('actions')
         actions[pickedAction.id].tags = pickedAction.tags;
         serviceStore.updateDocs('actions', actions);

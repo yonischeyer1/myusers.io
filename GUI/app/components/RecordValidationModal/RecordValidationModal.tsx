@@ -15,13 +15,13 @@ const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTime
 
 let saveThis:any = null 
 
-const _events = new RecordValidationModalEvents()
 
 export default function FullScreenDialog(props:any) {
+  const _events = new RecordValidationModalEvents()
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
-  const { open, recorderContainer } = props;
+  const { open } = props;
 
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
     liveViewPort:null,
     liveViewPortModalOpen:false,
     dynamicSnapshotModalData:null,
@@ -29,15 +29,6 @@ export default function FullScreenDialog(props:any) {
     screen:null,
     tagsPresent:null,
   })
-
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
 
   _events.setConstructor(state, setState, props)
 
@@ -49,7 +40,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Validate & Save 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
               Save
             </Button>
           </Toolbar>
@@ -66,9 +57,9 @@ export default function FullScreenDialog(props:any) {
            {
              state.screen === SCREENS.validate ?
              <div className={styles["modal-verifaction-buttons-controls"]}>
-             <Button size="small" variant="outlined" color="secondary"  onClick={_events.handleClose}>record again</Button>
+             <Button size="small" variant="outlined" color="secondary"  onClick={_events.handleClose.bind(_events)}>record again</Button>
                  <div className={styles["yes-button"]}>
-                 <Button  size="small" variant="outlined" color="primary" onClick={_events.userValidatedIoActions}>yes</Button>
+                 <Button  size="small" variant="outlined" color="primary" onClick={_events.userValidatedIoActions.bind(_events)}>yes</Button>
                  </div>
                </div> : null
            }
@@ -79,11 +70,11 @@ export default function FullScreenDialog(props:any) {
                  state.tagsPresent.map((tag:any)=>{
                    return <div style={{display:'flex'}}>
                      <div>
-                     <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ _events.handleTagImageClick(tag)}}/>
+                     <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ _events.handleTagImageClick.bind(_events)(tag)}}/>
                      </div>
                      <div>
                        insert time in seconds
-                      <input value={tag.maxWaitTimeUntilFail} onChange={(e)=>{ _events.handleTagTimeoutChange(e,tag)}} type="number" max={59}/>
+                      <input value={tag.maxWaitTimeUntilFail} onChange={(e)=>{ _events.handleTagTimeoutChange.bind(_events)(e,tag)}} type="number" max={59}/>
                      </div>
                    </div>
                  })
@@ -92,15 +83,15 @@ export default function FullScreenDialog(props:any) {
            }
            <div className={styles["record-modal-save-btn-container"]}>
            <Button  size="small" variant="outlined" color="primary" onClick={()=>{
-                   saveThis ? _events.saveTags(saveThis.tags, saveThis.ioActions) : null
+                   saveThis ? _events.saveTags.bind(_events)(saveThis.tags, saveThis.ioActions) : null
                    saveThis = null
             }}>save</Button>
            </div>
         </div>
       </Dialog>
-      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
-      <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose} open={state.liveViewPortModalOpen} stopPlaying={false} port={state.liveViewPort}/>
+      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+      <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} open={state.liveViewPortModalOpen} stopPlaying={false} port={state.liveViewPort}/>
     </div>
   ) : <div></div>
 }

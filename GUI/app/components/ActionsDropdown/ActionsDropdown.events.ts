@@ -1,32 +1,42 @@
-import ServiceStore from "../../services /store.service";
+import { setStatePromisifed } from "../../utils/general";
 
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
-let _anchorRef:any = null;
+
 
 export default class ActionsDropdownEvents {
-    constructor() {}
-
-    setConstructor(state:any, setState:any, props:any, anchorRef:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
-         _anchorRef = anchorRef;
+    initFlag:any
+    setState:any
+    state:any
+    props:any
+    anchorRef:any
+    constructor() {   }
+  
+     async setConstructor(state:any, setState:any, props:any, anchorRef:any) {
+         this.anchorRef = anchorRef;
+         this.state = state;
+         this.setState = setStatePromisifed.bind(null, setState);
+         this.props = props;
+         if(!this.initFlag) {
+            this.initFlag = true;
+            await this.init();
+         }
+      }
+  
+    async init () {
+       
     }
     async handleMenuItemClick  (option:any) {
-        _props.handleMenuItemClick(option); 
+        this.props.handleMenuItemClick(option); 
     }
    
    async handleToggle (index:any)  {
-      await _setState({..._state, open: !_state.open})
+      await this.setState({...this.state, open: !this.state.open})
    };
    
    async handleClose (e: any) {
-       if (_anchorRef.current && _anchorRef.current.contains(e.target as HTMLElement)) {
+       if (this.anchorRef.current && this.anchorRef.current.contains(e.target as HTMLElement)) {
          return;
        }
-       await _setState({..._state, open:false})
+       await this.setState({...this.state, open:false})
    };
     
 }

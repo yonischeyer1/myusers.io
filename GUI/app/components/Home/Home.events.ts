@@ -22,9 +22,19 @@ export default class HomeEvents {
     }
 
     async setConstructor(state:any, setState:any, props:any) {
-        this.state = state;
-        this.setState = setStatePromisifed.bind(null, setState);
-        this.props = props;
+         this.state = state;
+         this.setState = setStatePromisifed.bind(null, setState);
+         this.props = props;
+         if(!this.initFlag) {
+            this.initFlag = true;
+            await this.init();
+         }
+   }
+
+   async init () {
+       const tests = Object.values(serviceStore.readDocs('tests'));
+       const users =  Object.values(serviceStore.readDocs('users'));
+       this.setState({...this.state, users, tests})
    }
 
     //*** Modals Close events */

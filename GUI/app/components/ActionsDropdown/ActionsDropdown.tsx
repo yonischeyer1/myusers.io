@@ -10,24 +10,16 @@ export interface MenuItemOption {
     disabled:boolean;
 }
 
-const _events = new ActionsDropdownEvents();
 
 export default function ActionsDropdown (props:any) {
+  const _events = new ActionsDropdownEvents();
   const options:MenuItemOption = props.options;
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const randomId = getRandomId();
 
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
         open:false
   });
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
 
   _events.setConstructor(state, setState, props, anchorRef)
 
@@ -43,7 +35,7 @@ export default function ActionsDropdown (props:any) {
    aria-expanded={state.open ? 'true' : undefined}
    aria-label="select merge strategy"
    aria-haspopup="menu"
-   onClick={_events.handleToggle}
+   onClick={_events.handleToggle.bind(_events)}
   >
    <ArrowDropDownIcon />
   </Button>
@@ -56,13 +48,13 @@ export default function ActionsDropdown (props:any) {
       transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
     }}>
     <Paper>
-      <ClickAwayListener onClickAway={_events.handleClose}>
+      <ClickAwayListener onClickAway={_events.handleClose.bind(_events)}>
         <MenuList id={`split-button-menu-${randomId}`}>
           {options.map((option:any) => (
             <MenuItem
               key={option.label}
               disabled={option.disabled}
-              onClick={(e:any)=>{_events.handleMenuItemClick(option)}}
+              onClick={(e:any)=>{_events.handleMenuItemClick.bind(_events)(option)}}
             >
               {option.label}
             </MenuItem>

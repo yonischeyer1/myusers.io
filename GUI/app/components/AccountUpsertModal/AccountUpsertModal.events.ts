@@ -1,17 +1,27 @@
 import ServiceStore from "../../services /store.service";
-
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null
+import { setStatePromisifed } from "../../utils/general";
 
 const serviceStore = new ServiceStore();
 export default class AccountUpsertModalEvents {
-    constructor() {}
-
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+    initFlag:any
+    setState:any
+    state:any
+    props:any
+    anchorRef:any
+    constructor() {   }
+  
+     async setConstructor(state:any, setState:any, props:any) {
+         this.state = state;
+         this.setState = setStatePromisifed.bind(null, setState);
+         this.props = props;
+         if(!this.initFlag) {
+            this.initFlag = true;
+            await this.init();
+         }
+      }
+  
+    async init () {
+       
     }
 
     async handleClose (e:any)  {

@@ -13,24 +13,15 @@ import { Transition } from '../../utils/general';
 import AccountUpsertModalEvents from './AccountUpsertModal.events';
 
 
-const _events = new AccountUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
+  const _events = new AccountUpsertModalEvents();
   const { open } = props;
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
     openRecordingModal:false,
     accountName:{value:'', disabled:false},
     loginURL:{value:'', disabled:false},
   });
-
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
 
   _events.setConstructor(state, setState, props);
 
@@ -44,7 +35,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Account Upsert 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
@@ -52,28 +43,28 @@ export default function FullScreenDialog(props:any) {
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
              <TextField disabled={state.accountName.disabled} value={state.accountName.value}
-             onChange={_events.handleAccountNameChange} 
+             onChange={_events.handleAccountNameChange.bind(_events)} 
              label="Account name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
           <div className={styles["test-name-container"]}>
              <TextField disabled={state.loginURL.disabled} value={state.loginURL.value}
-             onChange={_events.handleLoginUrlChange} 
+             onChange={_events.handleLoginUrlChange.bind(_events)} 
              label="Login URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
          </div>
          <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={styles["form-control"]}>
-             <Button size="small" variant="outlined" color="primary" onClick={_events.handleLoginClick}>Login</Button>
+             <Button size="small" variant="outlined" color="primary" onClick={_events.handleLoginClick.bind(_events)}>Login</Button>
         </FormControl>
        </div>
             <br/><br/>
          <div className={styles["done-cancel-btns"]}>
-         <Button size="small" variant="outlined" color="secondary" onClick={_events.handleCancelBtnClick}>Cancel</Button>
+         <Button size="small" variant="outlined" color="secondary" onClick={_events.handleCancelBtnClick.bind(_events)}>Cancel</Button>
          &nbsp;&nbsp;
-         <Button size="small" variant="outlined" color="primary" onClick={_events.handleDoneBtnClick}>Done</Button>
+         <Button size="small" variant="outlined" color="primary" onClick={_events.handleDoneBtnClick.bind(_events)}>Done</Button>
          </div>
       </div>
       </Dialog>
-      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose} open={state.openRecordingModal}/>
+      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={state.openRecordingModal}/>
     </div>
   ) : <div></div>
 }

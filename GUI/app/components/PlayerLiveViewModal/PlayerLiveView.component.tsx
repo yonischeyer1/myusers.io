@@ -10,9 +10,10 @@ import { Transition } from '../../utils/general';
 import PlayerLiveViewModalEvents from './PlayerLiveViewModal.events';
 
 
-const _events = new PlayerLiveViewModalEvents();
+
 
 export default function FullScreenDialog(props:any) {
+  const _events = new PlayerLiveViewModalEvents();
   const { open, port, stopPlaying } = props;
 
   _events.setConstructor(null, null, props)
@@ -25,7 +26,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
              Player Live view 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>

@@ -12,16 +12,15 @@ import AccordionDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 //** Others **
-import ServiceStore from '../../services /store.service';
 import styles from './TroubleshootMenu.css';
 import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard';
 import EditTagModal from '../EditTagModal/EditTagModal';
 import { Transition } from '../../utils/general';
 import TroubleshootMenuEvents from './TroubleshootMenu.events';
 
-const _events = new TroubleshootMenuEvents();
 
 export default function FullScreenDialog(props:any) {
+  const _events = new TroubleshootMenuEvents();
   const { open, pickedTest } = props;
   const [state, _setState] = React.useState({
       failedTag:null,
@@ -30,22 +29,8 @@ export default function FullScreenDialog(props:any) {
       dynamicSnapshotOpen:false,
       openEditTagModal:false
   });
-  
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
 
   _events.setConstructor(state, _setState, props);
-
-
-
-
-
 
    //** HTML */
   return open ? (
@@ -56,7 +41,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Troubleshoot Menu
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
@@ -76,7 +61,7 @@ export default function FullScreenDialog(props:any) {
              You can use static masking wizard in order to cover those parts 
           </Typography>
           <br/>
-          <Button onClick={_events.handleOpenMaksingWizard} variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={_events.handleOpenMaksingWizard.bind(_events)} variant="outlined" color="primary">Open Static Masking wizard</Button>
           </div>
         </AccordionDetails>
       </Accordion>
@@ -93,7 +78,7 @@ export default function FullScreenDialog(props:any) {
                 Replace current tag image with the faild tag image.
             </Typography>
             <br/>
-          <Button onClick={_events.handleUIChange} variant="outlined" color="primary">Replace tag snapshot</Button>
+          <Button onClick={_events.handleUIChange.bind(_events)} variant="outlined" color="primary">Replace tag snapshot</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -110,7 +95,7 @@ export default function FullScreenDialog(props:any) {
                 You can increase the wait time of each tag and number of attempts
             </Typography>
             <br/>
-          <Button onClick={_events.handleSetTagWaitTime} variant="outlined" color="primary">Increase tag wait time</Button>
+          <Button onClick={_events.handleSetTagWaitTime.bind(_events)} variant="outlined" color="primary">Increase tag wait time</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -130,7 +115,7 @@ export default function FullScreenDialog(props:any) {
                 When you do detect an exepction in behaviour you should report it to a ticketing system.
             </Typography>
             <br/>
-          <Button onClick={_events.handleBugReport} variant="outlined" color="primary">Report Bug</Button>
+          <Button onClick={_events.handleBugReport.bind(_events)} variant="outlined" color="primary">Report Bug</Button>
             </div>
         </AccordionDetails>
       </Accordion>
@@ -148,7 +133,7 @@ export default function FullScreenDialog(props:any) {
                 You can add this snapshot to the tag and it will check to see of one of the options is correct
             </Typography>
             <br/>
-          <Button onClick={_events.handleAddSnapshotToTag} variant="outlined" color="primary">Add snaphsot to tag</Button>
+          <Button onClick={_events.handleAddSnapshotToTag.bind(_events)} variant="outlined" color="primary">Add snaphsot to tag</Button>
         </div>
         </AccordionDetails>
       </Accordion>
@@ -165,7 +150,7 @@ export default function FullScreenDialog(props:any) {
                 You can skip tag snapshot matching (Be carful with this option it can lead to unexpeceted behaviour). 
             </Typography>
             <br/>
-          <Button onClick={_events.handleSkipTag} variant="outlined" color="primary"> Skip tag</Button>
+          <Button onClick={_events.handleSkipTag.bind(_events)} variant="outlined" color="primary"> Skip tag</Button>
          </div>
         </AccordionDetails>
       </Accordion>
@@ -184,7 +169,7 @@ export default function FullScreenDialog(props:any) {
                 from user and when he finishes it will continue the test.
             </Typography>
             <br/>
-          <Button onClick={_events.handleLiveSnapshot} variant="outlined" color="primary">Open Static Masking wizard</Button>
+          <Button onClick={_events.handleLiveSnapshot.bind(_events)} variant="outlined" color="primary">Open Static Masking wizard</Button>
         </div>
         </AccordionDetails>
       </Accordion><br/>
@@ -199,10 +184,10 @@ export default function FullScreenDialog(props:any) {
         </div>
       </div><br/>
       </div>
-      <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose} 
-       handleEditTagSave={_events.handleEditTagSave} tag={state.failedTag ? state.failedTag.tag : null}/>
-      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+      <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
+       handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={state.failedTag ? state.failedTag.tag : null}/>
+      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>

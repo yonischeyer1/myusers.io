@@ -1,48 +1,62 @@
-import ServiceStore from "../../services /store.service";
+import { setStatePromisifed } from "../../utils/general";
 
 
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
-
-const serviceStore = new ServiceStore();
-
+let instance:any = null;
 export default class EditTagModalEvents {
-    constructor() {}
-
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+    initFlag:any
+    setState:any
+    state:any
+    props:any
+    constructor() {
+        if(instance) {
+            return instance;
+        }
+        this.initFlag = false;
+        instance = this;
+        return this;
     }
+
+    async setConstructor(state:any, setState:any, props:any) {
+         this.state = state;
+         this.setState = setStatePromisifed.bind(null, setState);
+         this.props = props;
+         if(!this.initFlag) {
+            this.initFlag = true;
+            await this.init();
+         }
+   }
+
+   async init () {
+       
+   }
     async handleClose (e:any)  {
-        const {handleEditTagModalClose} = _props;
+        const {handleEditTagModalClose} = this.props;
         handleEditTagModalClose(false);
     };
     
     async handleSetTimeoutChange  (e:any) {
           const label = e.target.value
-          const tag = _state.tag
+          const tag = this.state.tag
           tag.waitTime.label = label;
-          await _setState({..._state, tag})
+          await this.setState({...this.state, tag})
       };
     
     async handleCustomWaitTimeChange (e:any)  {
         const value = e.target.value
-        const tag = _state.tag
+        const tag = this.state.tag
         tag.waitTime.value = value
-        await _setState({..._state, tag})
+        await this.setState({...this.state, tag})
       }
     
     async handleSkipChange (e:any) {
         const skip = e.target.checked
-        const tag = _state.tag
+        const tag = this.state.tag
         tag.skip = skip
-        await _setState({..._state, tag})
+        await this.setState({...this.state, tag})
     }
 
     async handleTagImageClick (tag:any) {
-        await _setState({..._state, dynamicSnapshotOpen:true, dynamicSnapshotModalData:tag})
+        await this.setState({...this.state, dynamicSnapshotOpen:true, dynamicSnapshotModalData:tag})
     }
 
     async handleDynamicSnapshotModalSave ({tag, coords, drawURI}) {
@@ -50,12 +64,12 @@ export default class EditTagModalEvents {
     }
     
     async handleDynamicSnapshotModalClose (e:any)  {
-        await _setState({..._state, dynamicSnapshotOpen:false}) 
+        await this.setState({...this.state, dynamicSnapshotOpen:false}) 
     }
 
     async save (e:any) {
-        const { handleEditTagSave } = _props
-        handleEditTagSave(_state);
+        const { handleEditTagSave } = this.props
+        handleEditTagSave(this.state);
     }
     
 }

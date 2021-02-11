@@ -8,11 +8,12 @@ import styles from './DeletePopup.css'
 import { Transition } from '../../utils/general';
 import DeletePopUpEvents from './DeletePopUp.events';
 
-const _events = new DeletePopUpEvents();
+
 
 export default function FullScreenDialog(props:any) {
+  const _events = new DeletePopUpEvents();
   const { itemAndCollectionName } = props;
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
     openRecordingModal:false,
     dynamicSnapshotModalData:false,
     dynamicSnapshotOpen:false,
@@ -24,14 +25,7 @@ export default function FullScreenDialog(props:any) {
     openUserActionBtnGrp:[]
   })
 
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
+
   _events.setConstructor(state, setState, props);
 
   return itemAndCollectionName ? (
@@ -42,7 +36,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Remove {itemAndCollectionName.item.name} 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
@@ -54,9 +48,9 @@ export default function FullScreenDialog(props:any) {
             </div>
             <br/><br/><br/>
             <div>
-            <Button size="small" variant="outlined" color="primary" onClick={_events.handleDeleteItemClick}>Yes</Button>
+            <Button size="small" variant="outlined" color="primary" onClick={_events.handleDeleteItemClick.bind(_events)}>Yes</Button>
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-            <Button size="small" variant="outlined" color="primary" onClick={_events.handleClose}>No</Button>
+            <Button size="small" variant="outlined" color="primary" onClick={_events.handleClose.bind(_events)}>No</Button>
             </div>
        </div>
       </Dialog>

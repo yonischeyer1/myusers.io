@@ -1,28 +1,46 @@
 import ServiceStore from "../../services /store.service";
-import { APP_CWD } from "../../utils/general";
+import { APP_CWD, setStatePromisifed } from "../../utils/general";
 import { removeUserSessionFolder } from "../../utils/IHost";
 
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
+
 
 const serviceStore = new ServiceStore();
+let instance:any = null;
 export default class ActionsDropdownEvents {
-    constructor() {}
+  initFlag:any
+  setState:any
+  state:any
+  props:any
+  constructor() {
+      if(instance) {
+          return instance;
+      }
+      this.initFlag = false;
+      instance = this;
+      return this;
+  }
 
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+   async setConstructor(state:any, setState:any, props:any) {
+       this.state = state;
+       this.setState = setStatePromisifed.bind(null, setState);
+       this.props = props;
+       if(!this.initFlag) {
+          this.initFlag = true;
+          await this.init();
+       }
+    }
+
+    async init () {
+     
     }
 
     async handleClose (e:any) {
-        const {handleDeletePopupClose} = _props;
+        const {handleDeletePopupClose} = this.props;
         handleDeletePopupClose(false);
-      };
+    };
     
     async handleDeleteItemClick (e:any)  {
-        const { collectionName, item, currentUserPicked } = _props.itemAndCollectionName;
+        const { collectionName, item, currentUserPicked } = this.props.itemAndCollectionName;
         if(currentUserPicked) {
           const users = serviceStore.readDocs('users')
           const user = users[currentUserPicked.id]

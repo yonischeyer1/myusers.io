@@ -14,11 +14,11 @@ import { Transition } from '../../utils/general';
 import ActionsUpsertModalEvents from './ActionUpsertModal.events';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
 
-const _events = new ActionsUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
+  const _events = new ActionsUpsertModalEvents();
   const { open, pickedAction } = props;
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
     actionsDropdownOptions: [
       {label:'Edit', disabled:false},
       {label:'Delete', disabled:false}
@@ -33,15 +33,6 @@ export default function FullScreenDialog(props:any) {
     itemAndCollectionNameToDelete:false,
   })
 
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
-
   _events.setConstructor(state, setState, props);
 
 
@@ -53,7 +44,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Action Upsert 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
@@ -61,17 +52,17 @@ export default function FullScreenDialog(props:any) {
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
              <TextField disabled={false} value={state.actionName}
-             onChange={_events.handleActionNameChange} 
+             onChange={_events.handleActionNameChange.bind(_events)} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
             <br/>
         <div style={{display:"flex", alignItems:"center"}}>
         <div className={styles["recoreder-control-button"]}>
-               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.handleRecordBtnClick}>
+               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.handleRecordBtnClick.bind(_events)}>
                  {pickedAction ? "Record Again" : "Record"}</Button>
         </div>
         <div className={styles["live-snapshot-controls"]}>
-        <Button size="small" variant="outlined" color="primary" disabled={false} onClick={_events.handleAddLiveSnapshotClick}>ADD Live snapshot +</Button>
+        <Button size="small" variant="outlined" color="primary" disabled={false} onClick={_events.handleAddLiveSnapshotClick.bind(_events)}>ADD Live snapshot +</Button>
         </div>
         </div>
         <br/><br/> 
@@ -87,7 +78,7 @@ export default function FullScreenDialog(props:any) {
                     <div>
                        Tag name : {tag.name}
                     </div>
-                    <ActionsDropdown options={state.optionsUser} handleMenuItemClick={_events.handleUserMenuItemClick} />
+                    <ActionsDropdown options={state.actionsDropdownOptions} handleMenuItemClick={_events.handleTagMenuItemClick.bind(_events)} />
                   </div>
                   )})
             }
@@ -98,14 +89,14 @@ export default function FullScreenDialog(props:any) {
          <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
          &nbsp;&nbsp;
-         <Button size="small" variant="outlined" color="primary" onClick={_events.saveCurrentActionTags}>Save</Button>
+         <Button size="small" variant="outlined" color="primary" onClick={_events.saveCurrentActionTags.bind(_events)}>Save</Button>
          </div>
      </div>
-     <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose} tag={state.zeTag}/>
-     <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
-     <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
-     <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose} open={state.openRecordingModal}/>
+     <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} tag={state.zeTag}/>
+     <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
+     <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+     <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={state.openRecordingModal}/>
       </Dialog>
     </div>
   ) : <div></div>

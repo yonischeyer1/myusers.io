@@ -1,11 +1,9 @@
 import { Action, Tag, TagType } from "../../models/Action.model";
 import ServiceStore from "../../services /store.service";
+import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 
 
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
 
 const serviceStore = new ServiceStore();
 
@@ -14,36 +12,50 @@ const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTime
 let saveThis:any = null 
 
 export default class RecordValidationModalEvents {
+    initFlag:any
+    setState:any
+    state:any
+    props:any
     constructor() {}
 
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+    async setConstructor(state:any, setState:any, props:any) {
+       this.state = state;
+       this.setState = setStatePromisifed.bind(null, setState);
+       this.props = props;
+       if(!this.initFlag) {
+          this.initFlag = true;
+          await this.init();
+       }
+    }
+ 
+    async init() {
+ 
     }
 
+
+
     async handleClose  (e:any)  {
-        const {handleModalClose} = _props;
-        handleModalClose(..._state, false);
+        const {handleModalClose} = this.props;
+        handleModalClose(...this.state, false);
     };
     
     async handleLivePreviewModalClose (e:any)  {
-        await _setState({..._state, liveViewPortModalOpen:false});
+        await this.setState({...this.state, liveViewPortModalOpen:false});
     }
     
     async handleDynamicSnapshotModalClose (e:any) {
-        await _setState({..._state, dynamicSnapshotOpen:false});
+        await this.setState({...this.state, dynamicSnapshotOpen:false});
     }
     
     async handleTagTimeoutChange (e:any, tagChanged:any) {
         const value = e.target.value
-        const newTags = _state.tagsPresent.map((tag:any)=>{
+        const newTags = this.state.tagsPresent.map((tag:any)=>{
           if(tag.hash === tagChanged.hash) {
              tag.maxWaitTimeUntilFail = value;
           }
           return tag;
         })
-        await _setState({..._state, tagsPresent:newTags})
+        await this.setState({...this.state, tagsPresent:newTags})
       }
     
       async handleDynamicSnapshotModalSave ({tag, coords})  {
@@ -51,7 +63,7 @@ export default class RecordValidationModalEvents {
       }
     
       async startAutoTagging () {
-         const { recorderContainer } = _props;
+         const { recorderContainer } = this.props;
          let { timeStamps } = recorderContainer.autoTaggerData;
          const tags: Tag[] = [];
          for(let bbb = 0; bbb < timeStamps; bbb++) {
@@ -69,7 +81,7 @@ export default class RecordValidationModalEvents {
       }
     
       async userValidatedIoActions (e:any)  {
-        const { recorderContainer } = _props;
+        const { recorderContainer } = this.props;
         const tags = await this.startAutoTagging();
         const action = {
           tagHashFillFlag:true,
@@ -77,15 +89,15 @@ export default class RecordValidationModalEvents {
           tags
         }
         const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
-          await _setState({..._state, liveViewPort:recorderContainer._port, liveViewPortModalOpen:true})
+          await this.setState({...this.state, liveViewPort:recorderContainer._port, liveViewPortModalOpen:true})
         })
         saveThis = {tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} 
         await removeContainerByName(recorderContainer._containerName)
-        await _setState({..._state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
+        await this.setState({...this.state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
       }
     
       async handleTagImageClick (tag:any)  {
-          await _setState({..._state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
+          await this.setState({...this.state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
       }
     
       async saveTags(tags:any, ioActions:any) {

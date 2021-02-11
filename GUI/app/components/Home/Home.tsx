@@ -9,20 +9,18 @@ import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
 import TroubleshootMenu from '../TroubleshootMenu/TroubleshootMenu'
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DeletePopup from '../DeletePopup/DeletePopup'
-import ServiceStore from '../../services /store.service'
 import styles from './Home.css';
 import { a11yProps, TabPanel } from '../../utils/general';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
 import HomeEvents from './Home.events';
 
 
-const serviceStore = new ServiceStore();
 const _events = new HomeEvents();
 
 export default function SimpleTabs(props:any) {
 
 
-const [state, _setState] = React.useState({
+const [state, setState] = React.useState({
   tabIndex:0,
   openUpsertTestModal:false,
   openUpsertUserModal:false,
@@ -47,28 +45,20 @@ const [state, _setState] = React.useState({
   optionsUser:[
     {label:'Edit',disabled:false}, 
     {label:'Delete', disabled:false}
-  ]
+  ],
+  tests:[],
+  users:[]
 });
 
-const setState = (newState:any) => {
-  return new Promise((resolve)=>{
-    setTimeout(()=>{
-      _setState(newState)
-      resolve(null);
-    },0)
-  })
-}
 
-_events.setConstructor(state, setState);
+_events.setConstructor(state, setState, props);
 
-const tests = serviceStore.readDocs('tests');
-const users = serviceStore.readDocs('users');
-
+const {tests, users} = state;
    
 return (
       <div className={styles["root"]} >
         <AppBar className={styles["app-bar"]}  position="static">
-          <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={_events.handleChangeTab} aria-label="simple tabs example">
+          <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={_events.handleChangeTab.bind(_events)} aria-label="simple tabs example">
             <Tab label="Tests" {...a11yProps(0)} />
             <Tab label="Users" {...a11yProps(1)} />
           </Tabs>
@@ -78,9 +68,9 @@ return (
           <div style={{display: state.tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
              <div className={styles["tests-menu-container"]}>
                 {
-                  !tests || Object.values(tests).length === 0 ? <div> 
+                  !tests ||tests.length === 0 ? <div> 
                           You have 0 Tests
-                     </div>: Object.values(tests).map((testSuite:any, testSuiteIdx:any)=> {
+                     </div>: tests.map((testSuite:any, testSuiteIdx:any)=> {
                     return (
                       <div className={styles["test-row"]}>
                          <div className={styles["test-name-container"]}>
@@ -94,7 +84,7 @@ return (
                                  _events.handleFailClick(testSuite)
                               }}>FAIL</Button> : state.currentRuningTestName.status}
                          </div>
-                         <ActionsDropdown options={state.optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick} />
+                         <ActionsDropdown options={state.optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events)} />
                       </div>
                     )
                   }) 
@@ -106,16 +96,16 @@ return (
              state.tabIndex !== 1 ? null:
           <div className={styles["tests-menu-container"]}>
                 {
-                  !users || Object.values(users).length === 0 ? <div>
+                  !users || users.length === 0 ? <div>
                     You have 0 Users
-                  </div> :  Object.values(users).map((user:any, userIdx:any)=> {
+                  </div> : users.map((user:any, userIdx:any)=> {
                     return (<div className={styles["test-row"]}>
                        <div className={styles["test-name-container"]}>
                          name : {user.name}
                        </div>
                        <ActionsDropdown options={state.optionsUser} 
                        handleMenuItemClick={(option:any)=>{
-                        _events.handleUserMenuItemClick(null, option, user);
+                        _events.handleUserMenuItemClick.bind(_events)(null, option, user);
                        }} />
                     </div>)
                   }) 
@@ -127,28 +117,29 @@ return (
         </TabPanel>
 
         <div className={styles["add-test-floating-btn"]}>
-           <Fab disabled={state.tabIndex === 0 && Object.values(users).length === 0} color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick}>
+           <Fab disabled={state.tabIndex === 0 && Object.values(users).length === 0} 
+           color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick.bind(_events)}>
             <AddIcon />
            </Fab>
         </div>
          
-        <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose} 
+        <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} 
         open={state.openDeletePopup} 
         itemAndCollectionName={state.itemAndCollectionNameToDelete} />
 
-        <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose} 
+        <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
         open={state.openliveViewPortModal} stopPlaying={state.stopLiveView} port={state.liveViewPort}/>
 
         <TestUpsertModal style={{overflow:"hidden"}} 
-        handleUpsertTestModalClose={_events.handleUpsertTestModalClose} 
+        handleUpsertTestModalClose={_events.handleUpsertTestModalClose.bind(_events)} 
         open={state.openUpsertTestModal} currentTestPicked={state.currentTestPicked}/>
 
         <UserUpsertModal currentUserPicked={state.currentUserPicked} 
-        handleUpsertUserModalClose={_events.handleUpsertUserModalClose} open={state.openUpsertUserModal}/>
+        handleUpsertUserModalClose={_events.handleUpsertUserModalClose.bind(_events)} open={state.openUpsertUserModal}/>
 
         <TroubleshootMenu open={state.openTroubleshootMenu} 
         pickedTest={state.testTroubleshootPick}
-        handleTroubleshootMenuClose={_events.handleTroubleshootMenuClose} />
+        handleTroubleshootMenuClose={_events.handleTroubleshootMenuClose.bind(_events)} />
       </div>
     );
   

@@ -11,22 +11,14 @@ import StaticMaskingWizardEvents from './StaticMaskingWizard.events';
 
 const DEFAULT_BRUSH_SIZE = 4
 
-const _events = new StaticMaskingWizardEvents();
+
 
 export default function FullScreenDialog(props:any) {
+  const _events = new StaticMaskingWizardEvents();
   const { open, dataURI } = props;
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
      brushSize:DEFAULT_BRUSH_SIZE
   });
-
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
 
   _events.setConstructor(state, setState, props);
 
@@ -40,28 +32,28 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Static Masking wizard 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
           </AppBar>
         <div className={styles["modal-content-container"]}>
         <div style={{float:"left"}}>
-            <canvas id="jPolygon" width="227" height="227"  onMouseUp={_events.stopdrawing} 
-             onMouseMove={_events.mousemoving} onMouseDown={_events.point_it} 
+            <canvas id="jPolygon" width="227" height="227"  onMouseUp={_events.stopdrawing.bind(_events)} 
+             onMouseMove={_events.mousemoving.bind(_events)} onMouseDown={_events.point_it.bind(_events)} 
              data-imgsrc={dataURI.originalReferenceSnapshotURI}>
             </canvas>
         </div>
         <div>
-              <button onClick={_events.handleUndo}>Undo</button>
-              <button onClick={_events.handleClear}>Clear</button>
-              <button onClick={_events.handleSave}>Save</button>
+              <button onClick={_events.handleUndo.bind(_events)}>Undo</button>
+              <button onClick={_events.handleClear.bind(_events)}>Clear</button>
+              <button onClick={_events.handleSave.bind(_events)}>Save</button>
        </div>
        <div>
             <br/>
             Set brush size:
             <br/>
-            <input type="number" value={state.brushSize} onChange={_events.handleBrushSizeChange}/>
+            <input type="number" value={state.brushSize} onChange={_events.handleBrushSizeChange.bind(_events)}/>
        </div>
        </div>
       </Dialog>

@@ -1,10 +1,4 @@
-import ServiceStore from "../../services /store.service";
-
-const serviceStore = new ServiceStore();
-
-let _state:any = null;
-let _setState:any = null; 
-let _props:any = null;
+import { setStatePromisifed } from "../../utils/general";
 
 let startDrawing = false;
 let coords:any = [] 
@@ -13,12 +7,20 @@ let canvas:any;
 let ctx:any;
 
 export default class StaticMaskingWizardEvents {
+    initFlag:any
+    setState:any
+    state:any
+    props:any
     constructor() {}
 
-    setConstructor(state:any, setState:any, props:any) {
-         _state = state;
-         _setState = setState;
-         _props = props;
+    async setConstructor(state:any, setState:any, props:any) {
+        this.state = state;
+        this.setState = setStatePromisifed.bind(null, setState);
+        this.props = props;
+        if(!this.initFlag) {
+           this.initFlag = true;
+           await this.init();
+        }
     }
 
     async init () {
@@ -26,7 +28,7 @@ export default class StaticMaskingWizardEvents {
     }
 
     async handleClose (e:any)  {
-        const { handleDynamicSnapshotModalClose } = _props;
+        const { handleDynamicSnapshotModalClose } = this.props;
         handleDynamicSnapshotModalClose(false);
     }
     
@@ -45,9 +47,9 @@ export default class StaticMaskingWizardEvents {
     }
     
     async handleSave  (e:any)  {
-        const { dataURI } = _props;
+        const { dataURI } = this.props;
         const drawURI = canvas.toDataURL('image/jpeg')
-        const {handleDynamicSnapshotModalSave} = _props;
+        const {handleDynamicSnapshotModalSave} = this.props;
         handleDynamicSnapshotModalSave({tag:dataURI,coords, drawURI})
         this.handleClear(null)
         this.handleClose(null)
@@ -67,7 +69,7 @@ export default class StaticMaskingWizardEvents {
         const y = event.clientY - rect.top;
         const cord = {clientX:event.clientX, clientY:event.clientY, left:rect.left, top:rect.top, brushSize:state.brushSize}
         coords.push(cord)
-        perimeter.push({'x':x,'y':y, brushSize:_state.brushSize});
+        perimeter.push({'x':x,'y':y, brushSize:this.state.brushSize});
         this.draw(false);
         return false;
     }
@@ -98,7 +100,7 @@ export default class StaticMaskingWizardEvents {
     
     async start() {
       setTimeout(()=>{
-        const { dataURI } = _props;
+        const { dataURI } = this.props;
         canvas = document.getElementById("jPolygon");
         const img = new Image();
         img.src = dataURI.originalReferenceSnapshotURI;
@@ -112,7 +114,7 @@ export default class StaticMaskingWizardEvents {
     
      async handleBrushSizeChange (e:any)  {
        const newBrushSize = e.target.value
-       _setState({..._state, brushSize:newBrushSize})
+       this.setState({...this.state, brushSize:newBrushSize})
     }
 }
 

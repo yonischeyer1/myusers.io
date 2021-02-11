@@ -13,9 +13,9 @@ import styles from './UserUpsertModal.css'
 import { a11yProps, TabPanel, Transition } from '../../utils/general';
 import UserUpsertModalEvents from './UserUpsertModal.events';
 
-const _events = new UserUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
+  const _events = new UserUpsertModalEvents();
   const { open } = props;
   const [state, setState] = React.useState({
     tabIndex:0,
@@ -28,11 +28,11 @@ export default function FullScreenDialog(props:any) {
     accountsView:[],
     actionsView:[],
     userNameView:'',
-    currentUserPicked:null
+    currentUserPicked: null
   })
 
   _events.setConstructor(state, setState, props);
-
+ 
 
   return open ? (
     <div>

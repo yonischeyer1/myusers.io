@@ -10,14 +10,14 @@ import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard';
 import { Transition } from '../../utils/general';
 import EditTagModalEvents from './EditTagModal.events';
 
-const _events =  new EditTagModalEvents();
+
 
 export default function FullScreenDialog(props:any) {
-
+  const _events =  new EditTagModalEvents();
   const { open, tag } = props;
 
   //**Hooks */
-  const [state, _setState] = React.useState({
+  const [state, setState] = React.useState({
       tag: {
         name:"",
         waitTime: {
@@ -32,15 +32,6 @@ export default function FullScreenDialog(props:any) {
       dynamicSnapshotOpen:false
   });
 
-  const setState = (newState:any) => {
-    return new Promise((resolve)=>{
-      setTimeout(()=>{
-        _setState(newState)
-        resolve(null);
-      },0)
-    })
-  }
-
   _events.setConstructor(state, setState, props);
 
 
@@ -52,7 +43,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
                 Edit Tag: {state.tag.name}
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
               </Button>
             </Toolbar>
@@ -64,7 +55,7 @@ export default function FullScreenDialog(props:any) {
                 &nbsp; Skip: 
                <Checkbox
                 checked={state.tag.skip}
-                onChange={_events.handleSkipChange}
+                onChange={_events.handleSkipChange.bind(_events)}
                 color="primary"
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
              />
@@ -75,7 +66,7 @@ export default function FullScreenDialog(props:any) {
              <img src={state.tag.originalReferenceSnapshotURI} />
             </div>
             <div style={{alignSelf: "center"}}>
-              <Button disabled={state.tag.skip} onClick={(e)=>{ _events.handleTagImageClick(state.tag)}} variant="outlined" color="primary">OPEN EDITOR</Button>
+              <Button disabled={state.tag.skip} onClick={(e)=>{ _events.handleTagImageClick.bind(_events)(state.tag)}} variant="outlined" color="primary">OPEN EDITOR</Button>
             </div>
              {
                state.tag.dynamic && state.tag.dynamic.drawURI ? <div>
@@ -88,7 +79,7 @@ export default function FullScreenDialog(props:any) {
                  <h3>Set wait time until Fail:</h3>
                  <FormControl component="fieldset" disabled={state.tag.skip}>
                  <FormLabel component="legend"></FormLabel>
-                 <RadioGroup  aria-label="waitTime" name="gender1" value={state.tag.waitTime.label} onChange={_events.handleSetTimeoutChange}>
+                 <RadioGroup  aria-label="waitTime" name="gender1" value={state.tag.waitTime.label} onChange={_events.handleSetTimeoutChange.bind(_events)}>
                    <FormControlLabel value="forever" control={<Radio />} label="forever" />
                    <FormControlLabel value="custom" control={<Radio />} label="custom" />
                  </RadioGroup>
@@ -96,20 +87,20 @@ export default function FullScreenDialog(props:any) {
                  {
                      state.tag.waitTime.label !== "custom" ? null : 
                      <div>
-                        <TextField type="number" disabled={false} value={state.tag.waitTime.value} onChange={_events.handleCustomWaitTimeChange}
+                        <TextField type="number" disabled={false} value={state.tag.waitTime.value} onChange={_events.handleCustomWaitTimeChange.bind(_events)}
                         label="Insert wait time(seconds):" variant="outlined" style={{width:"0px", height:"45px"}} size="small"/> 
                     </div>
                  }
              </div>
             <br/><br/><br/>
             <div>
-            <Button size="small" variant="outlined" color="primary" onClick={_events.handleClose}>cancel</Button>
+            <Button size="small" variant="outlined" color="primary" onClick={_events.handleClose.bind(_events)}>cancel</Button>
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-            <Button size="small" variant="outlined" color="primary" onClick={_events.save}>Save</Button>
+            <Button size="small" variant="outlined" color="primary" onClick={_events.save.bind(_events)}>Save</Button>
             </div>
        </div>
-       <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+       <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>;
