@@ -32,7 +32,7 @@ export default class UserUpsertModalEvents {
           await this.setState({...this.state, currentUserPicked, 
             accountsView:accounts, actionsView:actions})  
         } else {
-          await this.setState({...this.state, currentUserPicked:{name:''}, 
+          await this.setState({...this.state, currentUserPicked:null, 
             accountsView:accounts, actionsView:actions})  
         }
     }
@@ -104,16 +104,18 @@ export default class UserUpsertModalEvents {
     }
     
     async handleUserNameChange (e:any)  {
-        const currentUserPicked = this.props.currentUserPicked;
-        const users = serviceStore.readDocs('users')
-        const userNameKey = "userName"
         const newUserName = e.target.value
-        await this.setState({...this.state, userNameView:newUserName});
-        serviceStore.upsertAppStateValue(userNameKey, newUserName);
-        if(this.props.currentUserPicked) {
-          users[currentUserPicked.id].name = newUserName
-          serviceStore.updateDocs('users', users)
-        }
+        await this.setState({...this.state, currentUserPicked:{
+          ...this.state.currentUserPicked,
+          name:newUserName
+        }});
+        // const users = serviceStore.readDocs('users')
+        // const userNameKey = "userName"
+        // serviceStore.upsertAppStateValue(userNameKey, newUserName);
+        // if(this.props.currentUserPicked) {
+        //   users[currentUserPicked.id].name = newUserName
+        //   serviceStore.updateDocs('users', users)
+        // }
     }
     
     async editAction  (action:any)  {
