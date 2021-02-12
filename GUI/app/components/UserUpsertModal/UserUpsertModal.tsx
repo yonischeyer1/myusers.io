@@ -33,6 +33,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
  
+  console.log("state",state)
 
   return open ? (
     <div>
@@ -57,7 +58,7 @@ export default function FullScreenDialog(props:any) {
         <br/>
           <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={state.userNameView}
+             value={state.currentUserPicked.name}
              onChange={_events.handleUserNameChange.bind(_events)} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>

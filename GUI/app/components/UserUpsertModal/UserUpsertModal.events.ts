@@ -5,54 +5,36 @@ import { setStatePromisifed } from "../../utils/general";
 
 const serviceStore = new ServiceStore();
 
-const serviceEventEmitter = serviceStore.getEventEmitter();
-
-
-let instance :any = null;
+let initFlag:boolean = false;
 export default class UserUpsertModalEvents {
     initFlag:any
     setState:any
     state:any
     props:any
-    constructor() {
-        if(instance) {
-            return instance;
-        }
-        this.initFlag = false;
-        instance = this;
-        return this;
-    }
+
+    constructor() {}
 
     async setConstructor(state:any, setState:any, props:any) {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(!this.initFlag) {
-            this.initFlag = true;
+         if(this.props.open && !initFlag) {
+            initFlag = true;
             await this.init();
          }
-        if(!serviceEventEmitter) {
-            serviceEventEmitter.on(`DB-reread-users`,()=> {
-                this.setState({...this.state, accountsView:this.readUserAccounts()});
-                this.setState({...this.state, actionsView:this.readUserActions()});
-            });
-        }
     }
 
     async init () {
-        const currentUserPicked = this.props.currentUserPicked;
+        debugger
+        const { currentUserPicked } = this.props;
         const accounts =  this.readUserAccounts();
         const actions =  this.readUserActions();
-        await this.setState({...this.state, currentUserPicked:currentUserPicked 
-            ,accountsView:accounts, actionsView:actions}) 
-        serviceStore.getEventEmitter().on(`DB-reread-users`,()=> {
-          this.setState({...this.state, accountsView:accounts});
-          this.setState({...this.state, actionsView:actions});
-      });
+        await this.setState({...this.state, currentUserPicked, 
+             accountsView:accounts, actionsView:actions}) 
     }
 
     async handleClose (e:any)  {
-        this.initFlag = false;
+        initFlag = false;
         const {handleUpsertUserModalClose} = this.props;
         handleUpsertUserModalClose(false);
         await this.setState({...this.state, accountsView:[], actionsView:[], userNameView:''});
