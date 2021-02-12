@@ -25,19 +25,23 @@ export default class UserUpsertModalEvents {
     }
 
     async init () {
-        debugger
         const { currentUserPicked } = this.props;
         const accounts =  this.readUserAccounts();
         const actions =  this.readUserActions();
-        await this.setState({...this.state, currentUserPicked, 
-             accountsView:accounts, actionsView:actions}) 
+        if(currentUserPicked) {
+          await this.setState({...this.state, currentUserPicked, 
+            accountsView:accounts, actionsView:actions})  
+        } else {
+          await this.setState({...this.state, currentUserPicked:{name:''}, 
+            accountsView:accounts, actionsView:actions})  
+        }
     }
 
     async handleClose (e:any)  {
         initFlag = false;
         const {handleUpsertUserModalClose} = this.props;
         handleUpsertUserModalClose(false);
-        await this.setState({...this.state, accountsView:[], actionsView:[], userNameView:''});
+        await this.setState({...this.state, accountsView:[], actionsView:[], currentUserPicked:null});
     }
 
     readUserAccounts ()  {

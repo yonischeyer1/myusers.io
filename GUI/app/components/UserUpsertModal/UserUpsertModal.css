@@ -30,7 +30,9 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
+    color:black;
 }
+
 .user-upsert-row-item-name {
     width: 33% !important;
 }
