@@ -16,23 +16,47 @@ export default class TestUpsertModalEvents {
       this.state = state;
       this.setState = setStatePromisifed.bind(null, setState);
       this.props = props;
-      if(!this.initFlag) {
+      if(!this.initFlag && this.props.open) {
          this.initFlag = true;
          await this.init();
       }
   }
 
   async init () {
-
+    const users = serviceStore.readDocs('users');
+    const { currentTestPicked } = this.props;
+    if(currentTestPicked) {
+      await this.setState({
+        ...this.state, 
+        suite:currentTestPicked.suite, 
+        suiteName:currentTestPicked.suiteName,
+        users
+      })
+    } else {
+      await this.setState({
+        ...this.state, 
+        suite:[], 
+        suiteName:'',
+        users
+      })
+    }
   }
 
   async handleClose (e:any) {
         const { handleUpsertTestModalClose } = this.props;
         handleUpsertTestModalClose(false);
         await this.setState({...this.state, suite:[], suiteName:''})
-    }
+  }
+
+  async handleSuiteNameChange(e:any) {
+    await this.setState({...this.state, suiteName:e.target.value})
+  }
+
+  async handleTestNameChange(e:any) {
+    await this.setState({...this.state, testName:e.target.value})
+  }
     
-    async getUserActions  (e:any)  {
+  async getUserActions  (e:any)  {
         const users = serviceStore.readDocs('users')
         const actions = serviceStore.readDocs('actions')
         const menuItemSelected = e.target.value;
@@ -42,19 +66,19 @@ export default class TestUpsertModalEvents {
           userActions.push(actions[userActionId])
         }
         return {userActions, user};
-    }
+  }
     
-    async handleUserPick (e:any)  {
+  async handleUserPick (e:any)  {
         const {userActions, user} = this.getUserActions(e);
         await this.setState({...this.state, pickedUserId:user.id, pickedUserActions:userActions});
-    }
+  }
     
-    async handleActionPick  (e:any)  {
+  async handleActionPick  (e:any)  {
         const pickedAction = e.target.value
         await this.setState({...this.state, pickedUserAction:pickedAction})
-    }
+  }
     
-    async save (e:any)  {
+  async save (e:any)  {
         const test:Test = {
           suiteName: this.state.suiteName,
           suite:this.state.suite,
@@ -62,9 +86,9 @@ export default class TestUpsertModalEvents {
         }
         serviceStore.createDoc('tests', test);
         this.handleClose(null)
-    }
+  }
     
-    async addTestToSuite (e:any) {
+  async addTestToSuite (e:any) {
         const test:TestModel = {
           testName:this.state.testName,
           userId:this.state.pickedUserId,
@@ -73,10 +97,11 @@ export default class TestUpsertModalEvents {
           status:TEST_STATUS.IDLE
         }
         await this.setState({...this.state, suite:[...this.state.suite, test], testName:"", pickedUserId:"", pickedUserAction:"", pickedUserActions:null});
-      }
-    async deleteTestFromSuite (test:any) {
+  }
+
+  async deleteTestFromSuite (test:any) {
         const newSuite = this.state.suite.filter(item => item.testName !== test.testName)
         await this.setState({...this.state, suite:newSuite})
-    }
+  }
 }
 

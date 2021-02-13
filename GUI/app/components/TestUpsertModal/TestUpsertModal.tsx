@@ -14,8 +14,6 @@ import TestUpsertModalEvents from './TestUpsertModal.event';
 
 export default function FullScreenDialog(props:any) {
   const _events = new TestUpsertModalEvents();
-  let users:any = []
-  let actions:any = []
   const { open } = props;
   const [state, setState] = React.useState({
     testName:"",
@@ -23,7 +21,9 @@ export default function FullScreenDialog(props:any) {
     pickedUserActions:null,
     pickedUserAction:"",
     suite:[],
-    suiteName:""
+    suiteName:"",
+    users:[],
+    actions:[]
   });
 
   _events.setConstructor(state, setState, props)
@@ -44,30 +44,28 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
           <div className={styles["modal-content-container"]}>
           <br/>
-             <div className={styles["test-name-container-suite"]}>
+        <div className={styles["test-name-container-suite"]}>
             <TextField disabled={false}
              value={state.suiteName} 
-             onChange={( e => setState({...state, suiteName:e.target.value})) } 
+             onChange={_events.handleSuiteNameChange.bind(_events)} 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
              <br/>   <br/>
-             <div className={styles["test-name-container"]}>
+        <div className={styles["test-name-container"]}>
             <TextField disabled={false} 
              value={state.testName}
-             onChange={( e => setState({...state, testName:e.target.value})) } 
+             onChange={_events.handleTestNameChange.bind(_events)} 
              label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
         </div>
         <div className={styles["user-action-select-container"]}>
              <div className={styles["pick-user-combobox-container"]}>     
              <FormControl className={styles["form-control"]}>
-              <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
+              <InputLabel >Select User:</InputLabel>
               <Select
-               labelId="demo-simple-select-label"
-               id="demo-simple-select"
                value={state.pickedUserId}
                onChange={_events.handleUserPick.bind(_events)}>
                {
-                 !users ? null : Object.values(users).map((user:any)=>{
+                 !state.users ? null : Object.values(state.users).map((user:any)=>{
                    return <MenuItem value={user.id}>{user.name}</MenuItem>
                  })
                }
@@ -76,10 +74,8 @@ export default function FullScreenDialog(props:any) {
            </div>
            <div className={styles["pick-action-combobox-container"]}>
            <FormControl className={styles["form-control"]}>
-            <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
+            <InputLabel>Select Action:</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
               value={state.pickedUserAction}
               onChange={_events.handleActionPick.bind(_events)}>
               {
@@ -113,8 +109,6 @@ export default function FullScreenDialog(props:any) {
                  <InputLabel id="demo-simple-select-label">Select User:</InputLabel>
                  <Select 
                   disabled={true}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   value={test.userId}
                   onChange={_events.handleUserPick.bind(_events)}>
                   {
@@ -127,11 +121,9 @@ export default function FullScreenDialog(props:any) {
               </div>
               <div className={styles["pick-action-combobox-container"]}>
               <FormControl className={styles["form-control"]}>
-               <InputLabel id="demo-simple-select-label">Select Action:</InputLabel>
+               <InputLabel>Select Action:</InputLabel>
                <Select
                  disabled={true}
-                 labelId="demo-simple-select-label"
-                 id="demo-simple-select"
                  value={test.actionId}
                  onChange={_events.handleActionPick.bind(_events)}>
                     <MenuItem value={test.actionId}>{actions[test.actionId].name}</MenuItem>

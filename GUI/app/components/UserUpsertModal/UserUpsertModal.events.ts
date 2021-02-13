@@ -26,14 +26,13 @@ export default class UserUpsertModalEvents {
 
     async init () {
         const { currentUserPicked } = this.props;
-        const accounts =  this.readUserAccounts();
-        const actions =  this.readUserActions();
         if(currentUserPicked) {
+          const accounts =  this.readUserAccounts();
+          const actions =  this.readUserActions();
           await this.setState({...this.state, currentUserPicked, 
             accountsView:accounts, actionsView:actions})  
         } else {
-          await this.setState({...this.state, currentUserPicked:null, 
-            accountsView:accounts, actionsView:actions})  
+          await this.setState({...this.state, currentUserPicked:null})  
         }
     }
 
