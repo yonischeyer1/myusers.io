@@ -9,14 +9,20 @@ const serviceStore = new ServiceStore();
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 
-let saveThis:any = null 
-
+let instance:any = null
 export default class RecordValidationModalEvents {
     initFlag:any
     setState:any
     state:any
     props:any
-    constructor() {}
+    constructor() {
+      if(instance) {
+        return instance;
+      }
+      this.initFlag = false;
+      instance = this;
+      return this;
+    }
 
     async setConstructor(state:any, setState:any, props:any) {
        this.state = state;

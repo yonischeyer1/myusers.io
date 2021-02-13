@@ -14,9 +14,9 @@ import { Transition } from '../../utils/general';
 import ActionsUpsertModalEvents from './ActionUpsertModal.events';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
 
+const _events = new ActionsUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new ActionsUpsertModalEvents();
   const { open, pickedAction } = props;
   const [state, setState] = React.useState({
     actionsDropdownOptions: [

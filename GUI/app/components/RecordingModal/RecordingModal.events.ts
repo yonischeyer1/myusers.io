@@ -7,17 +7,27 @@ import {Account} from '../../models/Account.model'
 
 const serviceStore = new ServiceStore();
 
+let instance:any = null
 export default class RecordingModalEvents {
     initFlag:any
     setState:any
     state:any
     props:any
-    constructor() {}
+    isLoginMode:boolean = false
+    constructor() {
+        if(instance) {
+            return instance;
+        }
+        this.initFlag = false;
+        instance = this;
+        return this;
+    }
 
     async setConstructor(state:any, setState:any, props:any) {
        this.state = state;
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
+       this.isLoginMode = serviceStore.getAppStateValue('isLoginMode');
        if(!this.initFlag) {
           this.initFlag = true;
           await this.init();
@@ -120,13 +130,5 @@ export default class RecordingModalEvents {
         return userIdToReturn
     }
 
-
-    async isLoginMode () {
-        const isLoginMode:any = serviceStore.getAppStateValue('isLoginMode')
-        if(open && isLoginMode && !loginFlagOnce) {
-            loginFlagOnce = true;
-            startLogin(null);
-         }
-    }
 }
 

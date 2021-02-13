@@ -8,10 +8,10 @@ import styles from './DeletePopup.css'
 import { Transition } from '../../utils/general';
 import DeletePopUpEvents from './DeletePopUp.events';
 
-
+const _events = new DeletePopUpEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new DeletePopUpEvents();
+
   const { itemAndCollectionName } = props;
   const [state, setState] = React.useState({
     openRecordingModal:false,

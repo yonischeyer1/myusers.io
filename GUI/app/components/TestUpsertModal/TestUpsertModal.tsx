@@ -10,10 +10,9 @@ import styles from './TestUpsertModal.css'
 import { Transition } from '../../utils/general';
 import TestUpsertModalEvents from './TestUpsertModal.event';
  
-
+const _events = new TestUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new TestUpsertModalEvents();
   const { open } = props;
   const [state, setState] = React.useState({
     testName:"",

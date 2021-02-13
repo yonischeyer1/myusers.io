@@ -1,12 +1,20 @@
 import { setStatePromisifed } from "../../utils/general";
 
 
+let instance:any = null
 export default class PlayerLiveViewModalEvents {
     initFlag:any
     setState:any
     state:any
     props:any
-    constructor() {}
+    constructor() {
+        if(instance) {
+            return instance;
+        }
+        this.initFlag = false;
+        instance = this;
+        return this;
+    }
 
     async setConstructor(state:any, setState:any, props:any) {
        this.state = state;
@@ -18,9 +26,7 @@ export default class PlayerLiveViewModalEvents {
        }
     }
  
-    async init() {
- 
-    }
+    async init() {}
 
     async handleClose  (e:any) {
         const {handleLivePreviewModalClose} = this.props;

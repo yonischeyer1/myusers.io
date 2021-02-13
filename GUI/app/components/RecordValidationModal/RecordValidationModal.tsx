@@ -13,11 +13,9 @@ import RecordValidationModalEvents from './RecordValidationModal.events';
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 
-let saveThis:any = null 
-
+const _events = new RecordValidationModalEvents()
 
 export default function FullScreenDialog(props:any) {
-  const _events = new RecordValidationModalEvents()
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
   const { open } = props;
 

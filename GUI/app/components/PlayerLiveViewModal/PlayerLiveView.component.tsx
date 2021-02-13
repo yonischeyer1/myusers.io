@@ -9,11 +9,10 @@ import styles from './PlayerLiveViewModal.css'
 import { Transition } from '../../utils/general';
 import PlayerLiveViewModalEvents from './PlayerLiveViewModal.events';
 
-
+const _events = new PlayerLiveViewModalEvents();
 
 
 export default function FullScreenDialog(props:any) {
-  const _events = new PlayerLiveViewModalEvents();
   const { open, port, stopPlaying } = props;
 
   _events.setConstructor(null, null, props)

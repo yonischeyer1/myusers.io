@@ -32,8 +32,7 @@ export default function FullScreenDialog(props:any) {
   })
 
   _events.setConstructor(state, setState, props);
- 
-  console.log("state",state)
+
 
   return open ? (
     <div>
@@ -56,14 +55,14 @@ export default function FullScreenDialog(props:any) {
         </Fab>
         </div>
         <br/>
-          <div className={styles["test-name-container"]}>
+      <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
              value={state.currentUserPicked ? state.currentUserPicked.name : ''}
              onChange={_events.handleUserNameChange.bind(_events)} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>
-          <div className={styles["root"]} style={{height:"100vh",color:"white"}}>
+      <div className={styles["root"]} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
           <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={_events.handleChange.bind(_events)} aria-label="simple tabs example">
             <Tab label="Accounts" {...a11yProps(0)} />

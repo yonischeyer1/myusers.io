@@ -6,12 +6,20 @@ let perimeter:any = []
 let canvas:any;
 let ctx:any;
 
+let instance:any = null;
 export default class StaticMaskingWizardEvents {
     initFlag:any
     setState:any
     state:any
     props:any
-    constructor() {}
+    constructor() {
+        if(instance) {
+            return instance;
+          }
+          this.initFlag = false;
+          instance = this;
+          return this;
+    }
 
     async setConstructor(state:any, setState:any, props:any) {
         this.state = state;

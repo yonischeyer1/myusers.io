@@ -11,10 +11,9 @@ import StaticMaskingWizardEvents from './StaticMaskingWizard.events';
 
 const DEFAULT_BRUSH_SIZE = 4
 
-
+const _events = new StaticMaskingWizardEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new StaticMaskingWizardEvents();
   const { open, dataURI } = props;
   const [state, setState] = React.useState({
      brushSize:DEFAULT_BRUSH_SIZE

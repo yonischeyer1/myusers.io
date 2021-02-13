@@ -10,11 +10,10 @@ import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard';
 import { Transition } from '../../utils/general';
 import EditTagModalEvents from './EditTagModal.events';
 
-
+const _events =  new EditTagModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events =  new EditTagModalEvents();
-  const { open, tag } = props;
+  const { open } = props;
 
   //**Hooks */
   const [state, setState] = React.useState({

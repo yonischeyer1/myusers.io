@@ -10,14 +10,11 @@ import RecordModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
 import { Transition } from '../../utils/general';
 import RecordingModalEvents from './RecordingModal.events';
-import ServiceStore from '../../services /store.service';
 
 
-const serviceStore = new ServiceStore();
-
+const _events = new RecordingModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new RecordingModalEvents();
   const { open } = props;
   
   const [state, setState] = React.useState({
@@ -38,10 +35,9 @@ export default function FullScreenDialog(props:any) {
     startUrl:null
   });
 
-  const isLoginMode = serviceStore.getAppStateValue('isLoginMode');
-
   _events.setConstructor(state, setState, props)
 
+  const isLoginMode = _events.isLoginMode;
    
   return open ? (
     <div>

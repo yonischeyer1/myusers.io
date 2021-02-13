@@ -5,14 +5,21 @@ import { setStatePromisifed } from "../../utils/general";
 
 const serviceStore = new ServiceStore();
 
-let initFlag:boolean = false;
+let instance:any = null
 export default class UserUpsertModalEvents {
     initFlag:any
     setState:any
     state:any
     props:any
 
-    constructor() {}
+    constructor() {
+      if(instance) {
+        return instance;
+      }
+      this.initFlag = false;
+      instance = this;
+      return this;
+    }
 
     async setConstructor(state:any, setState:any, props:any) {
          this.state = state;
