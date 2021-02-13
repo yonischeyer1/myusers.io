@@ -26,6 +26,7 @@ export default function FullScreenDialog(props:any) {
     dynamicSnapshotOpen:null,
     screen:null,
     tagsPresent:null,
+    saveThis:null
   })
 
   _events.setConstructor(state, setState, props)
@@ -81,8 +82,8 @@ export default function FullScreenDialog(props:any) {
            }
            <div className={styles["record-modal-save-btn-container"]}>
            <Button  size="small" variant="outlined" color="primary" onClick={()=>{
-                   saveThis ? _events.saveTags.bind(_events)(saveThis.tags, saveThis.ioActions) : null
-                   saveThis = null
+                   state.saveThis ? _events.saveTags.bind(_events)(state.saveThis.tags, state.saveThis.ioActions) : null
+                   state.saveThis = null
             }}>save</Button>
            </div>
         </div>

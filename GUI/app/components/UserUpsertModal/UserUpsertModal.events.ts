@@ -25,8 +25,8 @@ export default class UserUpsertModalEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(this.props.open && !initFlag) {
-            initFlag = true;
+         if(this.props.open && !this.initFlag) {
+            this.initFlag = true;
             await this.init();
          }
     }
@@ -44,7 +44,7 @@ export default class UserUpsertModalEvents {
     }
 
     async handleClose (e:any)  {
-        initFlag = false;
+        this.initFlag = false;
         const {handleUpsertUserModalClose} = this.props;
         handleUpsertUserModalClose(false);
         await this.setState({...this.state, accountsView:[], actionsView:[], currentUserPicked:null});

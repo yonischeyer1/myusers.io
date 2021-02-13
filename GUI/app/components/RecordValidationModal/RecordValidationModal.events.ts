@@ -97,7 +97,7 @@ export default class RecordValidationModalEvents {
         const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
           await this.setState({...this.state, liveViewPort:recorderContainer._port, liveViewPortModalOpen:true})
         })
-        saveThis = {tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} 
+        this.setState({...this.state, saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} })
         await removeContainerByName(recorderContainer._containerName)
         await this.setState({...this.state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
       }
