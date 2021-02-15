@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { TextField, CircularProgress } from '@material-ui/core';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
-import RecordModal from '../RecordValidationModal/RecordValidationModal';
+import RecordValidationModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
 import { Transition } from '../../utils/general';
 import RecordingModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordingModal.events';
@@ -79,7 +79,10 @@ export default function FullScreenDialog(props:any) {
                  }
               </div>
            </div>
-           <RecordModal recorderContainer={recorderContainer} totalRecordTime={totalRecordTime} open={openRecordModal} handleModalClose={_events.handleModalClosing.bind(_events)}/>
+           <RecordValidationModal recorderContainer={recorderContainer}
+            totalRecordTime={totalRecordTime}
+             open={openRecordModal} 
+             handleModalClose={_events.handleModalClosing.bind(_events)}/>
          </div>
         </div>
       </Dialog>

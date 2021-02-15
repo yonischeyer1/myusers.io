@@ -25,15 +25,15 @@ export default class PlayerLiveViewModalEvents {
        this.state = state;
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
-       if(!this.initFlag) {
+       if(!this.initFlag && this.props.port) {
           this.initFlag = true;
           await this.init();
        }
     }
  
     async init() {
-        const { open, port, stopPlaying } = this.props;
-        this.setState({...this.state, open, port, stopPlaying})
+        const { port, stopPlaying } = this.props;
+        this.setState({...this.state, port, stopPlaying})
     }
 
     async handleClose  (e:any) {

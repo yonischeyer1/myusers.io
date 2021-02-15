@@ -32,16 +32,18 @@ export default class AccountUpsertModalEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(!this.initFlag) {
+         if(!this.initFlag && this.props.open) {
             this.initFlag = true;
             await this.init();
          }
       }
   
     async init () {
-        const { pickedAccount } = this.props;
+        const { pickedAccount, open } = this.props;
         if(pickedAccount) { 
-           await this.setState({...this.state, accountName:pickedAccount.name, loginURL:pickedAccount.loginURL})
+           await this.setState({...this.state, accountName:pickedAccount.name, loginURL:pickedAccount.loginURL, open})
+        } else {
+            await this.setState({...this.state, open})
         }
     }
 

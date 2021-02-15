@@ -37,7 +37,7 @@ export default class ActionsUpsertModalEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(!this.initFlag) {
+         if(!this.initFlag && this.props.open) {
             this.initFlag = true;
             await this.init();
          }

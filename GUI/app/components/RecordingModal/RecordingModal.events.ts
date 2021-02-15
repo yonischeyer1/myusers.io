@@ -44,14 +44,14 @@ export default class RecordingModalEvents {
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
        this.isLoginMode = serviceStore.getAppStateValue('isLoginMode');
-       if(!this.initFlag) {
+       if(!this.initFlag && this.props.open) {
           this.initFlag = true;
           await this.init();
        }
     }
  
     async init() {
-        const { open } = this.props;
+        const { open, recorderContainer } = this.props;
         await this.setState({...this.state, open})
     }
 

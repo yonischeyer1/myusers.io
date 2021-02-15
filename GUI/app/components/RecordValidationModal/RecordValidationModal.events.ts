@@ -6,13 +6,15 @@ import { removeContainerByName } from "../../utils/IHost";
 const serviceStore = new ServiceStore();
 export const DEFAULT_COMPONENT_STATE = {
   open:false,
+  recorderContainer:null,
+  totalRecordTime:null,
   liveViewPort:null,
   liveViewPortModalOpen:false,
   dynamicSnapshotModalData:null,
   dynamicSnapshotOpen:null,
   screen:null,
   tagsPresent:[],
-  saveThis:null
+  saveThis:null,
 }
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
@@ -36,14 +38,15 @@ export default class RecordValidationModalEvents {
        this.state = state;
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
-       if(!this.initFlag) {
+       if(!this.initFlag && this.props.open) {
           this.initFlag = true;
           await this.init();
        }
     }
  
     async init() {
- 
+      const { open, recorderContainer, totalRecordTime } = this.props;
+      await this.setState({...this.state, open, recorderContainer, totalRecordTime})
     }
 
 

@@ -22,6 +22,8 @@ export default function FullScreenDialog(props:any) {
 
   const { open, accountName, loginURL, openRecordingModal } = state;
 
+  console.log("AccountUpsertModalEvents",state)
+
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>

@@ -34,7 +34,7 @@ export default class EditTagModalEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(!this.initFlag) {
+         if(!this.initFlag && this.props.tag) {
             this.initFlag = true;
             await this.init();
          }

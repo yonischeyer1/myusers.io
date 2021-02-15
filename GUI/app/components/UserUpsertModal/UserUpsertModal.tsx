@@ -24,7 +24,7 @@ export default function FullScreenDialog(props:any) {
     pickedAction, pickedAccount, openDeletePopup, itemAndCollectionNameToDelete,
     accountsView, actionsView, currentUserPicked} = state;
 
-  console.log("userupsert state", state)
+  console.log("UserUpsertModalEvents",state)
 
   return open ? (
     <div>
