@@ -1,5 +1,15 @@
 import { setStatePromisifed } from "../../utils/general";
 
+const DEFAULT_BRUSH_SIZE = 4
+
+export const DEFAULT_COMPONENT_STATE = {
+    tag: {
+        originalReferenceSnapshotURI:''
+      },
+      brushSize:DEFAULT_BRUSH_SIZE
+}
+
+
 let startDrawing = false;
 let coords:any = [] 
 let perimeter:any = []

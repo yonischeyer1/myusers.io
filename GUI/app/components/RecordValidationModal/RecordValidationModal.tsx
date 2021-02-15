@@ -8,7 +8,7 @@ import {APP_CWD, Transition } from '../../utils/general';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard'
 import styles from './RecordValidationModal.css'
-import RecordValidationModalEvents from './RecordValidationModal.events';
+import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordValidationModal.events';
 
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
@@ -18,16 +18,7 @@ const _events = new RecordValidationModalEvents()
 export default function FullScreenDialog(props:any) {
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
 
-  const [state, setState] = React.useState({
-    open:false,
-    liveViewPort:null,
-    liveViewPortModalOpen:false,
-    dynamicSnapshotModalData:null,
-    dynamicSnapshotOpen:null,
-    screen:null,
-    tagsPresent:[],
-    saveThis:null
-  })
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE})
 
   _events.setConstructor(state, setState, props)
 

@@ -16,17 +16,12 @@ import styles from './TroubleshootMenu.css';
 import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard';
 import EditTagModal from '../EditTagModal/EditTagModal';
 import { Transition } from '../../utils/general';
-import TroubleshootMenuEvents from './TroubleshootMenu.events';
+import TroubleshootMenuEvents, {DEFAULT_COMPONENT_STATE} from './TroubleshootMenu.events';
 
 const _events = new TroubleshootMenuEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, _setState] = React.useState({
-      open:false,
-      pickedTest:null,
-      failedTag:null,
-      dynamicSnapshotModalData:null,
-  });
+  const [state, _setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, _setState, props);
 

@@ -11,27 +11,13 @@ import styles from './ActionUpsertModal.css';
 import DeletePopup from '../DeletePopup/DeletePopup';
 import EditTagModal from '../EditTagModal/EditTagModal'
 import { Transition } from '../../utils/general';
-import ActionsUpsertModalEvents from './ActionUpsertModal.events';
+import ActionsUpsertModalEvents, {DEFAULT_COMPONENT_STATE} from './ActionUpsertModal.events';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
 
 const _events = new ActionsUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-    open:false,
-    actionName:'',
-    actionsDropdownOptions: [
-      {label:'Edit', disabled:false},
-      {label:'Delete', disabled:false}
-    ],
-    openRecordingModal:false,
-    dynamicSnapshotModalData:false,
-    pickedTag:false,
-    itemAndCollectionNameToDelete:false,
-    pickedAction: {
-      tags:[]
-    },
-  })
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE})
 
   _events.setConstructor(state, setState, props);
 

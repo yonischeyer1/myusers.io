@@ -7,16 +7,13 @@ import Typography from '@material-ui/core/Typography';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
 import styles from './PlayerLiveViewModal.css'
 import { Transition } from '../../utils/general';
-import PlayerLiveViewModalEvents from './PlayerLiveViewModal.events';
+import PlayerLiveViewModalEvents, {DEFAULT_COMPONENT_STATE} from './PlayerLiveViewModal.events';
 
 const _events = new PlayerLiveViewModalEvents();
 
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-     port:null,
-     stopPlaying:false
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props)
 

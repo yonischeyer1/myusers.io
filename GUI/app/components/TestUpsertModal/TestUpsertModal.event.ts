@@ -3,6 +3,18 @@ import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
 
+export const DEFAULT_COMPONENT_STATE = {
+  open:false,
+  testName:"",
+  pickedUserId:"",
+  pickedUserActions:null,
+  pickedUserAction:"",
+  suite:[],
+  suiteName:"",
+  users:[],
+  actions:[]
+}
+
 const serviceStore = new ServiceStore();
 
 let instance:any = null;

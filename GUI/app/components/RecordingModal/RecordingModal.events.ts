@@ -5,7 +5,23 @@ import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 import {Account} from '../../models/Account.model'
 
+
 const serviceStore = new ServiceStore();
+
+export const DEFAULT_COMPONENT_STATE = {
+    open:false,
+    record: false,
+    port: null,
+    loading:false,
+    stopRecord:false,
+    openRecordModal:false,
+    videoFilePath:null,
+    totalRecordTime:null,
+    recorderContainer:null,
+    recordButtonDisable:false,
+    stopButtonDisable:true,
+    startRecordingDateTime:null, 
+}
 
 let instance:any = null
 export default class RecordingModalEvents {

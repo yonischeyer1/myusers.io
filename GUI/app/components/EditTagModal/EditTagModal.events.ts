@@ -1,5 +1,19 @@
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = {
+    tag: {
+        name:"",
+        waitTime: {
+            label: "forever",
+            value: -1
+        },
+        originalReferenceSnapshotURI:"",
+        dynamic:null,
+        skip:false
+      },
+      dynamicSnapshotModalData: false,
+}
+
 
 let instance:any = null;
 export default class EditTagModalEvents {

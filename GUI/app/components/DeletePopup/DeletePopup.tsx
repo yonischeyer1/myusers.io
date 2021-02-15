@@ -6,25 +6,16 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import styles from './DeletePopup.css'
 import { Transition } from '../../utils/general';
-import DeletePopUpEvents from './DeletePopUp.events';
+import DeletePopUpEvents, {DEFAULT_COMPONENT_STATE} from './DeletePopUp.events';
 
 const _events = new DeletePopUpEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-    itemAndCollectionName: {
-       item: {
-         name:''
-       },
-       collectionName: ''
-    }
-  })
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE})
 
   _events.setConstructor(state, setState, props);
 
   const { itemAndCollectionName } = state;
-
-  console.log("itemAndCollectionName", itemAndCollectionName)
 
   const doOpen = !!itemAndCollectionName.item.name && !!itemAndCollectionName.collectionName
 
@@ -44,7 +35,7 @@ export default function FullScreenDialog(props:any) {
         <div className={styles["modal-content-container"]}>
             <div>
                 Are you sure you want to delete 
-                {itemAndCollectionName.item.name} &nbsp; 
+                {` ${itemAndCollectionName.item.name} `}  
                  From {itemAndCollectionName.collectionName} ? 
             </div>
             <br/><br/><br/>

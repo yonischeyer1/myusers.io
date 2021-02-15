@@ -10,17 +10,13 @@ import { TextField, FormControl } from '@material-ui/core';
 import RecordingModal from '../RecordingModal/RecordingModal'
 import styles from './AccountUpsertModal.css';
 import { Transition } from '../../utils/general';
-import AccountUpsertModalEvents from './AccountUpsertModal.events';
+import AccountUpsertModalEvents, { DEFAULT_COMPONENT_STATE } from './AccountUpsertModal.events';
+
 
 const _events = new AccountUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-    open:false,
-    openRecordingModal:false,
-    accountName:{value:'', disabled:false},
-    loginURL:{value:'', disabled:false},
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props);
 

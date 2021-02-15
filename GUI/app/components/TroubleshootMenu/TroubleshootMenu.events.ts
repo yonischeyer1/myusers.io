@@ -2,6 +2,12 @@
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = {
+    open:false,
+    pickedTest:null,
+    failedTag:null,
+    dynamicSnapshotModalData:null,
+}
 
 const serviceStore = new ServiceStore();
 

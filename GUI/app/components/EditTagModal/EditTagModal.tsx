@@ -8,25 +8,13 @@ import styles from './EditTagModal.css'
 import { Checkbox, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard';
 import { Transition } from '../../utils/general';
-import EditTagModalEvents from './EditTagModal.events';
+import EditTagModalEvents, {DEFAULT_COMPONENT_STATE} from './EditTagModal.events';
 
 const _events =  new EditTagModalEvents();
 
 export default function FullScreenDialog(props:any) {
   //**Hooks */
-  const [state, setState] = React.useState({
-      tag: {
-        name:"",
-        waitTime: {
-            label: "forever",
-            value: -1
-        },
-        originalReferenceSnapshotURI:"",
-        dynamic:null,
-        skip:false
-      },
-      dynamicSnapshotModalData: false,
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props);
 

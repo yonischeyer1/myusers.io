@@ -2,6 +2,19 @@ import { User } from "../../models/User.model";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = { 
+  open:false,
+  tabIndex:0,
+  openUpsertAccountModal:false,
+  openUpsertActionModal:false,
+  pickedAction:null,
+  pickedAccount:null,
+  openDeletePopup:false,
+  itemAndCollectionNameToDelete:null,
+  accountsView:[],
+  actionsView:[],
+  currentUserPicked: null
+}
 
 const serviceStore = new ServiceStore();
 

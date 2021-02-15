@@ -2,11 +2,18 @@ import ServiceStore from "../../services /store.service";
 import { APP_CWD, setStatePromisifed } from "../../utils/general";
 import { removeUserSessionFolder } from "../../utils/IHost";
 
-
+export const DEFAULT_COMPONENT_STATE = {
+  itemAndCollectionName: {
+    item: {
+      name:''
+    },
+    collectionName: ''
+ }
+}
 
 const serviceStore = new ServiceStore();
-
 let instance:any = null;
+
 export default class ActionsDropdownEvents {
   initFlag:any
   setState:any
@@ -25,20 +32,21 @@ export default class ActionsDropdownEvents {
        this.state = state;
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
-       if(!this.initFlag) {
+       if(!this.initFlag && this.props.itemAndCollectionName) {
           this.initFlag = true;
           await this.init();
        }
     }
 
     async init () {
-       const { itemAndCollectionName } = this.props;
-       if(itemAndCollectionName) {
-          await this.setState({...this.state, itemAndCollectionName})
-       }
+      const { itemAndCollectionName } = this.props;
+       await this.setState({...this.state, itemAndCollectionName})
     }
 
     async handleClose (e:any) {
+        await this.setState({...this.state, itemAndCollectionName:{
+          item:{name:''},collectionName:''
+        }})
         const {handleDeletePopupClose} = this.props;
         handleDeletePopupClose(false);
     };

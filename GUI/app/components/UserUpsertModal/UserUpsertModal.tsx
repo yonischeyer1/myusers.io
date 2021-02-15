@@ -11,24 +11,12 @@ import { TextField, Tabs, Tab, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import styles from './UserUpsertModal.css'
 import { a11yProps, TabPanel, Transition } from '../../utils/general';
-import UserUpsertModalEvents from './UserUpsertModal.events';
+import UserUpsertModalEvents, {DEFAULT_COMPONENT_STATE} from './UserUpsertModal.events';
 
 const _events = new UserUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-    open:false,
-    tabIndex:0,
-    openUpsertAccountModal:false,
-    openUpsertActionModal:false,
-    pickedAction:null,
-    pickedAccount:null,
-    openDeletePopup:false,
-    itemAndCollectionNameToDelete:null,
-    accountsView:[],
-    actionsView:[],
-    currentUserPicked: null
-  })
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE})
 
   _events.setConstructor(state, setState, props);
 

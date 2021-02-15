@@ -1,7 +1,12 @@
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = {
+    port:null,
+    stopPlaying:false
+}
 
 let instance:any = null
+
 export default class PlayerLiveViewModalEvents {
     initFlag:any
     setState:any

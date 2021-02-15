@@ -16,16 +16,9 @@ export default class ActionsDropdownEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-        //  if(!initFlag) {
-        //     initFlag = true;
-        //     await this.init();
-        //  }
       }
   
-    async init () {
-      // const options:MenuItemOption = this.props.options;
-      // this.setState({...this.state, options})
-    }
+    async init () { }
     
     async handleMenuItemClick  (option:any) {
         this.props.handleMenuItemClick(option); 

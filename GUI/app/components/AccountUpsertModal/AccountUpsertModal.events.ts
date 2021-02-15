@@ -1,6 +1,15 @@
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+
+export const DEFAULT_COMPONENT_STATE = {
+    open:false,
+    openRecordingModal:false,
+    accountName:{value:'', disabled:false},
+    loginURL:{value:'', disabled:false},
+}
+
+
 const serviceStore = new ServiceStore();
 
 let instance:any = null

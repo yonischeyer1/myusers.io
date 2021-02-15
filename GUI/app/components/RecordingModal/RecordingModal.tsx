@@ -9,27 +9,14 @@ import VncViewerComponent from '../VncViewer/vncViewer.component';
 import RecordModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
 import { Transition } from '../../utils/general';
-import RecordingModalEvents from './RecordingModal.events';
+import RecordingModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordingModal.events';
 
 
 const _events = new RecordingModalEvents();
 
 export default function FullScreenDialog(props:any) {
 
-  const [state, setState] = React.useState({
-    open:false,
-    record: false,
-    port: null,
-    loading:false,
-    stopRecord:false,
-    openRecordModal:false,
-    videoFilePath:null,
-    totalRecordTime:null,
-    recorderContainer:null,
-    recordButtonDisable:false,
-    stopButtonDisable:true,
-    startRecordingDateTime:null, 
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props)
 

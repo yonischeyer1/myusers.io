@@ -1,6 +1,22 @@
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = {
+    open:false,
+    actionName:'',
+    actionsDropdownOptions: [
+      {label:'Edit', disabled:false},
+      {label:'Delete', disabled:false}
+    ],
+    openRecordingModal:false,
+    dynamicSnapshotModalData:false,
+    pickedTag:false,
+    itemAndCollectionNameToDelete:false,
+    pickedAction: {
+      tags:[]
+    },
+}
+
 const serviceStore = new ServiceStore();
 let instance:any = null;
 export default class ActionsUpsertModalEvents {

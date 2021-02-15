@@ -9,17 +9,12 @@ import { Transition } from '../../utils/general';
 import StaticMaskingWizardEvents from './StaticMaskingWizard.events';
 
 
-const DEFAULT_BRUSH_SIZE = 4
+
 
 const _events = new StaticMaskingWizardEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-     tag: {
-       originalReferenceSnapshotURI:''
-     },
-     brushSize:DEFAULT_BRUSH_SIZE
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props);
 

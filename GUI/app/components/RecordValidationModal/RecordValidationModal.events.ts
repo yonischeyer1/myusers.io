@@ -3,9 +3,17 @@ import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 
-
-
 const serviceStore = new ServiceStore();
+export const DEFAULT_COMPONENT_STATE = {
+  open:false,
+  liveViewPort:null,
+  liveViewPortModalOpen:false,
+  dynamicSnapshotModalData:null,
+  dynamicSnapshotOpen:null,
+  screen:null,
+  tagsPresent:[],
+  saveThis:null
+}
 
 const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 

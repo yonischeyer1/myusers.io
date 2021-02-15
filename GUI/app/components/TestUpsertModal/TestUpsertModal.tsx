@@ -8,22 +8,12 @@ import { TextField, FormControl, InputLabel, Select, MenuItem } from '@material-
 import styles from './TestUpsertModal.css'
 
 import { Transition } from '../../utils/general';
-import TestUpsertModalEvents from './TestUpsertModal.event';
+import TestUpsertModalEvents, {DEFAULT_COMPONENT_STATE} from './TestUpsertModal.event';
  
 const _events = new TestUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const [state, setState] = React.useState({
-    open:false,
-    testName:"",
-    pickedUserId:"",
-    pickedUserActions:null,
-    pickedUserAction:"",
-    suite:[],
-    suiteName:"",
-    users:[],
-    actions:[]
-  });
+  const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
   _events.setConstructor(state, setState, props)
 
