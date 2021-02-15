@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import styles from './StaticMaskingWizard.css'
 import { Transition } from '../../utils/general';
-import StaticMaskingWizardEvents from './StaticMaskingWizard.events';
+import StaticMaskingWizardEvents,{DEFAULT_COMPONENT_STATE} from './StaticMaskingWizard.events';
 
 
 
@@ -20,11 +20,11 @@ export default function FullScreenDialog(props:any) {
 
   const { tag, brushSize } = state;
 
+  const doOpen = !!tag.originalReferenceSnapshotURI
 
-
-  return tag ? (
+  return doOpen ? (
     <div>
-      <Dialog fullScreen open={!!tag} TransitionComponent={Transition}>
+      <Dialog fullScreen open={doOpen} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>

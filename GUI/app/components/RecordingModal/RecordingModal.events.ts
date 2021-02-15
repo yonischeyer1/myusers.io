@@ -51,7 +51,7 @@ export default class RecordingModalEvents {
     }
  
     async init() {
-        const { open, recorderContainer } = this.props;
+        const { open } = this.props;
         await this.setState({...this.state, open})
     }
 

@@ -20,9 +20,11 @@ export default function FullScreenDialog(props:any) {
 
   const { tag, dynamicSnapshotModalData } = state;
 
-  return tag ? (
+  const doOpen = !!tag.name
+
+  return doOpen ? (
     <div>
-      <Dialog fullScreen open={!!tag} TransitionComponent={Transition}>
+      <Dialog fullScreen open={doOpen} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>

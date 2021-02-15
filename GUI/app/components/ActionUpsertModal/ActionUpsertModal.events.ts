@@ -44,8 +44,9 @@ export default class ActionsUpsertModalEvents {
       }
   
     async init () {
+       debugger
        const { open, pickedAction } = this.props;
-       this.setState({...this.state, open, pickedAction})
+       await this.setState({...this.state, open, pickedAction})
     }
   
 

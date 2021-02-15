@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {APP_CWD, Transition } from '../../utils/general';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
-import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard'
+import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard'
 import styles from './RecordValidationModal.css'
 import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordValidationModal.events';
 
@@ -81,7 +81,7 @@ export default function FullScreenDialog(props:any) {
            </div>
         </div>
       </Dialog>
-      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+      <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}/>
       <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} port={liveViewPort} stopPlaying={false} />
     </div>

@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
 import RecordingModal from '../RecordingModal/RecordingModal'
-import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard'
+import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard'
 import styles from './ActionUpsertModal.css';
 import DeletePopup from '../DeletePopup/DeletePopup';
 import EditTagModal from '../EditTagModal/EditTagModal'
@@ -91,7 +91,7 @@ export default function FullScreenDialog(props:any) {
      </div>
      <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} tag={pickedTag}/>
      <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} itemAndCollectionName={itemAndCollectionNameToDelete} />
-     <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+     <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={openRecordingModal}/>
       </Dialog>
