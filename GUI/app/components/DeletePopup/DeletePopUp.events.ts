@@ -33,7 +33,9 @@ export default class ActionsDropdownEvents {
 
     async init () {
        const { itemAndCollectionName } = this.props;
-       await this.state({...this.state, itemAndCollectionName})
+       if(itemAndCollectionName) {
+          await this.setState({...this.state, itemAndCollectionName})
+       }
     }
 
     async handleClose (e:any) {

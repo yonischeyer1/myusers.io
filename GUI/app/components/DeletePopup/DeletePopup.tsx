@@ -16,7 +16,7 @@ export default function FullScreenDialog(props:any) {
        item: {
          name:''
        },
-       collectionName:''
+       collectionName: ''
     }
   })
 
@@ -24,9 +24,13 @@ export default function FullScreenDialog(props:any) {
 
   const { itemAndCollectionName } = state;
 
-  return itemAndCollectionName ? (
+  console.log("itemAndCollectionName", itemAndCollectionName)
+
+  const doOpen = !!itemAndCollectionName.item.name && !!itemAndCollectionName.collectionName
+
+  return doOpen ? (
     <div>
-      <Dialog fullScreen open={!!itemAndCollectionName} TransitionComponent={Transition}>
+      <Dialog fullScreen open={doOpen} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
@@ -39,8 +43,9 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
             <div>
-                Are you sure you want to delete {itemAndCollectionName ? itemAndCollectionName.item.name : null} &nbsp; 
-                 From {itemAndCollectionName ? itemAndCollectionName.collectionName : null} ? 
+                Are you sure you want to delete 
+                {itemAndCollectionName.item.name} &nbsp; 
+                 From {itemAndCollectionName.collectionName} ? 
             </div>
             <br/><br/><br/>
             <div>

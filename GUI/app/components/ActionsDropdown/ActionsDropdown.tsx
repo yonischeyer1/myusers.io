@@ -18,12 +18,12 @@ export default function ActionsDropdown (props:any) {
 
   const [state, setState] = React.useState({
         open:false,
-        options:[]
   });
 
   _events.setConstructor(state, setState, props, anchorRef)
 
-  const { open, options } = state;
+  const { open } = state;
+  const { options } = props;
 
  return (
  <div>

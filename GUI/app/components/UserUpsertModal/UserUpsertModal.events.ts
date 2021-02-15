@@ -32,14 +32,14 @@ export default class UserUpsertModalEvents {
     }
 
     async init () {
-        const { currentUserPicked } = this.props;
+        const { currentUserPicked, open } = this.props;
         if(currentUserPicked) {
           const accounts = this.readUserAccounts();
           const actions =  this.readUserActions();
           await this.setState({...this.state, currentUserPicked, 
-            accountsView:accounts, actionsView:actions})  
+            accountsView:accounts, actionsView:actions, open})  
         } else {
-          await this.setState({...this.state, currentUserPicked:null})  
+          await this.setState({...this.state, currentUserPicked:null, open})  
         }
     }
 
@@ -47,7 +47,8 @@ export default class UserUpsertModalEvents {
         this.initFlag = false;
         const {handleUpsertUserModalClose} = this.props;
         handleUpsertUserModalClose(false);
-        await this.setState({...this.state, accountsView:[], actionsView:[], currentUserPicked:null});
+        await this.setState({...this.state, accountsView:[], actionsView:[], 
+          currentUserPicked:null, open:false});
     }
 
     readUserAccounts ()  {
@@ -90,6 +91,7 @@ export default class UserUpsertModalEvents {
       
     
     async deleteAccountOrAction  (collectionName:any, item:any)  {
+      const { currentUserPicked }  = this.state;
         await this.setState({...this.state, openDeletePopup:true, itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
     }
     

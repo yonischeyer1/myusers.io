@@ -54,6 +54,8 @@ const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
   liveViewPort, currentUserPicked, currentTestPicked,
   stopLiveView, itemAndCollectionNameToDelete, currentRuningTestName,
   testTroubleshootPick, optionsTest, optionsUser} = state;
+
+console.log("home state", state)
    
 return (
       <div className={styles["root"]} >
@@ -133,8 +135,8 @@ return (
         handleUpsertTestModalClose={_events.handleUpsertTestModalClose.bind(_events)} 
         open={openUpsertTestModal} currentTestPicked={currentTestPicked}/>
 
-        <UserUpsertModal currentUserPicked={currentUserPicked} 
-        handleUpsertUserModalClose={_events.handleUpsertUserModalClose.bind(_events)} open={openUpsertUserModal}/>
+        <UserUpsertModal open={openUpsertUserModal} currentUserPicked={currentUserPicked} 
+        handleUpsertUserModalClose={_events.handleUpsertUserModalClose.bind(_events)} />
 
         <TroubleshootMenu  
         pickedTest={testTroubleshootPick}

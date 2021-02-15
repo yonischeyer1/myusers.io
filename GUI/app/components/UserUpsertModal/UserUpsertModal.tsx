@@ -36,6 +36,8 @@ export default function FullScreenDialog(props:any) {
     pickedAction, pickedAccount, openDeletePopup, itemAndCollectionNameToDelete,
     accountsView, actionsView, currentUserPicked} = state;
 
+  console.log("userupsert state", state)
+
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
