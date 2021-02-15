@@ -67,15 +67,15 @@ export default class RecordingModalEvents {
      }
     
     async handleClose (e:any) {
-        this.initFlag = false;
         const loginContainer:any = this.state.recorderContainer;
         if(loginContainer) {
           await removeContainerByName(loginContainer._containerName)
         }
-        this.setState({...DEFAULT_COMPONENT_STATE})
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         serviceStore.upsertAppStateValue('isLoginMode', false)
         const {handleRecordingModalClose} = this.props;
         handleRecordingModalClose(false);
+        this.initFlag = false;
     };
     async initRecorder  () {
         const user = serviceStore.getAppStateValue('currentUser')

@@ -12,41 +12,13 @@ import DeletePopup from '../DeletePopup/DeletePopup'
 import styles from './Home.css';
 import { a11yProps, TabPanel } from '../../utils/general';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
-import HomeEvents from './Home.events';
+import HomeEvents, {DEFAULT_COMPONENT_STATE} from './Home.events';
 
 
 const _events = new HomeEvents();
 
 export default function SimpleTabs(props:any) {
-const [state, setState] = React.useState({
-  tabIndex:0,
-  openUpsertTestModal:false,
-  openUpsertUserModal:false,
-  openliveViewPortModal:false,
-  openDeletePopup:false,
-  openTroubleshootMenu:false,
-  liveViewPort:null,
-  currentUserPicked:null,
-  currentTestPicked:null,
-  stopLiveView:true,
-  itemAndCollectionNameToDelete:null,
-  currentRuningTestName: {name:"",status:""},
-  testTroubleshootPick:false,
-  optionsTest:[
-    {label:'Play',disabled:false}, 
-    {label:'Live view', disabled:false}, 
-    {label:'Edit', disabled:false},  
-    {label:'Delete', disabled:false}, 
-    {label:'Export', disabled:false}
-  ],
-  optionsUser:[
-    {label:'Edit',disabled:false}, 
-    {label:'Delete', disabled:false}
-  ],
-  tests:[],
-  users:[]
-});
-
+const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
 _events.setConstructor(state, setState, props);
 
@@ -55,7 +27,6 @@ const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
   stopLiveView, itemAndCollectionNameToDelete, currentRuningTestName,
   testTroubleshootPick, optionsTest, optionsUser} = state;
 
-console.log("home state", state)
    
 return (
       <div className={styles["root"]} >

@@ -40,6 +40,7 @@ export default class PlayerLiveViewModalEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleLivePreviewModalClose} = this.props;
         handleLivePreviewModalClose(false);
+        this.initFlag = false;
     }
 
     

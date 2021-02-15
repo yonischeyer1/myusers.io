@@ -53,6 +53,7 @@ export default class ActionsUpsertModalEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleUpsertActionModalClose} = this.props;
         handleUpsertActionModalClose(false);
+        this.initFlag = false;
     };
     
     async handleDeletePopupClose (e:any) {

@@ -55,6 +55,7 @@ export default class TroubleshootMenuEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleTroubleshootMenuClose} = this.props;
         handleTroubleshootMenuClose(false);
+        this.initFlag = false;
     }
     
     async handleDynamicSnapshotModalClose (e:any) {

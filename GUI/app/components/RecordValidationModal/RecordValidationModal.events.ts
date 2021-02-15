@@ -52,6 +52,7 @@ export default class RecordValidationModalEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleModalClose} = this.props;
         handleModalClose(...this.state, false);
+        this.initFlag = false;
     };
     
     async handleLivePreviewModalClose (e:any)  {

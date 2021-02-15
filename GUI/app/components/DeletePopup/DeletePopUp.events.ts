@@ -47,6 +47,7 @@ export default class ActionsDropdownEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleDeletePopupClose} = this.props;
         handleDeletePopupClose(false);
+        this.initFlag = false;
     };
     
     async handleDeleteItemClick (e:any)  {

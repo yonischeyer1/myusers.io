@@ -49,6 +49,7 @@ export default class EditTagModalEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleEditTagModalClose} = this.props;
         handleEditTagModalClose(false);
+        this.initFlag = false;
     };
     
     async handleSetTimeoutChange  (e:any) {

@@ -3,6 +3,34 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+export const DEFAULT_COMPONENT_STATE = {
+    tabIndex:0,
+    openUpsertTestModal:false,
+    openUpsertUserModal:false,
+    openliveViewPortModal:false,
+    openDeletePopup:false,
+    openTroubleshootMenu:false,
+    liveViewPort:null,
+    currentUserPicked:null,
+    currentTestPicked:null,
+    stopLiveView:true,
+    itemAndCollectionNameToDelete:null,
+    currentRuningTestName: {name:"",status:""},
+    testTroubleshootPick:false,
+    optionsTest:[
+      {label:'Play',disabled:false}, 
+      {label:'Live view', disabled:false}, 
+      {label:'Edit', disabled:false},  
+      {label:'Delete', disabled:false}, 
+      {label:'Export', disabled:false}
+    ],
+    optionsUser:[
+      {label:'Edit',disabled:false}, 
+      {label:'Delete', disabled:false}
+    ],
+    tests:[],
+    users:[]
+}
 
 const serviceStore = new ServiceStore();
 
@@ -138,8 +166,7 @@ export default class HomeEvents {
     }
 
     async deleteUser (user:any) {
-        const { currentUserPicked } = this.state;
-        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'users', item:user, currentUserPicked}})
+        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'users', item:user}})
     }
 
     async deleteTest (test:any) {

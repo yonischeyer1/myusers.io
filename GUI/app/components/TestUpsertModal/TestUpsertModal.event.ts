@@ -68,6 +68,7 @@ export default class TestUpsertModalEvents {
         const { handleUpsertTestModalClose } = this.props;
         handleUpsertTestModalClose(false);
         await this.setState({...DEFAULT_COMPONENT_STATE})
+        this.initFlag = false;
   }
 
   async handleSuiteNameChange(e:any) {
