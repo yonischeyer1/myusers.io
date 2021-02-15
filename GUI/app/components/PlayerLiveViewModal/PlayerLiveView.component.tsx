@@ -13,13 +13,18 @@ const _events = new PlayerLiveViewModalEvents();
 
 
 export default function FullScreenDialog(props:any) {
-  const { open, port, stopPlaying } = props;
+  const [state, setState] = React.useState({
+     port:null,
+     stopPlaying:false
+  });
 
-  _events.setConstructor(null, null, props)
+  _events.setConstructor(state, setState, props)
 
-  return open ? (
+  const { port, stopPlaying} = state;
+
+  return !!port ? (
     <div>
-      <Dialog fullScreen open={open} TransitionComponent={Transition}>
+      <Dialog fullScreen open={!!port} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>

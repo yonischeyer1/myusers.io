@@ -17,25 +17,36 @@ import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';
 const _events = new ActionsUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const { open, pickedAction } = props;
   const [state, setState] = React.useState({
+    open:false,
+    actionName:'',
     actionsDropdownOptions: [
       {label:'Edit', disabled:false},
       {label:'Delete', disabled:false}
     ],
     openRecordingModal:false,
     dynamicSnapshotModalData:false,
-    dynamicSnapshotOpen:false,
-    actionName:'',
-    openDeletePopup:false,
-    openEditTagModal:false,
-    zeTag:false,
+    pickedTag:false,
     itemAndCollectionNameToDelete:false,
+    pickedAction: {
+      tags:[]
+    },
   })
 
   _events.setConstructor(state, setState, props);
 
+  const { actionName,
+     open, 
+     pickedAction, 
+     actionsDropdownOptions, 
+     itemAndCollectionNameToDelete,  
+     dynamicSnapshotModalData,
+     pickedTag,
+     openRecordingModal
+    } = state;
 
+
+  
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -51,7 +62,7 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={false} value={state.actionName}
+             <TextField disabled={false} value={actionName}
              onChange={_events.handleActionNameChange.bind(_events)} 
              label="Action Name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
@@ -72,13 +83,13 @@ export default function FullScreenDialog(props:any) {
           <h3>Tag List:</h3>
            <div className={styles["tags-editor-container"]}>
               {
-                 pickedAction.tags.map((tag, index)=>{
+                 pickedAction.tags.map((tagItem:any, index:any)=>{
                   return (
                   <div style={{display:'flex', marginTop:'20px'}}>
                     <div>
-                       Tag name : {tag.name}
+                       Tag name : {tagItem.name}
                     </div>
-                    <ActionsDropdown options={state.actionsDropdownOptions} handleMenuItemClick={_events.handleTagMenuItemClick.bind(_events)} />
+                    <ActionsDropdown options={actionsDropdownOptions} handleMenuItemClick={_events.handleTagMenuItemClick.bind(_events)} />
                   </div>
                   )})
             }
@@ -92,11 +103,11 @@ export default function FullScreenDialog(props:any) {
          <Button size="small" variant="outlined" color="primary" onClick={_events.saveCurrentActionTags.bind(_events)}>Save</Button>
          </div>
      </div>
-     <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} tag={state.zeTag}/>
-     <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
+     <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} tag={pickedTag}/>
+     <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} itemAndCollectionName={itemAndCollectionNameToDelete} />
      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
-     <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={state.openRecordingModal}/>
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
+     <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={openRecordingModal}/>
       </Dialog>
     </div>
   ) : <div></div>

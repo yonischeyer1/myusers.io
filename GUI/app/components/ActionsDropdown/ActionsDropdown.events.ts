@@ -1,4 +1,5 @@
 import { setStatePromisifed } from "../../utils/general";
+import { MenuItemOption } from "./ActionsDropdown";
 
 
 
@@ -22,8 +23,10 @@ export default class ActionsDropdownEvents {
       }
   
     async init () {
-       
+      const options:MenuItemOption = this.props.options;
+      this.setState({...this.state, options})
     }
+    
     async handleMenuItemClick  (option:any) {
         this.props.handleMenuItemClick(option); 
     }

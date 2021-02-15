@@ -17,19 +17,22 @@ const _events = new RecordValidationModalEvents()
 
 export default function FullScreenDialog(props:any) {
   const videoPlayerOutputSrc = `${APP_CWD}recorder.mp4`
-  const { open } = props;
 
   const [state, setState] = React.useState({
+    open:false,
     liveViewPort:null,
     liveViewPortModalOpen:false,
     dynamicSnapshotModalData:null,
     dynamicSnapshotOpen:null,
     screen:null,
-    tagsPresent:null,
+    tagsPresent:[],
     saveThis:null
   })
 
   _events.setConstructor(state, setState, props)
+
+  const { open, liveViewPort, dynamicSnapshotModalData, 
+    screen, tagsPresent, saveThis } = state;
 
   return open ? (
     <div>
@@ -54,7 +57,7 @@ export default function FullScreenDialog(props:any) {
            </video>
            </div>
            {
-             state.screen === SCREENS.validate ?
+             screen === SCREENS.validate ?
              <div className={styles["modal-verifaction-buttons-controls"]}>
              <Button size="small" variant="outlined" color="secondary"  onClick={_events.handleClose.bind(_events)}>record again</Button>
                  <div className={styles["yes-button"]}>
@@ -63,10 +66,10 @@ export default function FullScreenDialog(props:any) {
                </div> : null
            }
            {
-             state.screen === SCREENS.setTagsMaxTimeoutScreen ? 
+             screen === SCREENS.setTagsMaxTimeoutScreen ? 
              <div className={styles["screen-setMaxTimeout-container"]}>
                {
-                 state.tagsPresent.map((tag:any)=>{
+                 tagsPresent.map((tag:any)=>{
                    return <div style={{display:'flex'}}>
                      <div>
                      <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ _events.handleTagImageClick.bind(_events)(tag)}}/>
@@ -82,15 +85,14 @@ export default function FullScreenDialog(props:any) {
            }
            <div className={styles["record-modal-save-btn-container"]}>
            <Button  size="small" variant="outlined" color="primary" onClick={()=>{
-                   state.saveThis ? _events.saveTags.bind(_events)(state.saveThis.tags, state.saveThis.ioActions) : null
-                   state.saveThis = null
+                   saveThis ? _events.saveTags.bind(_events)(saveThis.tags, saveThis.ioActions) : null
             }}>save</Button>
            </div>
         </div>
       </Dialog>
       <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
-      <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} open={state.liveViewPortModalOpen} stopPlaying={false} port={state.liveViewPort}/>
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}/>
+      <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} port={liveViewPort} stopPlaying={false} />
     </div>
   ) : <div></div>
 }

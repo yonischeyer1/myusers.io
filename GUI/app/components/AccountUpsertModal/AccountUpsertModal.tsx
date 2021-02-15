@@ -12,12 +12,11 @@ import styles from './AccountUpsertModal.css';
 import { Transition } from '../../utils/general';
 import AccountUpsertModalEvents from './AccountUpsertModal.events';
 
-
+const _events = new AccountUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new AccountUpsertModalEvents();
-  const { open } = props;
   const [state, setState] = React.useState({
+    open:false,
     openRecordingModal:false,
     accountName:{value:'', disabled:false},
     loginURL:{value:'', disabled:false},
@@ -25,8 +24,8 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
+  const { open, accountName, loginURL, openRecordingModal } = state;
 
-   //** HTML */
   return open ? (
     <div>
       <Dialog fullScreen open={open} TransitionComponent={Transition}>
@@ -42,12 +41,12 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={state.accountName.disabled} value={state.accountName.value}
+             <TextField disabled={accountName.disabled} value={accountName.value}
              onChange={_events.handleAccountNameChange.bind(_events)} 
              label="Account name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
           </div>
           <div className={styles["test-name-container"]}>
-             <TextField disabled={state.loginURL.disabled} value={state.loginURL.value}
+             <TextField disabled={loginURL.disabled} value={loginURL.value}
              onChange={_events.handleLoginUrlChange.bind(_events)} 
              label="Login URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
          </div>
@@ -64,7 +63,7 @@ export default function FullScreenDialog(props:any) {
          </div>
       </div>
       </Dialog>
-      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={state.openRecordingModal}/>
+      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={openRecordingModal}/>
     </div>
   ) : <div></div>
 }

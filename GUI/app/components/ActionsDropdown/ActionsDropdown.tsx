@@ -13,16 +13,17 @@ export interface MenuItemOption {
 
 export default function ActionsDropdown (props:any) {
   const _events = new ActionsDropdownEvents();
-  const options:MenuItemOption = props.options;
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const randomId = getRandomId();
 
   const [state, setState] = React.useState({
-        open:false
+        open:false,
+        options:[]
   });
 
   _events.setConstructor(state, setState, props, anchorRef)
 
+  const { open, options } = state;
 
  return (
  <div>
@@ -31,8 +32,8 @@ export default function ActionsDropdown (props:any) {
   <Button
    color="primary"
    size="small"
-   aria-controls={state.open ? `split-button-menu-${randomId}` : undefined}
-   aria-expanded={state.open ? 'true' : undefined}
+   aria-controls={open ? `split-button-menu-${randomId}` : undefined}
+   aria-expanded={open ? 'true' : undefined}
    aria-label="select merge strategy"
    aria-haspopup="menu"
    onClick={_events.handleToggle.bind(_events)}
@@ -40,7 +41,7 @@ export default function ActionsDropdown (props:any) {
    <ArrowDropDownIcon />
   </Button>
  </ButtonGroup>
- <Popper style={{zIndex:1}} open={state.open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+ <Popper style={{zIndex:1}} open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
   {({ TransitionProps, placement }) => (
   <Grow
     {...TransitionProps}

@@ -13,11 +13,11 @@ import styles from './UserUpsertModal.css'
 import { a11yProps, TabPanel, Transition } from '../../utils/general';
 import UserUpsertModalEvents from './UserUpsertModal.events';
 
+const _events = new UserUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new UserUpsertModalEvents();
-  const { open } = props;
   const [state, setState] = React.useState({
+    open:false,
     tabIndex:0,
     openUpsertAccountModal:false,
     openUpsertActionModal:false,
@@ -27,12 +27,14 @@ export default function FullScreenDialog(props:any) {
     itemAndCollectionNameToDelete:null,
     accountsView:[],
     actionsView:[],
-    userNameView:'',
     currentUserPicked: null
   })
 
   _events.setConstructor(state, setState, props);
 
+  const {open, tabIndex, openUpsertAccountModal, openUpsertActionModal,
+    pickedAction, pickedAccount, openDeletePopup, itemAndCollectionNameToDelete,
+    accountsView, actionsView, currentUserPicked} = state;
 
   return open ? (
     <div>
@@ -40,7 +42,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {state.currentUserPicked ? `Edit ${state.currentUserPicked.name}` : 'Create new user'}
+              {currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user'}
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
@@ -57,25 +59,25 @@ export default function FullScreenDialog(props:any) {
         <br/>
       <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={state.currentUserPicked ? state.currentUserPicked.name : ''}
+             value={currentUserPicked ? currentUserPicked.name : ''}
              onChange={_events.handleUserNameChange.bind(_events)} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>
       <div className={styles["root"]} style={{height:"100vh",color:"white"}}>
         <AppBar style={{backgroundColor:"#232c39",color:"white"}}  position="static">
-          <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={_events.handleChange.bind(_events)} aria-label="simple tabs example">
+          <Tabs  indicatorColor="primary"  textColor="inherit" value={tabIndex} onChange={_events.handleChange.bind(_events)} aria-label="simple tabs example">
             <Tab label="Accounts" {...a11yProps(0)} />
             <Tab label="Actions" {...a11yProps(1)} />
           </Tabs>
         </AppBar>
-        <TabPanel value={state.tabIndex} index={state.tabIndex}>
+        <TabPanel value={tabIndex} index={tabIndex}>
         <Suspense fallback={<div>Loading...</div>}>
-          <div className={styles["user-upsert-row-container"]} style={{display: state.tabIndex === 0 ? 'flex' : 'none'}}> 
+          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 0 ? 'flex' : 'none'}}> 
           {
-              !state.accountsView ||  state.accountsView.length === 0 ? <div>
+              !accountsView ||  accountsView.length === 0 ? <div>
                    User have 0 Accounts
-              </div> : state.accountsView.map((account:any)=>{
+              </div> : accountsView.map((account:any)=>{
                 
                 return <div className={styles["user-upsert-row"]}> <div>
                   Account Name: {account.name}
@@ -94,11 +96,11 @@ export default function FullScreenDialog(props:any) {
               })
           }
           </div>
-          <div className={styles["user-upsert-row-container"]} style={{display: state.tabIndex === 1 ? 'flex' : 'none'}}>
+          <div className={styles["user-upsert-row-container"]} style={{display: tabIndex === 1 ? 'flex' : 'none'}}>
             {
-              !state.actionsView ||  state.actionsView.length === 0 ? <div>
+              !actionsView ||  actionsView.length === 0 ? <div>
                 User have 0 Actions
-              </div> : state.actionsView.map((action:any)=>{
+              </div> : actionsView.map((action:any)=>{
                 return <div className={styles["user-upsert-row"]}>
                   <div className={styles["user-upsert-row-item-name"]}>
                   Action Name: {action.name || null}
@@ -120,9 +122,9 @@ export default function FullScreenDialog(props:any) {
           </Suspense>
         </TabPanel>
       </div>
-      <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={state.openDeletePopup} itemAndCollectionName={state.itemAndCollectionNameToDelete} />
-      <AccountUpsertModal handleUpsertAccountModalClose={_events.handleUpsertAccountModalClose.bind(_events)} open={state.openUpsertAccountModal} pickedAccount={state.pickedAccount}/>
-      <ActionUpsertModal handleUpsertActionModalClose={_events.handleUpsertActionModalClose.bind(_events)} open={state.openUpsertActionModal} pickedAction={state.pickedAction}/>
+      <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
+      <AccountUpsertModal handleUpsertAccountModalClose={_events.handleUpsertAccountModalClose.bind(_events)} open={openUpsertAccountModal} pickedAccount={pickedAccount}/>
+      <ActionUpsertModal handleUpsertActionModalClose={_events.handleUpsertActionModalClose.bind(_events)} open={openUpsertActionModal} pickedAction={pickedAction}/>
       </Dialog>
     </div>
   ) : <div></div>

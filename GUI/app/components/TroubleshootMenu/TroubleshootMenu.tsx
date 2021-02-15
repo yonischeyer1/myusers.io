@@ -18,19 +18,20 @@ import EditTagModal from '../EditTagModal/EditTagModal';
 import { Transition } from '../../utils/general';
 import TroubleshootMenuEvents from './TroubleshootMenu.events';
 
+const _events = new TroubleshootMenuEvents();
 
 export default function FullScreenDialog(props:any) {
-  const _events = new TroubleshootMenuEvents();
-  const { open, pickedTest } = props;
   const [state, _setState] = React.useState({
+      open:false,
+      pickedTest:null,
       failedTag:null,
-      failedTest:null,
       dynamicSnapshotModalData:null,
-      dynamicSnapshotOpen:false,
-      openEditTagModal:false
   });
 
   _events.setConstructor(state, _setState, props);
+
+  const {open, pickedTest, failedTag, 
+    dynamicSnapshotModalData} = state;
 
    //** HTML */
   return open ? (
@@ -180,14 +181,14 @@ export default function FullScreenDialog(props:any) {
        </div>
         <div>
             tag image 
-            <img src={state.failedTag ? state.failedTag.tag.originalReferenceSnapshotURI : null}/>
+            <img src={failedTag ? failedTag.tag.originalReferenceSnapshotURI : null}/>
         </div>
       </div><br/>
       </div>
-      <EditTagModal open={state.openEditTagModal} handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
-       handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={state.failedTag ? state.failedTag.tag : null}/>
+      <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
+       handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={failedTag ? failedTag.tag : null}/>
       <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} open={state.dynamicSnapshotOpen} dataURI={state.dynamicSnapshotModalData}/>
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
       </Dialog>
     </div>
   ) : <div></div>

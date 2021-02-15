@@ -15,27 +15,27 @@ import RecordingModalEvents from './RecordingModal.events';
 const _events = new RecordingModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const { open } = props;
-  
+
   const [state, setState] = React.useState({
+    open:false,
     record: false,
     port: null,
     loading:false,
-    imageName:null,
-    containerId:null,
     stopRecord:false,
-    openModal:false,
+    openRecordModal:false,
     videoFilePath:null,
     totalRecordTime:null,
     recorderContainer:null,
     recordButtonDisable:false,
     stopButtonDisable:true,
-    startRecordingDateTime:null,
-    imageTest: null,
-    startUrl:null
+    startRecordingDateTime:null, 
   });
 
   _events.setConstructor(state, setState, props)
+
+  const {open, record, port, loading, 
+    stopRecord, openRecordModal, totalRecordTime, recorderContainer,
+    recordButtonDisable, stopButtonDisable }  = state;
 
   const isLoginMode = _events.isLoginMode;
    
@@ -66,33 +66,33 @@ export default function FullScreenDialog(props:any) {
                </div> : 
                  <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
-                    <Button size="small" variant="outlined" color="secondary" disabled={state.recordButtonDisable} onClick={_events.startRecording.bind(_events)}>record</Button> 
+                    <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.startRecording.bind(_events)}>record</Button> 
                  </div>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={_events.stopRecording.bind(_events)}>stop</Button>
+                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.stopRecording.bind(_events)}>stop</Button>
                  </div>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={state.stopButtonDisable} onClick={_events.abort.bind(_events)}>abort</Button>
+                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.abort.bind(_events)}>abort</Button>
                  </div>
                </div>
              }
              <div style={{width:"auto"}}>
              {
-               isLoginMode ? null : <TextField disabled={state.recordButtonDisable} 
+               isLoginMode ? null : <TextField disabled={recordButtonDisable} 
                onChange={_events.handleURLChange.bind(_events)} 
                label="URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              }
                  {
-                 state.loading ? <div className={styles["loading-container"]}><CircularProgress 
+                 loading ? <div className={styles["loading-container"]}><CircularProgress 
                  style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
                 </div> :
-                     state.record ?  <VncViewerComponent stopRecord={state.stopRecord} mode="recorder" port={state.port}/> :
+                     record ?  <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/> :
                    <div className={styles["blank-container"]}>
                    </div>
                  }
               </div>
            </div>
-           <RecordModal recorderContainer={state.recorderContainer} totalRecordTime={state.totalRecordTime} open={state.openModal} handleModalClose={_events.handleModalClosing.bind(_events)}/>
+           <RecordModal recorderContainer={recorderContainer} totalRecordTime={totalRecordTime} open={openRecordModal} handleModalClose={_events.handleModalClosing.bind(_events)}/>
          </div>
         </div>
       </Dialog>

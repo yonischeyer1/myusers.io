@@ -55,10 +55,10 @@ export default class StaticMaskingWizardEvents {
     }
     
     async handleSave  (e:any)  {
-        const { dataURI } = this.props;
+        const { tag } = this.state;
         const drawURI = canvas.toDataURL('image/jpeg')
         const {handleDynamicSnapshotModalSave} = this.props;
-        handleDynamicSnapshotModalSave({tag:dataURI,coords, drawURI})
+        handleDynamicSnapshotModalSave({tag,coords, drawURI})
         this.handleClear(null)
         this.handleClose(null)
     }
@@ -108,10 +108,10 @@ export default class StaticMaskingWizardEvents {
     
     async start() {
       setTimeout(()=>{
-        const { dataURI } = this.props;
+        const { tag } = this.state;
         canvas = document.getElementById("jPolygon");
         const img = new Image();
-        img.src = dataURI.originalReferenceSnapshotURI;
+        img.src = tag.originalReferenceSnapshotURI;
       
         img.onload = function(){
             ctx = canvas.getContext("2d");

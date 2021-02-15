@@ -31,7 +31,7 @@ export default class TroubleshootMenuEvents {
     }
 
     async init () {
-        const pickedTest = this.props.pickedTest;
+        const { pickedTest } = this.props;
         const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
         const actions = serviceStore.readDocs('actions');
         const failedTag:any = {
@@ -42,7 +42,7 @@ export default class TroubleshootMenuEvents {
           test:pickedTest.suite[pickedTest.lastFailResult.testIdx],
           idx:pickedTest.lastFailResult.testIdx
         }
-        await this.setState({...this.state, failedTag: {...failedTag},failedTest: {...failedTest}})
+        await this.setState({...this.state, pickedTest, failedTag: {...failedTag},failedTest: {...failedTest}})
     }
 
     async handleClose  (e:any)  {

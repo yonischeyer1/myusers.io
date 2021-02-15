@@ -32,20 +32,22 @@ export default class TestUpsertModalEvents {
 
   async init () {
     const users = serviceStore.readDocs('users');
-    const { currentTestPicked } = this.props;
+    const { currentTestPicked, open } = this.props;
     if(currentTestPicked) {
       await this.setState({
         ...this.state, 
         suite:currentTestPicked.suite, 
         suiteName:currentTestPicked.suiteName,
-        users
+        users,
+        open
       })
     } else {
       await this.setState({
         ...this.state, 
         suite:[], 
         suiteName:'',
-        users
+        users,
+        open
       })
     }
   }

@@ -11,26 +11,22 @@ import DeletePopUpEvents from './DeletePopUp.events';
 const _events = new DeletePopUpEvents();
 
 export default function FullScreenDialog(props:any) {
-
-  const { itemAndCollectionName } = props;
   const [state, setState] = React.useState({
-    openRecordingModal:false,
-    dynamicSnapshotModalData:false,
-    dynamicSnapshotOpen:false,
-    actionName:'',
-    openDeletePopup:false,
-    openEditTagModal:false,
-    zeTag:false,
-    itemAndCollectionNameToDelete:false,
-    openUserActionBtnGrp:[]
+    itemAndCollectionName: {
+       item: {
+         name:''
+       },
+       collectionName:''
+    }
   })
-
 
   _events.setConstructor(state, setState, props);
 
+  const { itemAndCollectionName } = state;
+
   return itemAndCollectionName ? (
     <div>
-      <Dialog fullScreen open={itemAndCollectionName} TransitionComponent={Transition}>
+      <Dialog fullScreen open={!!itemAndCollectionName} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
@@ -43,8 +39,8 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
         <div className={styles["modal-content-container"]}>
             <div>
-                Are you sure you want to delete {itemAndCollectionName.item.name} &nbsp; 
-                 From {itemAndCollectionName.collectionName} ? 
+                Are you sure you want to delete {itemAndCollectionName ? itemAndCollectionName.item.name : null} &nbsp; 
+                 From {itemAndCollectionName ? itemAndCollectionName.collectionName : null} ? 
             </div>
             <br/><br/><br/>
             <div>

@@ -5,6 +5,7 @@ import { removeUserSessionFolder } from "../../utils/IHost";
 
 
 const serviceStore = new ServiceStore();
+
 let instance:any = null;
 export default class ActionsDropdownEvents {
   initFlag:any
@@ -31,7 +32,8 @@ export default class ActionsDropdownEvents {
     }
 
     async init () {
-     
+       const { itemAndCollectionName } = this.props;
+       await this.state({...this.state, itemAndCollectionName})
     }
 
     async handleClose (e:any) {

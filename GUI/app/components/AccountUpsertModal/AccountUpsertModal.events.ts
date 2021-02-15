@@ -30,7 +30,10 @@ export default class AccountUpsertModalEvents {
       }
   
     async init () {
-       
+        const { pickedAccount } = this.props;
+        if(pickedAccount) { 
+           await this.setState({...this.state, accountName:pickedAccount.name, loginURL:pickedAccount.loginURL})
+        }
     }
 
     async handleClose (e:any)  {
@@ -64,7 +67,7 @@ export default class AccountUpsertModalEvents {
     }
 
     async handleCancelBtnClick (e:any) {
-
+        this.handleClose(false);
     }
 
     async handleDoneBtnClick (e:any) {

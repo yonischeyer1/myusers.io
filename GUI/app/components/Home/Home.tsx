@@ -18,8 +18,6 @@ import HomeEvents from './Home.events';
 const _events = new HomeEvents();
 
 export default function SimpleTabs(props:any) {
-
-
 const [state, setState] = React.useState({
   tabIndex:0,
   openUpsertTestModal:false,
@@ -30,7 +28,6 @@ const [state, setState] = React.useState({
   liveViewPort:null,
   currentUserPicked:null,
   currentTestPicked:null,
-  portsPlaying:{},
   stopLiveView:true,
   itemAndCollectionNameToDelete:null,
   currentRuningTestName: {name:"",status:""},
@@ -53,19 +50,22 @@ const [state, setState] = React.useState({
 
 _events.setConstructor(state, setState, props);
 
-const {tests, users} = state;
+const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
+  liveViewPort, currentUserPicked, currentTestPicked,
+  stopLiveView, itemAndCollectionNameToDelete, currentRuningTestName,
+  testTroubleshootPick, optionsTest, optionsUser} = state;
    
 return (
       <div className={styles["root"]} >
         <AppBar className={styles["app-bar"]}  position="static">
-          <Tabs  indicatorColor="primary"  textColor="inherit" value={state.tabIndex} onChange={_events.handleChangeTab.bind(_events)} aria-label="simple tabs example">
+          <Tabs  indicatorColor="primary"  textColor="inherit" value={tabIndex} onChange={_events.handleChangeTab.bind(_events)} aria-label="simple tabs example">
             <Tab label="Tests" {...a11yProps(0)} />
             <Tab label="Users" {...a11yProps(1)} />
           </Tabs>
         </AppBar>
-        <TabPanel value={state.tabIndex} index={state.tabIndex}>
+        <TabPanel value={tabIndex} index={tabIndex}>
         <Suspense fallback={<div>Loading...</div>}>
-          <div style={{display: state.tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
+          <div style={{display: tabIndex === 0 ? 'block' : 'none', color:"black"}}> 
              <div className={styles["tests-menu-container"]}>
                 {
                   !tests ||tests.length === 0 ? <div> 
@@ -77,23 +77,23 @@ return (
                               Test suite name:&nbsp; {testSuite.suiteName}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test runing:&nbsp; {state.currentRuningTestName.name}
+                              Test runing:&nbsp; {currentRuningTestName.name}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test status:&nbsp; {state.currentRuningTestName.status !== "FAIL" ? <Button variant="outlined" color="secondary" onClick={(e:any)=>{
+                              Test status:&nbsp; {currentRuningTestName.status !== "FAIL" ? <Button variant="outlined" color="secondary" onClick={(e:any)=>{
                                  _events.handleFailClick(testSuite)
-                              }}>FAIL</Button> : state.currentRuningTestName.status}
+                              }}>FAIL</Button> : currentRuningTestName.status}
                          </div>
-                         <ActionsDropdown options={state.optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events)} />
+                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events)} />
                       </div>
                     )
                   }) 
                 }
              </div>
           </div>
-          <div style={{display: state.tabIndex === 1 ? 'block' : 'none', color:"black"}}>
+          <div style={{display: tabIndex === 1 ? 'block' : 'none', color:"black"}}>
           {
-             state.tabIndex !== 1 ? null:
+             tabIndex !== 1 ? null:
           <div className={styles["tests-menu-container"]}>
                 {
                   !users || users.length === 0 ? <div>
@@ -103,7 +103,7 @@ return (
                        <div className={styles["test-name-container"]}>
                          name : {user.name}
                        </div>
-                       <ActionsDropdown options={state.optionsUser} 
+                       <ActionsDropdown options={optionsUser} 
                        handleMenuItemClick={(option:any)=>{
                         _events.handleUserMenuItemClick.bind(_events)(null, option, user);
                        }} />
@@ -117,28 +117,27 @@ return (
         </TabPanel>
 
         <div className={styles["add-test-floating-btn"]}>
-           <Fab disabled={state.tabIndex === 0 && Object.values(users).length === 0} 
+           <Fab disabled={tabIndex === 0 && Object.values(users).length === 0} 
            color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick.bind(_events)}>
             <AddIcon />
            </Fab>
         </div>
          
         <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} 
-        open={state.openDeletePopup} 
-        itemAndCollectionName={state.itemAndCollectionNameToDelete} />
+        itemAndCollectionName={itemAndCollectionNameToDelete} />
 
         <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
-        open={state.openliveViewPortModal} stopPlaying={state.stopLiveView} port={state.liveViewPort}/>
+        stopPlaying={stopLiveView} port={liveViewPort}/>
 
         <TestUpsertModal style={{overflow:"hidden"}} 
         handleUpsertTestModalClose={_events.handleUpsertTestModalClose.bind(_events)} 
-        open={state.openUpsertTestModal} currentTestPicked={state.currentTestPicked}/>
+        open={openUpsertTestModal} currentTestPicked={currentTestPicked}/>
 
-        <UserUpsertModal currentUserPicked={state.currentUserPicked} 
-        handleUpsertUserModalClose={_events.handleUpsertUserModalClose.bind(_events)} open={state.openUpsertUserModal}/>
+        <UserUpsertModal currentUserPicked={currentUserPicked} 
+        handleUpsertUserModalClose={_events.handleUpsertUserModalClose.bind(_events)} open={openUpsertUserModal}/>
 
-        <TroubleshootMenu open={state.openTroubleshootMenu} 
-        pickedTest={state.testTroubleshootPick}
+        <TroubleshootMenu  
+        pickedTest={testTroubleshootPick}
         handleTroubleshootMenuClose={_events.handleTroubleshootMenuClose.bind(_events)} />
       </div>
     );

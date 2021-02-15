@@ -14,18 +14,22 @@ const DEFAULT_BRUSH_SIZE = 4
 const _events = new StaticMaskingWizardEvents();
 
 export default function FullScreenDialog(props:any) {
-  const { open, dataURI } = props;
   const [state, setState] = React.useState({
+     tag: {
+       originalReferenceSnapshotURI:''
+     },
      brushSize:DEFAULT_BRUSH_SIZE
   });
 
   _events.setConstructor(state, setState, props);
 
+  const { tag, brushSize } = state;
 
 
-  return open ? (
+
+  return tag ? (
     <div>
-      <Dialog fullScreen open={open} TransitionComponent={Transition}>
+      <Dialog fullScreen open={!!tag} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
@@ -40,7 +44,7 @@ export default function FullScreenDialog(props:any) {
         <div style={{float:"left"}}>
             <canvas id="jPolygon" width="227" height="227"  onMouseUp={_events.stopdrawing.bind(_events)} 
              onMouseMove={_events.mousemoving.bind(_events)} onMouseDown={_events.point_it.bind(_events)} 
-             data-imgsrc={dataURI.originalReferenceSnapshotURI}>
+             data-imgsrc={tag.originalReferenceSnapshotURI}>
             </canvas>
         </div>
         <div>
@@ -52,7 +56,7 @@ export default function FullScreenDialog(props:any) {
             <br/>
             Set brush size:
             <br/>
-            <input type="number" value={state.brushSize} onChange={_events.handleBrushSizeChange.bind(_events)}/>
+            <input type="number" value={brushSize} onChange={_events.handleBrushSizeChange.bind(_events)}/>
        </div>
        </div>
       </Dialog>

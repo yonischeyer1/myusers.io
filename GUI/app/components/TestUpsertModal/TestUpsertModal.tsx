@@ -13,8 +13,8 @@ import TestUpsertModalEvents from './TestUpsertModal.event';
 const _events = new TestUpsertModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  const { open } = props;
   const [state, setState] = React.useState({
+    open:false,
     testName:"",
     pickedUserId:"",
     pickedUserActions:null,
@@ -27,6 +27,8 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
+  const { open, testName, pickedUserId, pickedUserAction, pickedUserActions,
+    suite, suiteName, users, actions} = state;
   
   return open ? (
     <div style={{overflow:"hidden"}}>
@@ -34,7 +36,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {state.suiteName ? `Edit suite: ${state.suiteName}` : "Create new test suite"}
+              {suiteName ? `Edit suite: ${suiteName}` : "Create new test suite"}
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
@@ -45,14 +47,14 @@ export default function FullScreenDialog(props:any) {
           <br/>
         <div className={styles["test-name-container-suite"]}>
             <TextField disabled={false}
-             value={state.suiteName} 
+             value={suiteName} 
              onChange={_events.handleSuiteNameChange.bind(_events)} 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
              <br/>   <br/>
         <div className={styles["test-name-container"]}>
             <TextField disabled={false} 
-             value={state.testName}
+             value={testName}
              onChange={_events.handleTestNameChange.bind(_events)} 
              label="Test name:" variant="outlined" style={{width:"70%", height:"45px"}} size="small"/>
         </div>
@@ -61,10 +63,10 @@ export default function FullScreenDialog(props:any) {
              <FormControl className={styles["form-control"]}>
               <InputLabel >Select User:</InputLabel>
               <Select
-               value={state.pickedUserId}
+               value={pickedUserId}
                onChange={_events.handleUserPick.bind(_events)}>
                {
-                 !state.users ? null : Object.values(state.users).map((user:any)=>{
+                 !users ? null : Object.values(users).map((user:any)=>{
                    return <MenuItem value={user.id}>{user.name}</MenuItem>
                  })
                }
@@ -75,10 +77,10 @@ export default function FullScreenDialog(props:any) {
            <FormControl className={styles["form-control"]}>
             <InputLabel>Select Action:</InputLabel>
             <Select
-              value={state.pickedUserAction}
+              value={pickedUserAction}
               onChange={_events.handleActionPick.bind(_events)}>
               {
-                !state.pickedUserActions ? null : state.pickedUserActions.map((userAction:any)=>{
+                !pickedUserActions ? null : pickedUserActions.map((userAction:any)=>{
                   return <MenuItem value={userAction.id}>{userAction.name}</MenuItem>
                 })
               }
@@ -92,7 +94,7 @@ export default function FullScreenDialog(props:any) {
              <br/> <br/>
         <div className={styles["suite-container"]}>
            {
-           state.suite.length === 0 ? null : state.suite.map((test:any) => {
+           suite.length === 0 ? null : suite.map((test:any) => {
                return (
                  <div>
                   <br/>  <br/>

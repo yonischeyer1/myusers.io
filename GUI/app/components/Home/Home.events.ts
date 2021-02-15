@@ -143,8 +143,7 @@ export default class HomeEvents {
     }
 
     async deleteTest (test:any) {
-        const { currentTestPicked } = this.state;
-        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'tests', item:test, currentTestPicked}})
+        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'tests', item:test}})
     }
 
     async playTestSuite (testSuite:any, testSuiteIdx:any)  {

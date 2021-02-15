@@ -35,7 +35,8 @@ export default class RecordingModalEvents {
     }
  
     async init() {
- 
+        const { open } = this.props;
+        await this.setState({...this.state, open})
     }
 
     async startLogin (e:any)  {

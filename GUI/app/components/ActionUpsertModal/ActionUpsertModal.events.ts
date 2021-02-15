@@ -27,9 +27,10 @@ export default class ActionsUpsertModalEvents {
          }
       }
   
-      async init () {
-       
-      }
+    async init () {
+       const { open, pickedAction } = this.props;
+       this.setState({...this.state, open, pickedAction})
+    }
   
 
     async handleClose (e:any)  {
@@ -77,6 +78,7 @@ export default class ActionsUpsertModalEvents {
     }
 
     async deleteTag (collectionName:any, item:any) {
+        const { currentUserPicked } = this.state;
         await this.setState({...this.state, openDeletePopup:true ,itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
     }
     
