@@ -2,7 +2,6 @@ import { setStatePromisifed } from "../../utils/general";
 import { MenuItemOption } from "./ActionsDropdown";
 
 
-let initFlag:any = false;
 export default class ActionsDropdownEvents {
     initFlag:any
     setState:any

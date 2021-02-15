@@ -46,6 +46,7 @@ export default class AccountUpsertModalEvents {
     }
 
     async handleClose (e:any)  {
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleUpsertAccountModalClose} = this.props;
         handleUpsertAccountModalClose(false);
     }

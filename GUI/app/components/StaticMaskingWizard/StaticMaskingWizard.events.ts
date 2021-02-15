@@ -46,6 +46,7 @@ export default class StaticMaskingWizardEvents {
     }
 
     async handleClose (e:any)  {
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         const { handleDynamicSnapshotModalClose } = this.props;
         handleDynamicSnapshotModalClose(false);
     }

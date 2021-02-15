@@ -46,6 +46,7 @@ export default class EditTagModalEvents {
    }
 
     async handleClose (e:any)  {
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleEditTagModalClose} = this.props;
         handleEditTagModalClose(false);
     };

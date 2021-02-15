@@ -44,9 +44,7 @@ export default class ActionsDropdownEvents {
     }
 
     async handleClose (e:any) {
-        await this.setState({...this.state, itemAndCollectionName:{
-          item:{name:''},collectionName:''
-        }})
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleDeletePopupClose} = this.props;
         handleDeletePopupClose(false);
     };

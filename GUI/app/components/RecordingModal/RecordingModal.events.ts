@@ -72,6 +72,7 @@ export default class RecordingModalEvents {
         if(loginContainer) {
           await removeContainerByName(loginContainer._containerName)
         }
+        this.setState({...DEFAULT_COMPONENT_STATE})
         serviceStore.upsertAppStateValue('isLoginMode', false)
         const {handleRecordingModalClose} = this.props;
         handleRecordingModalClose(false);

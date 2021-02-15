@@ -52,6 +52,7 @@ export default class TroubleshootMenuEvents {
     }
 
     async handleClose  (e:any)  {
+        await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleTroubleshootMenuClose} = this.props;
         handleTroubleshootMenuClose(false);
     }

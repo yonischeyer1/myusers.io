@@ -60,8 +60,7 @@ export default class UserUpsertModalEvents {
         this.initFlag = false;
         const {handleUpsertUserModalClose} = this.props;
         handleUpsertUserModalClose(false);
-        await this.setState({...this.state, accountsView:[], actionsView:[], 
-          currentUserPicked:null, open:false});
+        await this.setState({...DEFAULT_COMPONENT_STATE})
     }
 
     readUserAccounts ()  {
