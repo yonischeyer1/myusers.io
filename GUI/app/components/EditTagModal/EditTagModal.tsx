@@ -13,12 +13,12 @@ import EditTagModalEvents, {DEFAULT_COMPONENT_STATE} from './EditTagModal.events
 const _events =  new EditTagModalEvents();
 
 export default function FullScreenDialog(props:any) {
-  //**Hooks */
+
   const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
-  _events.setConstructor(state, setState, props);
-
   const { tag, dynamicSnapshotModalData } = state;
+
+  _events.setConstructor(state, setState, props);
 
   const doOpen = !!tag.name
 
