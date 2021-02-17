@@ -78,7 +78,7 @@ export default class RecordingModalEvents {
         this.initFlag = false;
     };
     async initRecorder  () {
-        const user = serviceStore.getAppStateValue('currentUser')
+        const user = serviceStore.getAppStateValue('currentUser') // prop or currentUser
         const recorderContainer = new Container(CONTAINER_MODE.recorder);
         await recorderContainer.init()
         recorderContainer.loadingFunction = this.setLoadingState;

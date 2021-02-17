@@ -20,11 +20,14 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
-  const {open, tabIndex, openUpsertAccountModal, openUpsertActionModal,
+  const { open, tabIndex, openUpsertAccountModal, openUpsertActionModal,
     pickedAction, pickedAccount, openDeletePopup, itemAndCollectionNameToDelete,
-    accountsView, actionsView, currentUserPicked} = state;
+    accountsView, actionsView, currentUserPicked } = state;
 
-  console.log("UserUpsertModalEvents",state)
+  const title = currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user';
+
+  const testNameValue = currentUserPicked ? currentUserPicked.name : '';
+
 
   return open ? (
     <div>
@@ -32,7 +35,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user'}
+              {title}
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
@@ -49,7 +52,7 @@ export default function FullScreenDialog(props:any) {
         <br/>
       <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={currentUserPicked ? currentUserPicked.name : ''}
+             value={testNameValue}
              onChange={_events.handleUserNameChange.bind(_events)} 
              label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
@@ -113,8 +116,18 @@ export default function FullScreenDialog(props:any) {
         </TabPanel>
       </div>
       <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
-      <AccountUpsertModal handleUpsertAccountModalClose={_events.handleUpsertAccountModalClose.bind(_events)} open={openUpsertAccountModal} pickedAccount={pickedAccount}/>
-      <ActionUpsertModal handleUpsertActionModalClose={_events.handleUpsertActionModalClose.bind(_events)} open={openUpsertActionModal} pickedAction={pickedAction}/>
+      <AccountUpsertModal 
+         handleUpsertAccountModalClose={_events.handleUpsertAccountModalClose.bind(_events)} 
+         open={openUpsertAccountModal} 
+         pickedAccount={pickedAccount} 
+         currentUserPicked={currentUserPicked}
+      />
+      <ActionUpsertModal 
+         handleUpsertActionModalClose={_events.handleUpsertActionModalClose.bind(_events)} 
+         open={openUpsertActionModal} 
+         pickedAction={pickedAction}
+         currentUserPicked={currentUserPicked}
+      />
       </Dialog>
     </div>
   ) : <div></div>

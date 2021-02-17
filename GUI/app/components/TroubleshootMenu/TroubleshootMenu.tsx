@@ -13,7 +13,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 //** Others **
 import styles from './TroubleshootMenu.css';
-import DynamicSnapshotModal from '../StaticMaskingWizard/StaticMaskingWizard';
+import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard';
 import EditTagModal from '../EditTagModal/EditTagModal';
 import { Transition } from '../../utils/general';
 import TroubleshootMenuEvents, {DEFAULT_COMPONENT_STATE} from './TroubleshootMenu.events';
@@ -182,7 +182,7 @@ export default function FullScreenDialog(props:any) {
       </div>
       <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
        handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={failedTag ? failedTag.tag : null}/>
-      <DynamicSnapshotModal handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+      <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
       </Dialog>
     </div>

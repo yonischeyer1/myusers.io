@@ -13,7 +13,9 @@ export const DEFAULT_COMPONENT_STATE = {
   itemAndCollectionNameToDelete:null,
   accountsView:[],
   actionsView:[],
-  currentUserPicked: null
+  currentUserPicked: {
+     name:'',
+  }
 }
 
 const serviceStore = new ServiceStore();
@@ -52,7 +54,7 @@ export default class UserUpsertModalEvents {
           await this.setState({...this.state, currentUserPicked, 
             accountsView:accounts, actionsView:actions, open})  
         } else {
-          await this.setState({...this.state, currentUserPicked:null, open})  
+          await this.setState({...this.state, open})  
         }
     }
 
@@ -62,46 +64,7 @@ export default class UserUpsertModalEvents {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         this.initFlag = false;
     }
-
-    readUserAccounts ()  {
-        const { currentUserPicked } = this.state
-        const users = serviceStore.readDocs('users')
-        if(currentUserPicked) {
-          const user = users[currentUserPicked.id]
-          if(user.accountsIds.length > 0) {
-          const accounts = serviceStore.readDocs('accounts')
-            let temp = []
-            for(const acccountId of user.accountsIds) {
-              temp.push(accounts[acccountId])
-            }
-            return temp;
-          } else {
-            return []
-          }
-        }
-        return [];
-    }
-    
-    readUserActions  ()  { 
-        const { currentUserPicked } = this.state
-        const users = serviceStore.readDocs('users')
-        if(currentUserPicked) {
-          const user = users[currentUserPicked.id]
-          if(user.actionsIds.length > 0) {
-          const actions = serviceStore.readDocs('actions')
-          let temp = []
-          for(const actionId of user.actionsIds) {
-            temp.push(actions[actionId])
-          }
-          return temp;
-         } else {
-           return []
-         }
-       }
-       return []
-    }
       
-    
     async deleteAccountOrAction  (collectionName:any, item:any)  {
       const { currentUserPicked }  = this.state;
         await this.setState({...this.state, openDeletePopup:true, itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
@@ -122,20 +85,18 @@ export default class UserUpsertModalEvents {
     async handleChange  (event: React.ChangeEvent<{}>, newValue: number)  {
         await this.setState({...this.state, tabIndex:newValue})
     }
-    
+
     async handleUserNameChange (e:any)  {
-        const newUserName = e.target.value
-        await this.setState({...this.state, currentUserPicked:{
-          ...this.state.currentUserPicked,
-          name:newUserName
-        }});
-        // const users = serviceStore.readDocs('users')
-        // const userNameKey = "userName"
-        // serviceStore.upsertAppStateValue(userNameKey, newUserName);
-        // if(this.props.currentUserPicked) {
-        //   users[currentUserPicked.id].name = newUserName
-        //   serviceStore.updateDocs('users', users)
-        // }
+       const { currentUserPicked } = this.state;
+       const newUserName = e.target.value
+       await this.setState({...this.state, currentUserPicked:{
+         ...currentUserPicked, name:newUserName
+       }});
+       if(currentUserPicked.id) {
+         const users = serviceStore.readDocs('users')
+         users[currentUserPicked.id].name = newUserName
+         serviceStore.updateDocs('users', users)
+      }
     }
     
     async editAction  (action:any)  {
@@ -147,23 +108,60 @@ export default class UserUpsertModalEvents {
     }
     
     async handleFloatingButtonClick (e:any)  {
-        if(!this.props.currentUserPicked) {
-          const userName = serviceStore.getAppStateValue('userName');
-          const userToInsert:User = {
-            name:userName,
-            accountsIds:[],
-            actionsIds:[]
-          }
-          const userId = serviceStore.createDoc('users', userToInsert);
-          userToInsert["id"] = userId;
-          serviceStore.upsertAppStateValue('currentUser', userToInsert);
+        if(!this.state.currentUserPicked.id) {
+          await this.createUser();
         }
         if(this.state.tabIndex === 0) {
-          await this.setState({...this.state, pickedAccount:null, openUpsertAccountModal: !this.state.openUpsertAccountModal})
+          await this.setState({...this.state, openUpsertAccountModal: !this.state.openUpsertAccountModal, pickedAccount:null})
         } else {
-          await this.setState({...this.state, pickedAction:null, openUpsertActionModal: !this.state.openUpsertActionModal})
+          await this.setState({...this.state, openUpsertActionModal: !this.state.openUpsertActionModal, pickedAction:null})
         }
     }
+
+    async createUser() {
+       const userName = this.state.currentUserPicked.name;
+       const userToInsert:User = {
+         name:userName,
+         accountsIds:[],
+         actionsIds:[]
+       }
+       const userId = serviceStore.createDoc('users', userToInsert);
+       userToInsert["id"] = userId;
+       serviceStore.upsertAppStateValue('currentUser', userToInsert);
+    }
+
+    readUserAccounts ()  {
+      const { currentUserPicked } = this.props;
+      const users = serviceStore.readDocs('users')
+      const user = users[currentUserPicked.id]
+      if(user.accountsIds.length > 0) {
+        const accounts = serviceStore.readDocs('accounts')
+          let temp = []
+          for(const acccountId of user.accountsIds) {
+            temp.push(accounts[acccountId])
+          }
+          return temp;
+      } else {
+          return []
+      }
+
+  }
+  
+  readUserActions () { 
+      const { currentUserPicked } = this.props
+      const users = serviceStore.readDocs('users')
+      const user = users[currentUserPicked.id]
+      if(user.actionsIds.length > 0) {
+      const actions = serviceStore.readDocs('actions')
+      let temp = []
+      for(const actionId of user.actionsIds) {
+        temp.push(actions[actionId])
+      }
+      return temp;
+      } else {
+       return []
+      }
+  }
 
 }
 

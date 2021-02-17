@@ -4,10 +4,6 @@ import { setStatePromisifed } from "../../utils/general";
 export const DEFAULT_COMPONENT_STATE = {
     open:false,
     actionName:'',
-    actionsDropdownOptions: [
-      {label:'Edit', disabled:false},
-      {label:'Delete', disabled:false}
-    ],
     openRecordingModal:false,
     dynamicSnapshotModalData:false,
     pickedTag:false,
@@ -15,6 +11,10 @@ export const DEFAULT_COMPONENT_STATE = {
     pickedAction: {
       tags:[]
     },
+    actionsDropdownOptions: [
+        {label:'Edit', disabled:false},
+        {label:'Delete', disabled:false}
+    ],
 }
 
 const serviceStore = new ServiceStore();
@@ -44,7 +44,6 @@ export default class ActionsUpsertModalEvents {
       }
   
     async init () {
-       debugger
        const { open, pickedAction } = this.props;
        await this.setState({...this.state, open, pickedAction})
     }
@@ -98,7 +97,11 @@ export default class ActionsUpsertModalEvents {
 
     async deleteTag (collectionName:any, item:any) {
         const { currentUserPicked } = this.state;
-        await this.setState({...this.state, openDeletePopup:true ,itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}})
+        await this.setState({
+            ...this.state, 
+            openDeletePopup:true,
+            itemAndCollectionNameToDelete:{collectionName, item, currentUserPicked}
+        })
     }
     
     async handleTagMenuItemClick (e: any, index: number,tag:any)  {
