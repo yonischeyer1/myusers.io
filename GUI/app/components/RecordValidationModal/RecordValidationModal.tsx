@@ -81,9 +81,18 @@ export default function FullScreenDialog(props:any) {
            </div>
         </div>
       </Dialog>
-      <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}/>
-      <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} port={liveViewPort} stopPlaying={false} />
+      <StaticMaskingWizard 
+        handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  
+        tag={dynamicSnapshotModalData}
+      />
+      <PlayerLiveViewModal 
+        handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  
+        handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
+        port={liveViewPort} 
+        stopPlaying={false} 
+      />
     </div>
   ) : <div></div>
 }
