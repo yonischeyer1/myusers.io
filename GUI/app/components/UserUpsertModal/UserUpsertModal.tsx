@@ -24,7 +24,7 @@ export default function FullScreenDialog(props:any) {
     pickedAction, pickedAccount, openDeletePopup, itemAndCollectionNameToDelete,
     accountsView, actionsView, currentUserPicked } = state;
 
-  const title = currentUserPicked ? `Edit ${currentUserPicked.name}` : 'Create new user';
+  const title = currentUserPicked.id ? `Edit ${currentUserPicked.name}` : 'Create new user';
 
   const testNameValue = currentUserPicked ? currentUserPicked.name : '';
 
@@ -115,7 +115,10 @@ export default function FullScreenDialog(props:any) {
           </Suspense>
         </TabPanel>
       </div>
-      <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} open={openDeletePopup} itemAndCollectionName={itemAndCollectionNameToDelete} />
+      <DeletePopup 
+       handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)}
+       open={openDeletePopup} 
+       itemAndCollectionName={itemAndCollectionNameToDelete} />
       <AccountUpsertModal 
          handleUpsertAccountModalClose={_events.handleUpsertAccountModalClose.bind(_events)} 
          open={openUpsertAccountModal} 

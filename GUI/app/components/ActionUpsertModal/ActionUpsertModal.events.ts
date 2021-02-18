@@ -15,6 +15,7 @@ export const DEFAULT_COMPONENT_STATE = {
         {label:'Edit', disabled:false},
         {label:'Delete', disabled:false}
     ],
+    currentUserPicked:null
 }
 
 const serviceStore = new ServiceStore();
@@ -44,8 +45,8 @@ export default class ActionsUpsertModalEvents {
       }
   
     async init () {
-       const { open, pickedAction } = this.props;
-       await this.setState({...this.state, open, pickedAction})
+       const { open, pickedAction, currentUserPicked } = this.props;
+       await this.setState({...this.state, open, pickedAction, currentUserPicked})
     }
   
 

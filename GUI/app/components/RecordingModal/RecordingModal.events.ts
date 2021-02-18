@@ -3,7 +3,9 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
-import {Account} from '../../models/Account.model'
+import { Account, createAndSaveAccount } from '../../models/Account.model'
+
+import { createDummyUser } from '../../models/User.model'
 
 
 const serviceStore = new ServiceStore();
@@ -21,6 +23,9 @@ export const DEFAULT_COMPONENT_STATE = {
     recordButtonDisable:false,
     stopButtonDisable:true,
     startRecordingDateTime:null, 
+    currentUserPicked:null,
+    loginURL:'',
+    accountName:''
 }
 
 let instance:any = null
@@ -51,8 +56,11 @@ export default class RecordingModalEvents {
     }
  
     async init() {
-        const { open } = this.props;
-        await this.setState({...this.state, open})
+        let { open, currentUserPicked } = this.props;
+        if(!currentUserPicked.id) {
+            currentUserPicked = createDummyUser(currentUserPicked.name)
+        }
+        await this.setState({...this.state, open, currentUserPicked})
     }
 
     async handleClose (e:any) {
@@ -68,23 +76,22 @@ export default class RecordingModalEvents {
     };
 
     async initRecorder  () {
-        const user = serviceStore.getAppStateValue('currentUser') // prop or currentUser
+        const { currentUserPicked } = this.state;
         const recorderContainer = new Container(CONTAINER_MODE.recorder);
         await recorderContainer.init()
         recorderContainer.loadingFunction = this.setLoadingState;
-        await recorderContainer.record(this.state.startUrl, user.id)
+        await recorderContainer.record(this.state.startUrl, currentUserPicked.id)
         serviceStore.upsertAppStateValue('startUrl', this.state.startUrl)
         await this.setState({...this.state,record:true, port:recorderContainer._port,
             recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:recorderContainer})
     }
 
     async startLogin (e:any)  {
-        const user = serviceStore.getAppStateValue('currentUser');
-        const loginURL = serviceStore.getAppStateValue('loginURL')
+        const { currentUserPicked, loginURL } = this.state;
         const loginContainer = new Container(CONTAINER_MODE.login);
         await loginContainer.init()
         loginContainer.loadingFunction = this.setLoadingState;
-        await loginContainer.login(loginURL, user.id)
+        await loginContainer.login(loginURL, currentUserPicked.id)
         await this.setState({...this.state,record:true, port:loginContainer._port,
           recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
      }
@@ -122,35 +129,17 @@ export default class RecordingModalEvents {
     }
 
     async finishLogin (e:any) {
+        const { recorderContainer, accountName, loginURL, currentUserPicked} = this.state;
+        const { handleRecordingModalClose } = this.props
         serviceStore.upsertAppStateValue('isLoginMode', false)
-        const {handleRecordingModalClose} = this.props
-        const user = serviceStore.getAppStateValue('currentUser')
-        const loginContainer = this.state.recorderContainer;
-        const userId:any = await this.saveAccount() 
-        await loginContainer.finishLogin(user.id, userId);
-        await removeContainerByName(loginContainer._containerName)
+        const userId:any = await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
+        await recorderContainer.finishLogin(currentUserPicked.id, userId);
+        await removeContainerByName(recorderContainer._containerName)
         handleRecordingModalClose()
     }
 
     async handleURLChange (e:any) {
         await this.setState({...this.state, startUrl: e.target.value})
-    }
-
-    async saveAccount () {
-        const users:any = serviceStore.readDocs('users');
-        const currentUser = serviceStore.getAppStateValue('currentUser')
-        const accountName = serviceStore.getAppStateValue('accountName')
-        const loginURL = serviceStore.getAppStateValue('loginURL')
-        const accountToInsert:Account = {
-          name: accountName,
-          loginURL
-        }
-        const createdAccountId:any = serviceStore.createDoc('accounts', accountToInsert);
-        let userIdToReturn = null;
-        userIdToReturn = currentUser.id
-        users[currentUser.id].accountsIds.push(createdAccountId)
-        serviceStore.updateDocs('users', users)
-        return userIdToReturn
     }
 
 }

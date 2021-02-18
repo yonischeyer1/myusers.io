@@ -28,7 +28,8 @@ export default function FullScreenDialog(props:any) {
      itemAndCollectionNameToDelete,  
      dynamicSnapshotModalData,
      pickedTag,
-     openRecordingModal
+     openRecordingModal,
+     currentUserPicked
     } = state;
 
 
@@ -89,11 +90,24 @@ export default function FullScreenDialog(props:any) {
          <Button size="small" variant="outlined" color="primary" onClick={_events.saveCurrentActionTags.bind(_events)}>Save</Button>
          </div>
      </div>
-     <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} tag={pickedTag}/>
-     <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} itemAndCollectionName={itemAndCollectionNameToDelete} />
-     <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
-     <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={openRecordingModal}/>
+     <EditTagModal 
+      handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
+      tag={pickedTag}
+     />
+     <DeletePopup 
+      handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} 
+      itemAndCollectionName={itemAndCollectionNameToDelete}
+      />
+     <StaticMaskingWizard 
+        handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} 
+        tag={dynamicSnapshotModalData}
+     />
+     <RecordingModal 
+       handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} 
+       open={openRecordingModal}
+       currentUserPicked={currentUserPicked}
+      />
       </Dialog>
     </div>
   ) : <div></div>

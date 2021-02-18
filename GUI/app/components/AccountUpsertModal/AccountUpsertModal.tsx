@@ -20,9 +20,8 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
-  const { open, accountName, loginURL, openRecordingModal } = state;
+  const { open, accountName, loginURL, openRecordingModal, currentUserPicked } = state;
 
-  console.log("AccountUpsertModalEvents",state)
 
   return open ? (
     <div>
@@ -61,7 +60,11 @@ export default function FullScreenDialog(props:any) {
          </div>
       </div>
       </Dialog>
-      <RecordingModal handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} open={openRecordingModal}/>
+      <RecordingModal 
+        currentUserPicked={currentUserPicked}
+        open={openRecordingModal} 
+        handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)}
+      />
     </div>
   ) : <div></div>
 }

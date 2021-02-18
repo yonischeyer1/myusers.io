@@ -49,7 +49,6 @@ export default class ServiceStore {
         this._myEmitter.emit(`state-${key}`)
     }
     createDoc(collectionName:any, newDoc:any) {
-        console.log("createDoc")
         const copyOfDoc = JSON.parse(JSON.stringify(newDoc))
         copyOfDoc["id"] = getRandomId();// create random id
         this._store.DB[collectionName][copyOfDoc["id"]] = copyOfDoc;

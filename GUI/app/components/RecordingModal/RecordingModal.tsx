@@ -79,10 +79,11 @@ export default function FullScreenDialog(props:any) {
                  }
               </div>
            </div>
-           <RecordValidationModal recorderContainer={recorderContainer}
+           <RecordValidationModal 
+            recorderContainer={recorderContainer}
             totalRecordTime={totalRecordTime}
-             open={openRecordModal} 
-             handleModalClose={_events.handleModalClosing.bind(_events)}/>
+            open={openRecordModal} 
+            handleModalClose={_events.handleModalClosing.bind(_events)}/>
          </div>
         </div>
       </Dialog>

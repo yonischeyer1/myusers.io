@@ -7,6 +7,7 @@ export const DEFAULT_COMPONENT_STATE = {
     openRecordingModal:false,
     accountName:{value:'', disabled:false},
     loginURL:{value:'', disabled:false},
+    currentUserPicked:null
 }
 
 

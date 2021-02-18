@@ -121,6 +121,8 @@ export default class RecordValidationModalEvents {
     
       async saveTags(tags:any, ioActions:any) {
         const users = serviceStore.readDocs('users');
+        
+
         const currentUser = serviceStore.getAppStateValue('currentUser')
         const actionName = serviceStore.getAppStateValue('actionName')
         const startUrl = serviceStore.getAppStateValue('startUrl')

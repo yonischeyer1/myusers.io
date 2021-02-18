@@ -108,26 +108,11 @@ export default class UserUpsertModalEvents {
     }
     
     async handleFloatingButtonClick (e:any)  {
-        if(!this.state.currentUserPicked.id) {
-          await this.createUser();
-        }
         if(this.state.tabIndex === 0) {
           await this.setState({...this.state, openUpsertAccountModal: !this.state.openUpsertAccountModal, pickedAccount:null})
         } else {
           await this.setState({...this.state, openUpsertActionModal: !this.state.openUpsertActionModal, pickedAction:null})
         }
-    }
-
-    async createUser() {
-       const userName = this.state.currentUserPicked.name;
-       const userToInsert:User = {
-         name:userName,
-         accountsIds:[],
-         actionsIds:[]
-       }
-       const userId = serviceStore.createDoc('users', userToInsert);
-       userToInsert["id"] = userId;
-       serviceStore.upsertAppStateValue('currentUser', userToInsert);
     }
 
     readUserAccounts ()  {
