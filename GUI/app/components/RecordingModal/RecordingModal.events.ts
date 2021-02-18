@@ -56,11 +56,11 @@ export default class RecordingModalEvents {
     }
  
     async init() {
-        let { open, currentUserPicked } = this.props;
+        let { open, currentUserPicked, accountName, loginURL } = this.props;
         if(!currentUserPicked.id) {
             currentUserPicked = createDummyUser(currentUserPicked.name)
         }
-        await this.setState({...this.state, open, currentUserPicked})
+        await this.setState({...this.state, open, currentUserPicked, accountName, loginURL})
     }
 
     async handleClose (e:any) {
@@ -74,6 +74,24 @@ export default class RecordingModalEvents {
         handleRecordingModalClose(false);
         this.initFlag = false;
     };
+
+
+    async setLoadingState (loading:boolean)  {
+        await this.setState({...this.state,loading})
+    }
+
+    async startRecording () {
+       await this.initRecorder()
+    }
+
+    async abort (e:any) {
+        await this.setState({...this.state, loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true})
+        await this.setState({...this.state, loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false})
+    }
+
+    async handleURLChange (e:any) {
+        await this.setState({...this.state, startUrl: e.target.value})
+    }
 
     async initRecorder  () {
         const { currentUserPicked } = this.state;
@@ -94,14 +112,16 @@ export default class RecordingModalEvents {
         await loginContainer.login(loginURL, currentUserPicked.id)
         await this.setState({...this.state,record:true, port:loginContainer._port,
           recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
-     }
-
-    async setLoadingState (loading:boolean)  {
-        await this.setState({...this.state,loading})
     }
 
-    async startRecording () {
-       await this.initRecorder()
+    async finishLogin (e:any) {
+        const { recorderContainer, accountName, loginURL, currentUserPicked} = this.state;
+        const { handleRecordingModalClose } = this.props
+        serviceStore.upsertAppStateValue('isLoginMode', false)
+        const userId:any = await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
+        await recorderContainer.finishLogin(currentUserPicked.id, userId);
+        await removeContainerByName(recorderContainer._containerName)
+        handleRecordingModalClose()
     }
 
     async stopRecording (e:any) {
@@ -123,24 +143,6 @@ export default class RecordingModalEvents {
           await this.setState({...state, openModal:false})
     }
 
-    async abort (e:any) {
-        await this.setState({...this.state, loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true})
-        await this.setState({...this.state, loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false})
-    }
-
-    async finishLogin (e:any) {
-        const { recorderContainer, accountName, loginURL, currentUserPicked} = this.state;
-        const { handleRecordingModalClose } = this.props
-        serviceStore.upsertAppStateValue('isLoginMode', false)
-        const userId:any = await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
-        await recorderContainer.finishLogin(currentUserPicked.id, userId);
-        await removeContainerByName(recorderContainer._containerName)
-        handleRecordingModalClose()
-    }
-
-    async handleURLChange (e:any) {
-        await this.setState({...this.state, startUrl: e.target.value})
-    }
 
 }
 
