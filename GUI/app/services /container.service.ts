@@ -3,6 +3,7 @@ import { startVideoRecording, startChormium, startVnc, convertVideoFile, removeF
 import IHands from "../utils/Ihands";
 import IEyes from "../utils/IEyes";
 import { APP_CWD } from "../utils/general";
+import fs from 'fs'
 export const IMAGE_NAME = 'ioroboto'
 let instance:any = null;
 export const CONTAINER_MODE = {
@@ -34,7 +35,7 @@ export default class Container {
         eyes:0,
         devCustom:0
     }
-    loadingFunction = null
+    loadingFunction:any = null
     constructor(mode:string) {
         if(!instance && mode === CONTAINER_MODE.recorder){
             instance = this;
@@ -103,34 +104,34 @@ export default class Container {
             (async()=>{
                 this._userId = userId; 
                 this._startUrl = startUrl;
-                if(userId) {
-                    const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
+                const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
+                if(fs.existsSync(userSessionFolderPath)) {
                     await copyFileToContainer(this._containerId, userSessionFolderPath)
                 }
-                if(this._mode === CONTAINER_MODE.recorder) {
-                    this.loadingFunction(true);
-                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
-                    const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
-                    this._containerProcess.hands.pid = handsPid;
-                    this._containerProcess.browser.pid = browserPid;
-                    setTimeout(()=>{
-                        this._ihands.startRecordingKeyboardMouse().then((resp)=>{
-                            (async()=>{
-                                const vncPid = await startVnc(this._containerId, this._port, this._containerProcess.vnc.name);
-                                this._containerProcess.vnc.pid = vncPid;
-                                this.loadingFunction(false);
-                                resolve();
-                            })()
-                        });
-                    }, 5000)
-                }
+                debugger
+                await this.loadingFunction(true);
+                const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
+                const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
+                this._containerProcess.hands.pid = handsPid;
+                this._containerProcess.browser.pid = browserPid;
+                setTimeout(()=>{
+                    this._ihands.startRecordingKeyboardMouse().then((resp)=>{
+                        (async()=>{
+                            const vncPid = await startVnc(this._containerId, this._port, this._containerProcess.vnc.name);
+                            this._containerProcess.vnc.pid = vncPid;
+                            await this.loadingFunction(false);
+                            resolve();
+                        })()
+                    });
+                }, 5000)
+                
             })()
         })
     }
 
     async login(startUrl:any, userId:any = null) {
         //https://accounts.google.com/signin/v2/identifier
-        this.loadingFunction(true);
+        await this.loadingFunction(true);
         if(userId) {
             const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
             await copyFileToContainer(this._containerId, userSessionFolderPath)
@@ -140,16 +141,16 @@ export default class Container {
         this._containerProcess.browser.pid = browserPid;
         const vncPid = await startVnc(this._containerId, this._port, this._containerProcess.vnc.name);
         this._containerProcess.vnc.pid = vncPid;
-        this.loadingFunction(false);
+        await this.loadingFunction(false);
     }
 
     async finishLogin(userId:any) {
-        this.loadingFunction(true);
+        await this.loadingFunction(true);
         const userSessionFolderPath = `sessions/${userId}`
         await removeUserSessionFolder(`${APP_CWD}sessions/${userId}`.trim());
         await copyFileFromContainer(this._containerId, userId, userSessionFolderPath)
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
-        this.loadingFunction(false);
+        await this.loadingFunction(false);
     }
 
 
@@ -161,7 +162,7 @@ export default class Container {
     }
     async stopRecording(startUrl:any) {
         if(this._mode === CONTAINER_MODE.recorder) {
-            this.loadingFunction(true);
+            await this.loadingFunction(true);
             await stopContainerProcess(this._containerId ,this._containerProcess.vnc.pid)
             const ioActions = await (await this._ihands.stopRecordingKeyboardMouseAndGetIoActions()).json();
             this._ioActions = ioActions
@@ -174,7 +175,7 @@ export default class Container {
             await copyFileToContainer(this._containerId, userSessionFolderPath)
 
             await this.play(false, {ioActions});
-            this.loadingFunction(false);
+            await this.loadingFunction(false);
             // this.standBy()
         } else {
             return null;

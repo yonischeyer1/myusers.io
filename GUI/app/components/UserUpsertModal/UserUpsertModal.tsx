@@ -26,8 +26,9 @@ export default function FullScreenDialog(props:any) {
 
   const title = currentUserPicked.id ? `Edit ${currentUserPicked.name}` : 'Create new user';
 
-  const testNameValue = currentUserPicked ? currentUserPicked.name : '';
+  const userName = currentUserPicked ? currentUserPicked.name : '';
 
+  const disableAdd = !!!userName;
 
   return open ? (
     <div>
@@ -45,16 +46,16 @@ export default function FullScreenDialog(props:any) {
           <div className={styles["modal-content-container"]}>
         </div>
         <div className={styles["add-test-floating-btn"]}>
-          <Fab color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick.bind(_events)}>
+          <Fab   disabled={disableAdd} color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick.bind(_events)}>
           <AddIcon />
         </Fab>
         </div>
         <br/>
       <div className={styles["test-name-container"]}>
              <TextField disabled={false} 
-             value={testNameValue}
+             value={userName}
              onChange={_events.handleUserNameChange.bind(_events)} 
-             label="User name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
+             label="Insert user name to add actions and accounts" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
              </div>
              <br/>
       <div className={styles["root"]} style={{height:"100vh",color:"white"}}>

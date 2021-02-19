@@ -32,7 +32,6 @@ export default class StaticMaskingWizardEvents {
     }
 
     async setConstructor(state:any, setState:any, props:any) {
-        debugger
         this.state = state;
         this.setState = setStatePromisifed.bind(null, setState);
         this.props = props;

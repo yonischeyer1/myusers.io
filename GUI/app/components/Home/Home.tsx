@@ -27,6 +27,7 @@ const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
   stopLiveView, itemAndCollectionNameToDelete, currentRuningTestName,
   testTroubleshootPick, optionsTest, optionsUser} = state;
 
+const disableTestAddFlag = tabIndex === 0 && Object.values(users).length === 0;
    
 return (
       <div className={styles["root"]} >
@@ -90,7 +91,7 @@ return (
         </TabPanel>
 
         <div className={styles["add-test-floating-btn"]}>
-           <Fab disabled={tabIndex === 0 && Object.values(users).length === 0} 
+           <Fab disabled={disableTestAddFlag} 
            color="primary" aria-label="add" onClick={_events.handleFloatingButtonClick.bind(_events)}>
             <AddIcon />
            </Fab>
