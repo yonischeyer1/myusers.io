@@ -115,7 +115,7 @@ export default class RecordingModalEvents {
         const { currentUserPicked, loginURL } = this.state;
         const loginContainer = new Container(CONTAINER_MODE.login);
         await loginContainer.init()
-        loginContainer.loadingFunction = this.setLoadingState;
+        loginContainer.loadingFunction = this.setLoadingState.bind(this);
         await loginContainer.login(loginURL, currentUserPicked.id)
         await this.setState({...this.state,record:true, port:loginContainer._port,
           recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
