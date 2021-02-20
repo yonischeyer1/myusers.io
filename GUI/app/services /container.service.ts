@@ -81,12 +81,12 @@ export default class Container {
                 this._ihands = new IHands(this._containerServicesPorts.hands);
                 this._ieyes = new IEyes(this._containerServicesPorts.eyes);
                 if(this._mode === CONTAINER_MODE.player) {
-                    const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
-                    await copyFileToContainer(this._containerId, userSessionFolderPath)
-                    const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
-                    this._containerProcess.browser.pid = browserPid;
-                    const vncPid = await startVnc(this._containerId, this._port,this._containerProcess.vnc.name);
-                    this._containerProcess.vnc.pid = vncPid;
+                   const userSessionFolderPath = `${APP_CWD}sessions/${userId}`
+                   await copyFileToContainer(this._containerId, userSessionFolderPath)
+                   const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
+                   this._containerProcess.browser.pid = browserPid;
+                   const vncPid = await startVnc(this._containerId, this._port,this._containerProcess.vnc.name);
+                   this._containerProcess.vnc.pid = vncPid;
                 }
             }
         } catch(err) {
@@ -108,7 +108,6 @@ export default class Container {
                 if(fs.existsSync(userSessionFolderPath)) {
                     await copyFileToContainer(this._containerId, userSessionFolderPath)
                 }
-                debugger
                 await this.loadingFunction(true);
                 const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, startUrl, userId);
                 const handsPid = await startHandsSparkServer(this._containerId, this._containerProcess.hands.name)
@@ -160,27 +159,21 @@ export default class Container {
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
         return;
     }
+
     async stopRecording(startUrl:any) {
-        if(this._mode === CONTAINER_MODE.recorder) {
-            await this.loadingFunction(true);
-            await stopContainerProcess(this._containerId ,this._containerProcess.vnc.pid)
-            const ioActions = await (await this._ihands.stopRecordingKeyboardMouseAndGetIoActions()).json();
-            this._ioActions = ioActions
-            await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
-
-            //TODO: remove session folder and copy it again to container
-            await removeFileFromContainer(this._containerId, `${this._userId}`)
-
-            const userSessionFolderPath = `${APP_CWD}sessions/${this._userId}`
-            await copyFileToContainer(this._containerId, userSessionFolderPath)
-
-            await this.play(false, {ioActions});
-            await this.loadingFunction(false);
-            // this.standBy()
-        } else {
-            return null;
-        }
+        await this.loadingFunction(true);
+        await stopContainerProcess(this._containerId ,this._containerProcess.vnc.pid)
+        const ioActions = await (await this._ihands.stopRecordingKeyboardMouseAndGetIoActions()).json();
+        this._ioActions = ioActions
+        await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
+        //TODO: remove session folder and copy it again to container
+        await removeFileFromContainer(this._containerId, `${this._userId}`)
+        const userSessionFolderPath = `${APP_CWD}sessions/${this._userId}`
+        await copyFileToContainer(this._containerId, userSessionFolderPath)
+        await this.play(false, {ioActions});
+        await this.loadingFunction(false);
     }
+
     async play(noLivePreview:boolean = true, action:any) {
         return new Promise((resolve, reject)=>{
             (async()=>{
@@ -231,7 +224,8 @@ export default class Container {
         await copyFileToContainer(this._containerId, userSessionFolderPath)
         const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this._userId);
         this._containerProcess.browser.pid = browserPid;
-        callbackStartedBrowser();
+        await callbackStartedBrowser();
+        debugger
         const actionWithDists = await (await this._ieyes.playRecorderAction(action)).json()
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
         return actionWithDists;

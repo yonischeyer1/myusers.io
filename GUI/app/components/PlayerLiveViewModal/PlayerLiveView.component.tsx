@@ -18,7 +18,7 @@ export default function FullScreenDialog(props:any) {
   _events.setConstructor(state, setState, props)
 
   const { port, stopPlaying} = state;
-
+  console.log("PlayerLiveViewSTate", state);
   return !!port ? (
     <div>
       <Dialog fullScreen open={!!port} TransitionComponent={Transition}>

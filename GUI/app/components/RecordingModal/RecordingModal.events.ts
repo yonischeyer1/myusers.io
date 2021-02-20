@@ -80,10 +80,6 @@ export default class RecordingModalEvents {
         await this.setState({...this.state, loading})
     }
 
-    async startRecording () {
-       await this.initRecorder()
-    }
-
     async abort (e:any) {
         await this.setState({...this.state, loading:true, record:false, stopRecord: true, recordButtonDisable:true, stopButtonDisable:true})
         await this.setState({...this.state, loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false})
@@ -93,7 +89,7 @@ export default class RecordingModalEvents {
         await this.setState({...this.state, startUrl: e.target.value})
     }
 
-    async initRecorder  () {
+    async initRecorder  (e:any) {
         const { currentUserPicked, startUrl } = this.state;
         const recorderContainer = new Container(CONTAINER_MODE.recorder);
         await recorderContainer.init()
@@ -107,7 +103,7 @@ export default class RecordingModalEvents {
             recordButtonDisable:true, 
             stopButtonDisable:false,
             startRecordingDateTime:new Date(),
-            recorderContainer:recorderContainer
+            recorderContainer:recorderContainer,
         })
     }
 
@@ -137,7 +133,15 @@ export default class RecordingModalEvents {
           await this.setState({...this.state,stopRecord: true, stopButtonDisable:true});
           setTimeout(async ()=>{
            await recorderContainer.stopRecording();
-           await this.setState({...this.state, record:false, stopRecord: false, openModal:true, totalRecordTime, recordButtonDisable:false})
+           await this.setState({
+               ...this.state, 
+               record:false, 
+               stopRecord: false, 
+               openRecordModal:true, 
+               totalRecordTime, 
+               recordButtonDisable:false,
+               port:null
+            })
           },2000)
     }
 

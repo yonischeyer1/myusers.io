@@ -53,7 +53,7 @@ export default function FullScreenDialog(props:any) {
                </div> : 
                  <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
-                    <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.startRecording.bind(_events)}>record</Button> 
+                    <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.initRecorder.bind(_events)}>record</Button> 
                  </div>
                  <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.stopRecording.bind(_events)}>stop</Button>

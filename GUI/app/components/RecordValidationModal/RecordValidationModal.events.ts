@@ -4,6 +4,9 @@ import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 
 const serviceStore = new ServiceStore();
+
+export const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
+
 export const DEFAULT_COMPONENT_STATE = {
   open:false,
   recorderContainer:null,
@@ -12,12 +15,11 @@ export const DEFAULT_COMPONENT_STATE = {
   liveViewPortModalOpen:false,
   dynamicSnapshotModalData:null,
   dynamicSnapshotOpen:null,
-  screen:null,
+  screen:SCREENS.validate,
   tagsPresent:[],
   saveThis:null,
 }
 
-const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 
 let instance:any = null
 export default class RecordValidationModalEvents {
@@ -107,10 +109,17 @@ export default class RecordValidationModalEvents {
           ioActions:recorderContainer._ioActions,
           tags
         }
+        debugger
         const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
-          await this.setState({...this.state, liveViewPort:recorderContainer._port, liveViewPortModalOpen:true})
+          const liveViewPort = recorderContainer._port
+          await this.setState({
+              ...this.state, 
+              liveViewPort, 
+            })
+          debugger
+          return;
         })
-        this.setState({...this.state, saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} })
+        await this.setState({...this.state, saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} })
         await removeContainerByName(recorderContainer._containerName)
         await this.setState({...this.state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
       }

@@ -8,10 +8,9 @@ import {APP_CWD, Transition } from '../../utils/general';
 import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
 import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard'
 import styles from './RecordValidationModal.css'
-import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordValidationModal.events';
+import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE, SCREENS} from './RecordValidationModal.events';
 
 
-const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
 
 const _events = new RecordValidationModalEvents()
 
@@ -34,7 +33,7 @@ export default function FullScreenDialog(props:any) {
               Validate & Save 
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
-              Save
+              Close
             </Button>
           </Toolbar>
         </AppBar>
@@ -86,9 +85,7 @@ export default function FullScreenDialog(props:any) {
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  
         tag={dynamicSnapshotModalData}
       />
-      <PlayerLiveViewModal 
-        handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  
+      <PlayerLiveViewModal  
         handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
         port={liveViewPort} 
         stopPlaying={false} 
