@@ -3,6 +3,7 @@
     margin: 0 auto;
     top: 20px;
     position: relative;
+    overflow: auto;
 }
 .guide-label-record{
     color: #5090f3;

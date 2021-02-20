@@ -56,12 +56,12 @@ export default class RecordValidationModalEvents {
     async handleClose  (e:any)  {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleModalClose} = this.props;
-        handleModalClose(...this.state, false);
+        handleModalClose(false);
         this.initFlag = false;
     };
     
     async handleLivePreviewModalClose (e:any)  {
-        await this.setState({...this.state, liveViewPortModalOpen:false});
+        await this.setState({...this.state, liveViewPort:null});
     }
     
     async handleDynamicSnapshotModalClose (e:any) {
@@ -109,19 +109,22 @@ export default class RecordValidationModalEvents {
           ioActions:recorderContainer._ioActions,
           tags
         }
-        debugger
         const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
           const liveViewPort = recorderContainer._port
           await this.setState({
               ...this.state, 
               liveViewPort, 
             })
-          debugger
           return;
         })
-        await this.setState({...this.state, saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions} })
+        await this.setState({
+          ...this.state, 
+          saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions},
+          liveViewPort:null,
+          tagsPresent:actionWithHashes.tags, 
+          screen:SCREENS.setTagsMaxTimeoutScreen
+        })
         await removeContainerByName(recorderContainer._containerName)
-        await this.setState({...this.state, tagsPresent:actionWithHashes.tags, screen:SCREENS.setTagsMaxTimeoutScreen})
       }
     
       async handleTagImageClick (tag:any)  {

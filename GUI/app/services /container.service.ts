@@ -212,7 +212,7 @@ export default class Container {
                     //await removeFileFromContainer(this._containerId, 'recording.io.json')
                     await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
                     //await removeContainerByName(this._containerName);
-                    resolve();
+                    resolve(null);
                 }
             })()
         })
@@ -225,7 +225,6 @@ export default class Container {
         const browserPid = await startChormium(this._containerId, this._containerProcess.browser.name, this._startUrl, this._userId);
         this._containerProcess.browser.pid = browserPid;
         await callbackStartedBrowser();
-        debugger
         const actionWithDists = await (await this._ieyes.playRecorderAction(action)).json()
         await stopContainerProcess(this._containerId ,this._containerProcess.browser.pid)
         return actionWithDists;
