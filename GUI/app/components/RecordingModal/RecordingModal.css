@@ -5,6 +5,15 @@
     position: relative;
 }
 
+.modal-content-sub-container {
+    color:black;
+    display:flex;
+    width:100%;
+    height:auto;
+    justify-content:center;
+
+}
+
 .buttons-container {
     position: relative;
     bottom:10px;

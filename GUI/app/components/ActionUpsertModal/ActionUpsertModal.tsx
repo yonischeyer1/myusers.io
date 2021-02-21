@@ -104,6 +104,7 @@ export default function FullScreenDialog(props:any) {
         tag={dynamicSnapshotModalData}
      />
      <RecordingModal 
+       actionName={actionName}
        handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} 
        open={openRecordingModal}
        currentUserPicked={currentUserPicked}

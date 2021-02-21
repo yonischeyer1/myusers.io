@@ -1,5 +1,6 @@
 declare const styles: {
   readonly "modal-content-container": string;
+  readonly "modal-content-sub-container":string;
   readonly "buttons-container": string;
   readonly "recoreder-control-button": string;
   readonly "loading-container": string;

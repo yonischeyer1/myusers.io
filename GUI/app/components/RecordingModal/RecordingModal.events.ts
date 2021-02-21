@@ -25,7 +25,9 @@ export const DEFAULT_COMPONENT_STATE = {
     startRecordingDateTime:null, 
     currentUserPicked:null,
     loginURL:'',
-    accountName:''
+    accountName:'',
+    actionName:'',
+    startUrl:''
 }
 
 let instance:any = null
@@ -56,11 +58,18 @@ export default class RecordingModalEvents {
     }
  
     async init() {
-        let { open, currentUserPicked, accountName, loginURL } = this.props;
+        let { open, currentUserPicked, accountName, loginURL, actionName } = this.props;
         if(!currentUserPicked.id) {
             currentUserPicked = createDummyUser(currentUserPicked.name)
         }
-        await this.setState({...this.state, open, currentUserPicked, accountName, loginURL})
+        await this.setState({
+            ...this.state, 
+            actionName,
+            open, 
+            currentUserPicked, 
+            accountName, 
+            loginURL
+        })
     }
 
     async handleClose (e:any) {

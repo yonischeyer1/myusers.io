@@ -22,7 +22,8 @@ export default function FullScreenDialog(props:any) {
 
   const {open, record, port, loading, 
     stopRecord, openRecordModal, totalRecordTime, recorderContainer,
-    recordButtonDisable, stopButtonDisable }  = state;
+    recordButtonDisable, stopButtonDisable, currentUserPicked,
+    actionName, startUrl }  = state;
 
   const isLoginMode = _events.isLoginMode;
    
@@ -43,17 +44,24 @@ export default function FullScreenDialog(props:any) {
        <div className={styles["modal-content-container"]}>
        <div>
          <br/>
-           <div style={{color:"black",display:"flex",width:"100%",height:"auto", justifyContent:"center"}}>
-             {
-               isLoginMode ?              
-               <div className={styles["buttons-container"]}>
-                <div className={styles["recoreder-control-button"]}> 
-               <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
+           <div className={styles["modal-content-sub-container"]}>
+             {!loading ? null:
+               <div className={styles["loading-container"]}><CircularProgress 
+               style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
                </div>
-               </div> : 
-                 <div className={styles["buttons-container"]}>
+             }
+             { !isLoginMode || loading ? null:             
+                <div className={styles["buttons-container"]}>
+                  <div className={styles["recoreder-control-button"]}> 
+                  <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
+                 </div>
+                </div>
+             }
+             { !record || loading ? null:
+                <div>
+                <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
-                    <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.initRecorder.bind(_events)}>record</Button> 
+                 <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.initRecorder.bind(_events)}>record</Button> 
                  </div>
                  <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.stopRecording.bind(_events)}>stop</Button>
@@ -61,25 +69,26 @@ export default function FullScreenDialog(props:any) {
                  <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.abort.bind(_events)}>abort</Button>
                  </div>
-               </div>
-             }
-             <div style={{width:"auto"}}>
-             {
-               isLoginMode ? null : <TextField disabled={recordButtonDisable} 
-               onChange={_events.handleURLChange.bind(_events)} 
-               label="URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
-             }
-                 {
-                 loading ? <div className={styles["loading-container"]}><CircularProgress 
-                 style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
-                </div> :
-                     record ?  <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/> :
-                   <div className={styles["blank-container"]}>
-                   </div>
-                 }
-              </div>
+                </div>
+                 <div style={{width:"auto"}}> 
+                 <TextField 
+                   disabled={recordButtonDisable} 
+                   onChange={_events.handleURLChange.bind(_events)} 
+                   label="URL:" 
+                   variant="outlined" 
+                   style={{width:"1024px", height:"45px"}} 
+                   size="small"/>
+                 </div>
+                </div>
+            }
+            <div style={{width:"auto"}}> 
+              <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
+            </div>
            </div>
-           <RecordValidationModal 
+           <RecordValidationModal
+            startUrl={startUrl}
+            actionName={actionName}
+            currentUserPicked={currentUserPicked} 
             recorderContainer={recorderContainer}
             totalRecordTime={totalRecordTime}
             open={openRecordModal} 

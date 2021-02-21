@@ -18,6 +18,9 @@ export const DEFAULT_COMPONENT_STATE = {
   screen:SCREENS.validate,
   tagsPresent:[],
   saveThis:null,
+  currentUserPicked:null,
+  actionName:'',
+  startUrl:''
 }
 
 
@@ -47,8 +50,15 @@ export default class RecordValidationModalEvents {
     }
  
     async init() {
-      const { open, recorderContainer, totalRecordTime } = this.props;
-      await this.setState({...this.state, open, recorderContainer, totalRecordTime})
+      const { open, recorderContainer, totalRecordTime, currentUserPicked, actionName } = this.props;
+      await this.setState({
+        ...this.state, 
+        open, 
+        recorderContainer, 
+        totalRecordTime, 
+        currentUserPicked, 
+        actionName
+      })
     }
 
 
@@ -68,22 +78,26 @@ export default class RecordValidationModalEvents {
         await this.setState({...this.state, dynamicSnapshotOpen:false});
     }
     
-    async handleTagTimeoutChange (e:any, tagChanged:any) {
-        const value = e.target.value
-        const newTags = this.state.tagsPresent.map((tag:any)=>{
-          if(tag.hash === tagChanged.hash) {
-             tag.maxWaitTimeUntilFail = value;
-          }
-          return tag;
-        })
-        await this.setState({...this.state, tagsPresent:newTags})
-      }
-    
-      async handleDynamicSnapshotModalSave ({tag, coords})  {
+    async handleDynamicSnapshotModalSave ({tag, coords})  {
          tag["dynamic"] = {coords}
-      }
+    }
+
+    async handleTagImageClick (tag:any)  {
+        await this.setState({...this.state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
+    }
+
+    async handleTagTimeoutChange (e:any, tagChanged:any) {
+      const value = e.target.value
+      const newTags = this.state.tagsPresent.map((tag:any)=>{
+        if(tag.hash === tagChanged.hash) {
+           tag.maxWaitTimeUntilFail = value;
+        }
+        return tag;
+      })
+      await this.setState({...this.state, tagsPresent:newTags})
+    }
     
-      async startAutoTagging () {
+    async startAutoTagging () {
          const { recorderContainer } = this.props;
          let { timeStamps } = recorderContainer.autoTaggerData;
          const tags: Tag[] = [];
@@ -99,7 +113,7 @@ export default class RecordValidationModalEvents {
            })
          }
          return tags;
-      }
+    }
     
       async userValidatedIoActions (e:any)  {
         const { recorderContainer } = this.props;
@@ -127,17 +141,10 @@ export default class RecordValidationModalEvents {
         await removeContainerByName(recorderContainer._containerName)
       }
     
-      async handleTagImageClick (tag:any)  {
-          await this.setState({...this.state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
-      }
-    
-      async saveTags(tags:any, ioActions:any) {
+      async saveTags(e:any) {
+        const {actionName, currentUserPicked, saveThis, startUrl} = this.state;
+        const {ioActions, tags} = saveThis;
         const users = serviceStore.readDocs('users');
-        
-
-        const currentUser = serviceStore.getAppStateValue('currentUser')
-        const actionName = serviceStore.getAppStateValue('actionName')
-        const startUrl = serviceStore.getAppStateValue('startUrl')
         const actionToInsert:Action = {
           name: actionName,
           ioActions,
@@ -145,10 +152,8 @@ export default class RecordValidationModalEvents {
           startUrl
         }
         const newActionId = serviceStore.createDoc('actions', actionToInsert)
-        users[currentUser.id].actionsIds.push(newActionId);
+        users[currentUserPicked.id].actionsIds.push(newActionId);
         serviceStore.updateDocs('users', users)
-        serviceStore.upsertAppStateValue('currentUser', null)
-        serviceStore.upsertAppStateValue('userName',null)
     }
 }
 

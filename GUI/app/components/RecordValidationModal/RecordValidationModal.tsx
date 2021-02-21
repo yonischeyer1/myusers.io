@@ -74,9 +74,7 @@ export default function FullScreenDialog(props:any) {
              </div> : null
            }
            <div className={styles["record-modal-save-btn-container"]}>
-           <Button  size="small" variant="outlined" color="primary" onClick={()=>{
-                   saveThis ? _events.saveTags.bind(_events)(saveThis.tags, saveThis.ioActions) : null
-            }}>save</Button>
+           <Button  size="small" variant="outlined" color="primary" onClick={ _events.saveTags.bind(_events)}>save</Button>
            </div>
         </div>
       </Dialog>
