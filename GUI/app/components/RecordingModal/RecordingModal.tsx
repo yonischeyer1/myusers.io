@@ -26,6 +26,12 @@ export default function FullScreenDialog(props:any) {
     actionName, startUrl }  = state;
 
   const isLoginMode = _events.isLoginMode;
+
+  const title = isLoginMode ? 'Login Account' : ' Recording wizard '
+
+  const dontShowLoginControls = !isLoginMode || loading
+
+  const dontShowRecordControls = !record || loading
    
   return open ? (
     <div>
@@ -33,8 +39,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {isLoginMode ? 'Login Account' : ' Recording wizard '}
-            
+              {title}
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
@@ -50,14 +55,14 @@ export default function FullScreenDialog(props:any) {
                style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
                </div>
              }
-             { !isLoginMode || loading ? null:             
+             { dontShowLoginControls ? null:             
                 <div className={styles["buttons-container"]}>
                   <div className={styles["recoreder-control-button"]}> 
                   <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
                  </div>
                 </div>
              }
-             { !record || loading ? null:
+             { dontShowRecordControls ? null:
                 <div>
                 <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
@@ -76,7 +81,7 @@ export default function FullScreenDialog(props:any) {
                    onChange={_events.handleURLChange.bind(_events)} 
                    label="URL:" 
                    variant="outlined" 
-                   style={{width:"1024px", height:"45px"}} 
+                   className={styles["startUrl-input"]}
                    size="small"/>
                  </div>
                 </div>

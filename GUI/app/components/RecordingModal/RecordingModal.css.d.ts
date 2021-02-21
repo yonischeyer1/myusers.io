@@ -7,6 +7,7 @@ declare const styles: {
   readonly "blank-container": string;
   readonly "app-bar": string;
   readonly "title": string;
+  readonly "startUrl-input": string;
 };
 export = styles;
 
