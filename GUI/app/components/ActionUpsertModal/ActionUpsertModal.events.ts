@@ -81,6 +81,10 @@ export default class ActionsUpsertModalEvents {
         await this.setState({...this.state, dynamicSnapshotOpen:false})
     }
 
+    async handleURLChange (e:any) {
+        await this.setState({...this.state, startUrl: e.target.value})
+    }
+
     async handleActionNameChange (e:any) {
         const key = "actionName"
         const newActionName = e.target.value

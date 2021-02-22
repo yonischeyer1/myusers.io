@@ -9,6 +9,7 @@ declare const styles: {
   readonly "app-bar": string;
   readonly "title": string;
   readonly "form-control": string;
+  readonly "startUrl-input": string;
 };
 export = styles;
 

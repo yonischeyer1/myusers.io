@@ -54,23 +54,25 @@ export default function FullScreenDialog(props:any) {
                 <div>
                 <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button size="small" variant="outlined" color="secondary" disabled={recordButtonDisable} onClick={_events.initRecorder.bind(_events)}>record</Button> 
+                 <Button size="small" variant="outlined" color="secondary" 
+                  disabled={recordButtonDisable} 
+                  onClick={_events.initRecorder.bind(_events)}>
+                    record
+                  </Button> 
                  </div>
                  <div className={styles["recoreder-control-button"]}>
-                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.stopRecording.bind(_events)}>stop</Button>
+                 <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" 
+                   color="secondary"
+                   disabled={stopButtonDisable} 
+                   onClick={_events.stopRecording.bind(_events)}>
+                     stop
+                 </Button>
                  </div>
                  <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" color="secondary" disabled={stopButtonDisable} onClick={_events.abort.bind(_events)}>abort</Button>
                  </div>
                 </div>
                  <div style={{width:"auto"}}> 
-                 <TextField 
-                   disabled={recordButtonDisable} 
-                   onChange={_events.handleURLChange.bind(_events)} 
-                   label="URL:" 
-                   variant="outlined" 
-                   className={styles["startUrl-input"]}
-                   size="small"/>
                  <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
                  </div>
                 </div>

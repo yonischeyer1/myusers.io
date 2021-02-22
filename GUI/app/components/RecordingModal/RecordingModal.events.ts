@@ -3,8 +3,6 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
-import { createAndSaveAccount } from '../../models/Account.model'
-
 import { createDummyUser } from '../../models/User.model'
 
 

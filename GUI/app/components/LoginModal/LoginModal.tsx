@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress } from '@material-ui/core';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
-import styles from './RecordingModal.css'
+import styles from './LoginModal.css'
 import { Transition } from '../../utils/general';
 import LoginModalEvents, {DEFAULT_COMPONENT_STATE} from './LoginModal.events';
 

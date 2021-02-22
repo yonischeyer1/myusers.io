@@ -40,3 +40,8 @@
      min-width: 120;
      width:200;
  }
+
+ .startUrl-input {
+    width:1024px;
+    height:45px;
+ }
