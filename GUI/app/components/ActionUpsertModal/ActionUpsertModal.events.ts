@@ -33,6 +33,7 @@ export default class ActionsUpsertModalEvents {
         instance = this;
         return this;
     }
+    
   
      async setConstructor(state:any, setState:any, props:any) {
          this.state = state;
@@ -55,11 +56,13 @@ export default class ActionsUpsertModalEvents {
         const {handleUpsertActionModalClose} = this.props;
         handleUpsertActionModalClose(false);
         this.initFlag = false;
-    };
+    }
+
+    async handleAddLiveSnapshotClick (e:any) {}
     
     async handleDeletePopupClose (e:any) {
         await this.setState({...this.state, itemAndCollectionNameToDelete:false, openDeletePopup:false})
-      }
+    }
     
     async handleEditTagModalClose (e:any) {
         await this.setState({...this.state, openEditTagModal:false, zeTag:null})
@@ -86,14 +89,8 @@ export default class ActionsUpsertModalEvents {
     }
 
     async handleActionNameChange (e:any) {
-        const key = "actionName"
-        const newActionName = e.target.value
-        await this.setState({...this.state, actionName:newActionName})
-        serviceStore.upsertAppStateValue(key, newActionName)
-    }
-
-    async handleAddLiveSnapshotClick (e:any) {
-
+        const actionName = e.target.value
+        await this.setState({...this.state, actionName})
     }
 
     async editTag (tag:any) {

@@ -52,6 +52,9 @@ export default function FullScreenDialog(props:any) {
              <TextField disabled={false} value={actionName}
              onChange={_events.handleActionNameChange.bind(_events)} 
              label="Action Name:" variant="outlined" className={styles["startUrl-input"]} size="small"/>
+             
+             <br/>
+             
              <TextField 
               disabled={false} 
               onChange={_events.handleURLChange.bind(_events)} 

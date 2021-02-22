@@ -41,12 +41,12 @@ export default function FullScreenDialog(props:any) {
              <TextField disabled={accountName.disabled} value={accountName.value}
              onChange={_events.handleAccountNameChange.bind(_events)} 
              label="Account name:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
-          </div>
+          </div><br/>
           <div className={styles["test-name-container"]}>
              <TextField disabled={loginURL.disabled} value={loginURL.value}
              onChange={_events.handleLoginUrlChange.bind(_events)} 
              label="Login URL:" variant="outlined" style={{width:"1024px", height:"45px"}} size="small"/>
-         </div>
+         </div><br/>
          <div className={styles["pick-action-combobox-container"]}>
              <FormControl className={styles["form-control"]}>
              <Button size="small" variant="outlined" color="primary" onClick={_events.handleLoginClick.bind(_events)}>Login</Button>

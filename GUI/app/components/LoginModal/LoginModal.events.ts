@@ -55,6 +55,7 @@ export default class LoginModalEvents {
             accountName, 
             loginURL
         })
+        await this.startLogin(null)
     }
 
     async handleClose (e:any) {

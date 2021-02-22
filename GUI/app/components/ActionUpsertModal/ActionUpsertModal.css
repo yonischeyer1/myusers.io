@@ -6,6 +6,8 @@
 }
 .test-name-container {
     position: relative;
+    display: flex;
+    flex-flow: column;
 }
 
 .pick-action-combobox-container {

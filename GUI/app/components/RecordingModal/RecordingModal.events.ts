@@ -1,29 +1,21 @@
 import moment from "moment";
 import Container, { CONTAINER_MODE } from "../../services /container.service";
-import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 import { createDummyUser } from '../../models/User.model'
 
 
-const serviceStore = new ServiceStore();
-
 export const DEFAULT_COMPONENT_STATE = {
     open:false,
-    record: false,
     port: null,
     loading:false,
     stopRecord:false,
     openRecordModal:false,
-    videoFilePath:null,
     totalRecordTime:null,
     recorderContainer:null,
-    recordButtonDisable:false,
     stopButtonDisable:true,
     startRecordingDateTime:null, 
     currentUserPicked:null,
-    loginURL:'',
-    accountName:'',
     actionName:'',
     startUrl:''
 }
@@ -34,7 +26,6 @@ export default class RecordingModalEvents {
     setState:any
     state:any
     props:any
-    isLoginMode:boolean = false
     constructor() {
         if(instance) {
             return instance;
@@ -48,7 +39,6 @@ export default class RecordingModalEvents {
        this.state = state;
        this.setState = setStatePromisifed.bind(null, setState);
        this.props = props;
-       this.isLoginMode = serviceStore.getAppStateValue('isLoginMode');
        if(!this.initFlag && this.props.open) {
           this.initFlag = true;
           await this.init();
@@ -68,6 +58,7 @@ export default class RecordingModalEvents {
             accountName, 
             loginURL
         })
+        await this.initRecorder(null);
     }
 
     async handleClose (e:any) {
@@ -76,11 +67,19 @@ export default class RecordingModalEvents {
           await removeContainerByName(loginContainer._containerName)
         }
         await this.setState({...DEFAULT_COMPONENT_STATE})
-        serviceStore.upsertAppStateValue('isLoginMode', false)
         const {handleRecordingModalClose} = this.props;
         handleRecordingModalClose(false);
         this.initFlag = false;
     };
+
+    async handleModalClosing (state?:any, recordAgain?:any) {
+        if(recordAgain) {
+            await this.setState({...state, openModal:false})
+            this.initRecorder(null);
+            return
+          }
+          await this.setState({...state, openModal:false})
+    }
 
 
     async setLoadingState (loading:boolean)  {
@@ -92,17 +91,12 @@ export default class RecordingModalEvents {
         await this.setState({...this.state, loading:false, record:false, recordButtonDisable:false, stopButtonDisable:true, stopRecord:false})
     }
 
-    async handleURLChange (e:any) {
-        await this.setState({...this.state, startUrl: e.target.value})
-    }
-
     async initRecorder  (e:any) {
         const { currentUserPicked, startUrl } = this.state;
         const recorderContainer = new Container(CONTAINER_MODE.recorder);
         await recorderContainer.init()
         recorderContainer.loadingFunction = this.setLoadingState.bind(this);
         await recorderContainer.record(startUrl, currentUserPicked.id)
-        serviceStore.upsertAppStateValue('startUrl', startUrl)
         await this.setState({
             ...this.state,
             record:true, 
@@ -117,7 +111,10 @@ export default class RecordingModalEvents {
     async stopRecording (e:any) {
           const totalRecordTime = moment(new Date()).diff(moment(this.state.startRecordingDateTime))
           const { recorderContainer } = this.state;
-          await this.setState({...this.state,stopRecord: true, stopButtonDisable:true});
+          await this.setState({
+              ...this.state,stopRecord: true, 
+              stopButtonDisable:true
+          })
           setTimeout(async ()=>{
            await recorderContainer.stopRecording();
            await this.setState({
@@ -130,15 +127,6 @@ export default class RecordingModalEvents {
                port:null
             })
           },2000)
-    }
-
-    async handleModalClosing (state?:any, recordAgain?:any) {
-        if(recordAgain) {
-            await this.setState({...state, openModal:false})
-            this.startRecording();
-            return
-          }
-          await this.setState({...state, openModal:false})
     }
 
 

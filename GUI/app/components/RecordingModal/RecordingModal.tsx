@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { TextField, CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import VncViewerComponent from '../VncViewer/vncViewer.component';
 import RecordValidationModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
@@ -22,7 +22,7 @@ export default function FullScreenDialog(props:any) {
 
   const {open, port, loading, 
     stopRecord, openRecordModal, totalRecordTime, recorderContainer,
-    recordButtonDisable, stopButtonDisable, currentUserPicked,
+    stopButtonDisable, currentUserPicked,
     actionName, startUrl }  = state;
 
 
@@ -53,13 +53,6 @@ export default function FullScreenDialog(props:any) {
              { loading ? null:
                 <div>
                 <div className={styles["buttons-container"]}>
-                 <div className={styles["recoreder-control-button"]}>
-                 <Button size="small" variant="outlined" color="secondary" 
-                  disabled={recordButtonDisable} 
-                  onClick={_events.initRecorder.bind(_events)}>
-                    record
-                  </Button> 
-                 </div>
                  <div className={styles["recoreder-control-button"]}>
                  <Button style={{position:'relative',marginLeft:'10px'}} size="small" variant="outlined" 
                    color="secondary"
