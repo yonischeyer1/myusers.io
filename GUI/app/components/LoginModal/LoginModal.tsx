@@ -46,14 +46,20 @@ export default function FullScreenDialog(props:any) {
                  <CircularProgress className={styles["loading-circle"]}/>
                </div>
              }
-             <div className={styles["buttons-container"]}>
-               <div className={styles["recoreder-control-button"]}> 
-                  <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
-                </div>
-             </div>
-             <div style={{width:"auto"}}> 
-              <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
-            </div>
+             {loading ? null : 
+               <div>
+                 <div className={styles["buttons-container"]}>
+                   <div className={styles["recoreder-control-button"]}> 
+                     <Button size="small" variant="outlined" color="secondary" 
+                     disabled={false} 
+                     onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
+                   </div>
+                 </div>
+                  <div style={{width:"auto"}}> 
+                   <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
+                 </div>
+              </div>
+             }
            </div>
          </div>
         </div>

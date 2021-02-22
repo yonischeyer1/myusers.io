@@ -8,6 +8,7 @@ declare const styles: {
   readonly "app-bar": string;
   readonly "title": string;
   readonly "startUrl-input": string;
+  readonly "loading-circle":string;
 };
 export = styles;
 

@@ -3,7 +3,7 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
-import { Account, createAndSaveAccount } from '../../models/Account.model'
+import { createAndSaveAccount } from '../../models/Account.model'
 
 import { createDummyUser } from '../../models/User.model'
 
@@ -114,26 +114,6 @@ export default class RecordingModalEvents {
             startRecordingDateTime:new Date(),
             recorderContainer:recorderContainer,
         })
-    }
-
-    async startLogin (e:any)  {
-        const { currentUserPicked, loginURL } = this.state;
-        const loginContainer = new Container(CONTAINER_MODE.login);
-        await loginContainer.init()
-        loginContainer.loadingFunction = this.setLoadingState.bind(this);
-        await loginContainer.login(loginURL, currentUserPicked.id)
-        await this.setState({...this.state,record:true, port:loginContainer._port,
-          recordButtonDisable:true, stopButtonDisable:false,startRecordingDateTime:new Date(),recorderContainer:loginContainer})
-    }
-
-    async finishLogin (e:any) {
-        const { recorderContainer, accountName, loginURL, currentUserPicked} = this.state;
-        const { handleRecordingModalClose } = this.props
-        serviceStore.upsertAppStateValue('isLoginMode', false)
-        const userId:any = await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
-        await recorderContainer.finishLogin(currentUserPicked.id, userId);
-        await removeContainerByName(recorderContainer._containerName)
-        handleRecordingModalClose()
     }
 
     async stopRecording (e:any) {

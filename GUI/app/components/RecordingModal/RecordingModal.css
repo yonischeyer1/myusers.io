@@ -49,3 +49,10 @@
     width:1024px;
     height:45px;
  }
+
+ .loading-circle {
+    align-self: center;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15%;  
+ }

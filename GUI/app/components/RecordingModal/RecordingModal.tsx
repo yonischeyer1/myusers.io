@@ -20,18 +20,13 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const {open, record, port, loading, 
+  const {open, port, loading, 
     stopRecord, openRecordModal, totalRecordTime, recorderContainer,
     recordButtonDisable, stopButtonDisable, currentUserPicked,
     actionName, startUrl }  = state;
 
-  const isLoginMode = _events.isLoginMode;
 
-  const title = isLoginMode ? 'Login Account' : ' Recording wizard '
-
-  const dontShowLoginControls = !isLoginMode || loading
-
-  const dontShowRecordControls = !record || loading
+  const title = ' Recording wizard '
    
   return open ? (
     <div>
@@ -51,18 +46,11 @@ export default function FullScreenDialog(props:any) {
          <br/>
            <div className={styles["modal-content-sub-container"]}>
              {!loading ? null:
-               <div className={styles["loading-container"]}><CircularProgress 
-               style={{ alignSelf: "center", width: "100px", height: "100px",marginBottom: "15%"}}/>
+               <div className={styles["loading-container"]}>
+                 <CircularProgress className={styles["loading-circle"]}/>
                </div>
              }
-             { dontShowLoginControls ? null:             
-                <div className={styles["buttons-container"]}>
-                  <div className={styles["recoreder-control-button"]}> 
-                  <Button size="small" variant="outlined" color="secondary" disabled={false} onClick={_events.finishLogin.bind(_events)}>Finish</Button>      
-                 </div>
-                </div>
-             }
-             { dontShowRecordControls ? null:
+             { loading ? null:
                 <div>
                 <div className={styles["buttons-container"]}>
                  <div className={styles["recoreder-control-button"]}>
@@ -83,12 +71,10 @@ export default function FullScreenDialog(props:any) {
                    variant="outlined" 
                    className={styles["startUrl-input"]}
                    size="small"/>
+                 <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
                  </div>
                 </div>
             }
-            <div style={{width:"auto"}}> 
-              <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
-            </div>
            </div>
            <RecordValidationModal
             startUrl={startUrl}
