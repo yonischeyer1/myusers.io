@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { TextField, FormControl } from '@material-ui/core';
 
 
-import RecordingModal from '../RecordingModal/RecordingModal'
+import LoginModal from '../LoginModal/LoginModal'
 import styles from './AccountUpsertModal.css';
 import { Transition } from '../../utils/general';
 import AccountUpsertModalEvents, { DEFAULT_COMPONENT_STATE } from './AccountUpsertModal.events';
@@ -60,7 +60,7 @@ export default function FullScreenDialog(props:any) {
          </div>
       </div>
       </Dialog>
-      <RecordingModal 
+      <LoginModal 
         currentUserPicked={currentUserPicked}
         accountName={accountName}
         loginURL={loginURL}
