@@ -7,7 +7,7 @@ import { Fab, Button } from '@material-ui/core';
 import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
 import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
 import TroubleshootMenu from '../TroubleshootMenu/TroubleshootMenu'
-import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
+import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView'
 import DeletePopup from '../DeletePopup/DeletePopup'
 import styles from './Home.css';
 import { a11yProps, TabPanel } from '../../utils/general';

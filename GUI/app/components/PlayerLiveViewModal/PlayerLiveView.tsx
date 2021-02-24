@@ -17,9 +17,9 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const { port, stopPlaying} = state;
-  console.log("PlayerLiveViewSTate", state);
-  return !!port ? (
+  const { port } = state;
+
+  return port ? (
     <div>
       <Dialog fullScreen open={!!port} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
@@ -33,7 +33,7 @@ export default function FullScreenDialog(props:any) {
             </Toolbar>
           </AppBar>
         <div className={styles["modal-content-container"]}>
-         <VncViewerComponent stopRecord={stopPlaying} mode="player" port={port}/> 
+         {!port ? null : <VncViewerComponent mode="player" port={port}/>} 
        </div>
       </Dialog>
     </div>

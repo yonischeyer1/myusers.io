@@ -56,7 +56,7 @@ export default function FullScreenDialog(props:any) {
                    </div>
                  </div>
                   <div style={{width:"auto"}}> 
-                   <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
+                   {!port ? null : <VncViewerComponent mode="login" port={port}/>}
                  </div>
               </div>
              }

@@ -64,6 +64,13 @@ a:hover {
   overflow: hidden !important;
 }
 
+.MuiCircularProgress-root {
+  align-self: center !important;
+  width: 100px !important;
+  height: 100px !important;
+  margin-bottom: 15% !important;  
+}
+
 
 
 

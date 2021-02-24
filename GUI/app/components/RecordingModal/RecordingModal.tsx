@@ -20,10 +20,8 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const {open, port, loading, 
-    stopRecord, openRecordModal, totalRecordTime, recorderContainer,
-    stopButtonDisable, currentUserPicked,
-    actionName, startUrl }  = state;
+  const {open, port, loading, openRecordValidationModal, recorderContainer,
+    stopButtonDisable, currentUserPicked, actionName, startUrl }  = state;
 
 
   const title = ' Recording wizard '
@@ -47,7 +45,7 @@ export default function FullScreenDialog(props:any) {
            <div className={styles["modal-content-sub-container"]}>
              {!loading ? null:
                <div className={styles["loading-container"]}>
-                 <CircularProgress className={styles["loading-circle"]}/>
+                   <CircularProgress />
                </div>
              }
              { loading ? null:
@@ -66,7 +64,7 @@ export default function FullScreenDialog(props:any) {
                  </div>
                 </div>
                  <div style={{width:"auto"}}> 
-                 <VncViewerComponent stopRecord={stopRecord} mode="recorder" port={port}/>
+                  <VncViewerComponent mode="recorder" port={port}/>
                  </div>
                 </div>
             }
@@ -76,8 +74,7 @@ export default function FullScreenDialog(props:any) {
             actionName={actionName}
             currentUserPicked={currentUserPicked} 
             recorderContainer={recorderContainer}
-            totalRecordTime={totalRecordTime}
-            open={openRecordModal} 
+            open={openRecordValidationModal} 
             handleModalClose={_events.handleModalClosing.bind(_events)}/>
          </div>
         </div>

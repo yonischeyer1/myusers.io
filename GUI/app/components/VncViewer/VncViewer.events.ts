@@ -3,9 +3,7 @@ import RFB from '@novnc/novnc/core/rfb';
 
 export const DEFAULT_COMPONENT_STATE = { 
     rfb:null,
-    mode:"player",
-    port:null,
-    stopPlaying:false
+    port:null
 }
 
 let instance:any = null
@@ -28,40 +26,34 @@ export default class VncViewerEvents {
          this.state = state;
          this.setState = setStatePromisifed.bind(null, setState);
          this.props = props;
-         if(props.stopRecord) {
-             this.stopRecording();
-         } else if(!this.initFlag && this.props.port) {
+         if(!this.initFlag && this.props.port) {
             this.initFlag = true;
             await this.init();
+         } else if (this.state.rfb && !this.props.port) {
+             this.handleClose();
          }
     }
 
     async init () {
-        const { port, mode } = this.props;
-        await this.setState({...this.state, port, mode}) 
-        this.connectToContainerVnc();
+        const { port } = this.props;
+        await this.setState({...this.state, port}) 
+        await this.connectToContainerVnc();
+        return;
     }
 
     async handleClose() {
-
-    }
-
-    async stopRecording() {
-        this.state.rfb.disconnect();
-        await this.setState({...DEFAULT_COMPONENT_STATE})
-        this.initFlag = false;
-    }
-
-    connectedToServer(e:any) {
-        
-    }
-
-    disconnectedFromServer(e:any) {
-        if (e.detail.clean) {
-            //status("Disconnected cleanly");
-        } else {
-           // status("Something went wrong, connection is closed");
+        if(this.state.rfb) {
+            this.state.rfb.disconnect();
         }
+        await this.setState({...DEFAULT_COMPONENT_STATE})
+        this.initFlag = false;   
+    }
+
+    async connectedToServer(e:any) {}
+
+    async disconnectedFromServer(e:any) {
+        await this.setState({...this.state, rfb:null})
+        this.handleClose();
     }
     
     credentialsAreRequired(e:any) {
@@ -82,7 +74,7 @@ export default class VncViewerEvents {
 
     connectToContainerVnc() {
     const { port } = this.state;
-    return new Promise(async (resolve, reject)=>{
+    return new Promise(async (resolve)=>{
             const host = "localhost"
             const password = this.readQueryVariable('password',"");
             const path = this.readQueryVariable('path', 'websockify');
@@ -97,15 +89,11 @@ export default class VncViewerEvents {
                 url += ':' + port;
             }
             url += '/' + path;
-            const element = document.getElementById(`screen-${this.state.mode}`);
-            const rfb = new RFB(element, url, {
-              credentials: { password: 'TestVNC' }
-            });
-            rfb.addEventListener('connect', this.connectedToServer);
-            rfb.addEventListener('disconnect', this.disconnectedFromServer);
-            rfb.addEventListener('credentialsrequired', this.credentialsAreRequired);
-        
-            // Set parameters that can be changed on an active connection
+            const element = document.getElementById(`screen-${this.props.mode}`);
+            const rfb = new RFB(element, url, {credentials: { password: 'TestVNC' }});
+            rfb.addEventListener('connect', this.connectedToServer.bind(this));
+            rfb.addEventListener('disconnect', this.disconnectedFromServer.bind(this));
+            rfb.addEventListener('credentialsrequired', this.credentialsAreRequired.bind(this));
             rfb.viewOnly = this.readQueryVariable('view_only', false);
             rfb.scaleViewport = this.readQueryVariable('scale', false);
             await this.setState({...this.state, rfb})

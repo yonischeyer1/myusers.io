@@ -8,15 +8,15 @@ const _events = new VncViewerEvents();
 export default function FullScreenDialog(props:any) {
     const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE})
 
-    _events.setConstructor(state, setState, props);
+    _events.setConstructor.bind(_events)(state, setState, props);
 
-    const { mode } = state;
+    const { mode, port } = props;
 
     const disableClicks = mode === "player";
 
-    return (
+    return port ? (
         <div className={styles["vnc-view-container"]}  data-tid="container">
           <div id={"screen-" + mode} style={disableClicks ? {pointerEvents:"none"}: {}}></div> 
         </div>
-    );
+    ) : <div></div>;
 }

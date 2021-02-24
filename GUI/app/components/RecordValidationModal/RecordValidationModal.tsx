@@ -5,10 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {APP_CWD, Transition } from '../../utils/general';
-import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView.component'
-import StaticMaskingWizard from '../StaticMaskingWizard/StaticMaskingWizard'
 import styles from './RecordValidationModal.css'
-import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE, SCREENS} from './RecordValidationModal.events';
+import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordValidationModal.events';
 
 
 
@@ -21,8 +19,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const { open, liveViewPort, dynamicSnapshotModalData, 
-    screen, tagsPresent, saveThis } = state;
+  const { open } = state;
 
   return open ? (
     <div>
@@ -42,52 +39,21 @@ export default function FullScreenDialog(props:any) {
              Is this what you recorded ?
            </div>
            <div className={styles["video-container"]}>
-           <video id="video-playback-player" width="768" height="610" controls>
-           <source src={videoPlayerOutputSrc} type="video/mp4" />
-           </video>
+             <video id="video-playback-player" width="768" height="610" controls>
+               <source src={videoPlayerOutputSrc} type="video/mp4" />
+             </video>
            </div>
-           {
-             screen === SCREENS.validate ?
-             <div className={styles["modal-verifaction-buttons-controls"]}>
+           <div className={styles["modal-verifaction-buttons-controls"]}>
              <Button size="small" variant="outlined" color="secondary"  onClick={_events.handleClose.bind(_events)}>record again</Button>
-                 <div className={styles["yes-button"]}>
+              <div className={styles["yes-button"]}>
                  <Button  size="small" variant="outlined" color="primary" onClick={_events.userValidatedIoActions.bind(_events)}>yes</Button>
-                 </div>
-               </div> : null
-           }
-           {
-             screen === SCREENS.setTagsMaxTimeoutScreen ? 
-             <div className={styles["screen-setMaxTimeout-container"]}>
-               {
-                 tagsPresent.map((tag:any)=>{
-                   return <div style={{display:'flex'}}>
-                     <div>
-                     <img src={tag.originalReferenceSnapshotURI} onClick={(e)=>{ _events.handleTagImageClick.bind(_events)(tag)}}/>
-                     </div>
-                     <div>
-                       insert time in seconds
-                      <input value={tag.maxWaitTimeUntilFail} onChange={(e)=>{ _events.handleTagTimeoutChange.bind(_events)(e,tag)}} type="number" max={59}/>
-                     </div>
-                   </div>
-                 })
-               }
-             </div> : null
-           }
-           <div className={styles["record-modal-save-btn-container"]}>
+              </div>
+           </div> 
+           {/* <div className={styles["record-modal-save-btn-container"]}>
            <Button  size="small" variant="outlined" color="primary" onClick={ _events.saveTags.bind(_events)}>save</Button>
-           </div>
+           </div> */}
         </div>
       </Dialog>
-      <StaticMaskingWizard 
-        handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  
-        tag={dynamicSnapshotModalData}
-      />
-      <PlayerLiveViewModal  
-        handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
-        port={liveViewPort} 
-        stopPlaying={false} 
-      />
     </div>
   ) : <div></div>
 }

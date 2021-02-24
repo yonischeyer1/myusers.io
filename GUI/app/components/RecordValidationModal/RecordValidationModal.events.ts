@@ -5,17 +5,9 @@ import { removeContainerByName } from "../../utils/IHost";
 
 const serviceStore = new ServiceStore();
 
-export const SCREENS =  { validate:'validate', setTagsMaxTimeoutScreen: 'setTagsMaxTimeoutScreen' }
-
 export const DEFAULT_COMPONENT_STATE = {
   open:false,
   recorderContainer:null,
-  totalRecordTime:null,
-  liveViewPort:null,
-  liveViewPortModalOpen:false,
-  dynamicSnapshotModalData:null,
-  dynamicSnapshotOpen:null,
-  screen:SCREENS.validate,
   tagsPresent:[],
   saveThis:null,
   currentUserPicked:null,
@@ -50,12 +42,11 @@ export default class RecordValidationModalEvents {
     }
  
     async init() {
-      const { open, recorderContainer, totalRecordTime, currentUserPicked, actionName } = this.props;
+      const { open, recorderContainer, currentUserPicked, actionName } = this.props;
       await this.setState({
         ...this.state, 
         open, 
         recorderContainer, 
-        totalRecordTime, 
         currentUserPicked, 
         actionName
       })
@@ -69,22 +60,6 @@ export default class RecordValidationModalEvents {
         handleModalClose(false);
         this.initFlag = false;
     };
-    
-    async handleLivePreviewModalClose (e:any)  {
-        await this.setState({...this.state, liveViewPort:null});
-    }
-    
-    async handleDynamicSnapshotModalClose (e:any) {
-        await this.setState({...this.state, dynamicSnapshotOpen:false});
-    }
-    
-    async handleDynamicSnapshotModalSave ({tag, coords})  {
-         tag["dynamic"] = {coords}
-    }
-
-    async handleTagImageClick (tag:any)  {
-        await this.setState({...this.state, dynamicSnapshotModalData:tag, dynamicSnapshotOpen:true})
-    }
 
     async handleTagTimeoutChange (e:any, tagChanged:any) {
       const value = e.target.value
@@ -123,25 +98,17 @@ export default class RecordValidationModalEvents {
           ioActions:recorderContainer._ioActions,
           tags
         }
-        const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{
-          const liveViewPort = recorderContainer._port
-          await this.setState({
-              ...this.state, 
-              liveViewPort, 
-            })
-          return;
-        })
+        const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{})
         await this.setState({
           ...this.state, 
           saveThis:{tags: actionWithHashes.tags, ioActions:actionWithHashes.ioActions},
-          liveViewPort:null,
           tagsPresent:actionWithHashes.tags, 
-          screen:SCREENS.setTagsMaxTimeoutScreen
         })
+        await this.saveTags();
         await removeContainerByName(recorderContainer._containerName)
       }
     
-      async saveTags(e:any) {
+      async saveTags() {
         const {actionName, currentUserPicked, saveThis, startUrl} = this.state;
         const {ioActions, tags} = saveThis;
         const users = serviceStore.readDocs('users');
