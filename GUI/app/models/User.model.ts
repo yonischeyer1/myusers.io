@@ -27,5 +27,5 @@ export const saveUser = (user:any) => {
   }
   const users = serviceStore.readDocs('users');
   users[user.id] = user;
-  serviceStore.createDoc('users', users);
+  serviceStore.updateDocs('users', users);
 }

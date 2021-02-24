@@ -1,4 +1,5 @@
-import { Action, Tag, TagType } from "../../models/Action.model";
+import { Action, createAction, Tag, TagType } from "../../models/Action.model";
+import { saveUser } from "../../models/User.model";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
@@ -112,15 +113,16 @@ export default class RecordValidationModalEvents {
         const {actionName, currentUserPicked, saveThis, startUrl} = this.state;
         const {ioActions, tags} = saveThis;
         const users = serviceStore.readDocs('users');
+        if(!users[currentUserPicked.id]) {
+          await saveUser(currentUserPicked)
+        }
         const actionToInsert:Action = {
           name: actionName,
           ioActions,
           tags,
           startUrl
         }
-        const newActionId = serviceStore.createDoc('actions', actionToInsert)
-        users[currentUserPicked.id].actionsIds.push(newActionId);
-        serviceStore.updateDocs('users', users)
+        await createAction(currentUserPicked, actionToInsert);
     }
 }
 
