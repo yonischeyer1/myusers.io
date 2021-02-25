@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import {APP_CWD, Transition } from '../../utils/general';
 import styles from './RecordValidationModal.css'
 import RecordValidationModalEvents, {DEFAULT_COMPONENT_STATE} from './RecordValidationModal.events';
+import { CircularProgress } from '@material-ui/core';
 
 
 
@@ -19,7 +20,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const { open } = state;
+  const { open, loading } = state;
 
   return open ? (
     <div>
@@ -35,6 +36,13 @@ export default function FullScreenDialog(props:any) {
           </Toolbar>
         </AppBar>
         <div className={styles["modal-content-container"]}>
+        {!loading ? null:
+               <div className={styles["loading-container"]}>
+                   <CircularProgress />
+               </div>
+        } 
+        {loading ? null:
+        <div>
            <div className="guide-label-record">
              Is this what you recorded ?
            </div>
@@ -49,9 +57,8 @@ export default function FullScreenDialog(props:any) {
                  <Button  size="small" variant="outlined" color="primary" onClick={_events.userValidatedIoActions.bind(_events)}>yes</Button>
               </div>
            </div> 
-           {/* <div className={styles["record-modal-save-btn-container"]}>
-           <Button  size="small" variant="outlined" color="primary" onClick={ _events.saveTags.bind(_events)}>save</Button>
-           </div> */}
+        </div>
+        }
         </div>
       </Dialog>
     </div>

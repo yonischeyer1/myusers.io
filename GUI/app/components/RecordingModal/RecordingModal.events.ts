@@ -70,7 +70,7 @@ export default class RecordingModalEvents {
         //     this.initRecorder(null);
         //     return
         //   }
-        //   await this.setState({...state, openModal:false})
+        this.handleClose(null);
     }
 
 

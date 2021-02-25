@@ -8,6 +8,7 @@ declare const styles: {
   readonly "record-modal-save-btn-container": string;
   readonly "app-bar": string;
   readonly "title": string;
+  readonly "loading-container": string;
 };
 export = styles;
 

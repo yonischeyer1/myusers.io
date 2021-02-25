@@ -70,6 +70,7 @@ export default class ActionsUpsertModalEvents {
      
     async handleRecordingModalClose () {
         await this.setState({...this.state, openRecordingModal:false})
+        await this.handleClose(null)
     }
     
     async handleRecordBtnClick  (e:any) {

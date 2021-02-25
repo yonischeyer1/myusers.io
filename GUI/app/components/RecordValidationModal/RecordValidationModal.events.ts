@@ -13,7 +13,8 @@ export const DEFAULT_COMPONENT_STATE = {
   saveThis:null,
   currentUserPicked:null,
   actionName:'',
-  startUrl:''
+  startUrl:'',
+  loading:false
 }
 
 
@@ -99,6 +100,7 @@ export default class RecordValidationModalEvents {
           ioActions:recorderContainer._ioActions,
           tags
         }
+        this.setState({...this.state, loading:true})
         const actionWithHashes = await recorderContainer.playRecorderAction(action,async ()=>{})
         await this.setState({
           ...this.state, 
@@ -107,6 +109,7 @@ export default class RecordValidationModalEvents {
         })
         await this.saveTags();
         await removeContainerByName(recorderContainer._containerName)
+        await this.handleClose(null);
       }
     
       async saveTags() {
@@ -122,7 +125,7 @@ export default class RecordValidationModalEvents {
           tags,
           startUrl
         }
-        await createAction(currentUserPicked, actionToInsert);
+        await createAction(currentUserPicked, actionToInsert); 
     }
 }
 

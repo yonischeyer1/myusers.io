@@ -80,6 +80,7 @@ export default class UserUpsertModalEvents {
     
     async handleUpsertActionModalClose  (e:any) {
         await this.setState({...this.state, openUpsertActionModal:false})
+        await this.handleClose(null);
     }
     
     async handleChange  (event: React.ChangeEvent<{}>, newValue: number)  {

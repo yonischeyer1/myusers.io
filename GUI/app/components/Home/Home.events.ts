@@ -76,7 +76,13 @@ export default class HomeEvents {
     }
 
     async handleUpsertUserModalClose () {
-        await this.setState({...this.state, openUpsertUserModal:false, currentUserPicked:null})
+        const users =  Object.values(serviceStore.readDocs('users'));
+        await this.setState({
+          ...this.state, 
+          openUpsertUserModal:false, 
+          currentUserPicked:null, 
+          users
+        })
     }
 
     async handleDeletePopupClose () {
