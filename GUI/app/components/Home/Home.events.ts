@@ -72,7 +72,13 @@ export default class HomeEvents {
     }
 
     async handleUpsertTestModalClose () {
-        await this.setState({...this.state, currentTestPicked:null, openUpsertTestModal:false})
+        const tests = Object.values(serviceStore.readDocs('tests'));
+        await this.setState({
+          ...this.state, 
+          tests,
+          currentTestPicked:null, 
+          openUpsertTestModal:false
+        })
     }
 
     async handleUpsertUserModalClose () {
