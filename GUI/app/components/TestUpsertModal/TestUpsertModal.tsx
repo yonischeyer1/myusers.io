@@ -19,6 +19,8 @@ export default function FullScreenDialog(props:any) {
 
   const { open, testName, pickedUserId, pickedUserAction, pickedUserActions,
     suite, suiteName, users, actions} = state;
+
+    console.log("suite", suite, "actions", actions)
   
   return open ? (
     <div style={{overflow:"hidden"}}>

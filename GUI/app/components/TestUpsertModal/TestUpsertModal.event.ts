@@ -44,6 +44,7 @@ export default class TestUpsertModalEvents {
 
   async init () {
     const users = serviceStore.readDocs('users');
+    const actions = serviceStore.readDocs('actions');
     const { currentTestPicked, open } = this.props;
     if(currentTestPicked) {
       await this.setState({
@@ -51,6 +52,7 @@ export default class TestUpsertModalEvents {
         suite:currentTestPicked.suite, 
         suiteName:currentTestPicked.suiteName,
         users,
+        actions,
         open
       })
     } else {
@@ -59,6 +61,7 @@ export default class TestUpsertModalEvents {
         suite:[], 
         suiteName:'',
         users,
+        actions,
         open
       })
     }
@@ -92,7 +95,7 @@ export default class TestUpsertModalEvents {
   }
     
   async handleUserPick (e:any)  {
-        const {userActions, user} = this.getUserActions(e);
+        const {userActions, user} = await this.getUserActions(e);
         await this.setState({...this.state, pickedUserId:user.id, pickedUserActions:userActions});
   }
     
@@ -119,7 +122,14 @@ export default class TestUpsertModalEvents {
           schedule:{},
           status:TEST_STATUS.IDLE
         }
-        await this.setState({...this.state, suite:[...this.state.suite, test], testName:"", pickedUserId:"", pickedUserAction:"", pickedUserActions:null});
+        await this.setState({
+          ...this.state, 
+          suite:[...this.state.suite, test], 
+          testName:"", 
+          pickedUserId:"", 
+          pickedUserAction:"", 
+          pickedUserActions:null
+        });
   }
 
   async deleteTestFromSuite (test:any) {
