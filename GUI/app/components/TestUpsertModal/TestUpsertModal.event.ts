@@ -12,7 +12,8 @@ export const DEFAULT_COMPONENT_STATE = {
   suite:[],
   suiteName:"",
   users:[],
-  actions:[]
+  actions:[],
+  currentTestPicked:null
 }
 
 const serviceStore = new ServiceStore();

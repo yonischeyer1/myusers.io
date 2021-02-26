@@ -61,7 +61,7 @@ return (
                                  }}>FAIL</Button>
                               }
                          </div>
-                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events)} />
+                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events,testSuite)} />
                       </div>
                     )
                   }) 
@@ -81,9 +81,7 @@ return (
                          name : {user.name}
                        </div>
                        <ActionsDropdown options={optionsUser} 
-                       handleMenuItemClick={(option:any)=>{
-                        _events.handleUserMenuItemClick.bind(_events)(null, option, user);
-                       }} />
+                       handleMenuItemClick={_events.handleUserMenuItemClick.bind(_events, user)} />
                     </div>)
                   }) 
                 }

@@ -125,7 +125,7 @@ export default class HomeEvents {
         await this.setState({...this.state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
     }
 
-    async handleTestMenuItemClick (e:any, option:any, test:any, testSuiteIdx:any) {
+    async handleTestMenuItemClick (test:any, option:any, testSuiteIdx:any) {
         switch (option.label) {
             case "Play":
               await this.playTestSuite(test, testSuiteIdx)
@@ -148,7 +148,7 @@ export default class HomeEvents {
           }
     }
 
-    async handleUserMenuItemClick (e:any, option:any, user:any) {
+    async handleUserMenuItemClick (user:any, option:any) {
         switch (option.label) {
             case "Edit":
               await this.editUser(user);
