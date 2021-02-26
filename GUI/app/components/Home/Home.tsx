@@ -54,9 +54,12 @@ return (
                               Test runing:&nbsp; {currentRuningTestName.name}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test status:&nbsp; {currentRuningTestName.status !== "FAIL" ? <Button variant="outlined" color="secondary" onClick={(e:any)=>{
-                                 _events.handleFailClick(testSuite)
-                              }}>FAIL</Button> : currentRuningTestName.status}
+                              Test status: &nbsp; 
+                              {currentRuningTestName.status !== "FAIL" ? currentRuningTestName.status :
+                                <Button variant="outlined" color="secondary" onClick={(e:any)=>{
+                                        _events.handleFailClick(testSuite)
+                                 }}>FAIL</Button>
+                              }
                          </div>
                          <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events)} />
                       </div>
