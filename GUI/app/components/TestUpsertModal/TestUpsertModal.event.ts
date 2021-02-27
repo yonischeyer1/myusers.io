@@ -10,7 +10,7 @@ export const DEFAULT_COMPONENT_STATE = {
   pickedUserActions:null,
   pickedUserAction:"",
   suite:[],
-  suiteName:"",
+  name:"",
   users:[],
   actions:[],
   currentTestPicked:null
@@ -51,7 +51,7 @@ export default class TestUpsertModalEvents {
       await this.setState({
         ...this.state, 
         suite:currentTestPicked.suite, 
-        suiteName:currentTestPicked.suiteName,
+        name:currentTestPicked.name,
         users,
         actions,
         open
@@ -60,7 +60,7 @@ export default class TestUpsertModalEvents {
       await this.setState({
         ...this.state, 
         suite:[], 
-        suiteName:'',
+        name:'',
         users,
         actions,
         open
@@ -76,7 +76,7 @@ export default class TestUpsertModalEvents {
   }
 
   async handleSuiteNameChange(e:any) {
-    await this.setState({...this.state, suiteName:e.target.value})
+    await this.setState({...this.state, name:e.target.value})
   }
 
   async handleTestNameChange(e:any) {
@@ -107,7 +107,7 @@ export default class TestUpsertModalEvents {
     
   async save (e:any)  {
         const test:Test = {
-          suiteName: this.state.suiteName,
+          name: this.state.name,
           suite:this.state.suite,
           lastFailResult:null
         }

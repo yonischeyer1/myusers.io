@@ -63,7 +63,6 @@ export default class ActionsDropdownEvents {
           }
           serviceStore.updateDocs('users', users)
           serviceStore.deleteDoc(collectionName, item)
-          this.handleClose(null)
         } else {
           if(collectionName === "tests") {
             serviceStore.deleteDoc(collectionName, item)
@@ -84,11 +83,11 @@ export default class ActionsDropdownEvents {
               }
               serviceStore.updateDocs('accounts',accounts)
             }
-            this.handleClose(null)
             serviceStore.deleteDoc(collectionName, item)
             await removeUserSessionFolder(`${APP_CWD}sessions/${user.id}`.trim());
           }
         }
+        await this.handleClose(null)
       }
     
 }

@@ -17,7 +17,9 @@ export default function FullScreenDialog(props:any) {
 
   const { itemAndCollectionName } = state;
 
-  const doOpen = !!itemAndCollectionName.item.name && !!itemAndCollectionName.collectionName
+  const doOpen = !!itemAndCollectionName.item.name  && !!itemAndCollectionName.collectionName
+  console.log("itemAndCollectionName", itemAndCollectionName)
+  console.log("doOpen", doOpen)
 
   return doOpen ? (
     <div>

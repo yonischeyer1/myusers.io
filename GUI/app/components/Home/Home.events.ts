@@ -14,7 +14,7 @@ export const DEFAULT_COMPONENT_STATE = {
     currentUserPicked:null,
     currentTestPicked:null,
     stopLiveView:true,
-    itemAndCollectionNameToDelete:null,
+    itemAndCollectionName:null,
     currentRuningTests: [],
     testTroubleshootPick:false,
     optionsTest:[
@@ -74,9 +74,11 @@ export default class HomeEvents {
 
     async handleUpsertTestModalClose () {
         const tests = Object.values(serviceStore.readDocs('tests'));
+        const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
         await this.setState({
           ...this.state, 
           tests,
+          currentRuningTests,
           currentTestPicked:null, 
           openUpsertTestModal:false
         })
@@ -93,7 +95,15 @@ export default class HomeEvents {
     }
 
     async handleDeletePopupClose () {
-        await this.setState({...this.state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
+       const tests = Object.values(serviceStore.readDocs('tests'));
+       const users = Object.values(serviceStore.readDocs('users'));
+        await this.setState({
+          ...this.state, 
+          itemAndCollectionName:null, 
+          openDeletePopup:false,
+          tests,
+          users
+        })
     }
 
     async handleLivePreviewModalClose () {
@@ -184,11 +194,11 @@ export default class HomeEvents {
     }
 
     async deleteUser (user:any) {
-        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'users', item:user}})
+        await this.setState({...this.state, itemAndCollectionName:{collectionName:'users', item:user}})
     }
 
     async deleteTest (test:any) {
-        await this.setState({...this.state, openDeletePopup:true , itemAndCollectionNameToDelete:{collectionName:'tests', item:test}})
+        await this.setState({...this.state, itemAndCollectionName:{collectionName:'tests', item:test}})
     }
 
     async playTestSuite (testSuite:any, testSuiteIdx:any)  {

@@ -15,7 +15,7 @@ export interface TestModel {
 
 export interface Test {
     id?:string
-    suiteName:string
+    name:string
     suite:TestModel[]
     lastFailResult:any
 }

@@ -24,7 +24,7 @@ _events.setConstructor(state, setState, props);
 
 const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
   liveViewPort, currentUserPicked, currentTestPicked,
-  stopLiveView, itemAndCollectionNameToDelete, currentRuningTests,
+  stopLiveView, itemAndCollectionName, currentRuningTests,
   testTroubleshootPick, optionsTest, optionsUser} = state;
 
 const disableTestAddFlag = tabIndex === 0 && Object.values(users).length === 0;
@@ -48,7 +48,7 @@ return (
                     return (
                       <div className={styles["test-row"]}>
                          <div className={styles["test-name-container"]}>
-                              Test suite name:&nbsp; {testSuite.suiteName}
+                              Test suite name:&nbsp; {testSuite.name}
                          </div>
                          <div className={styles["test-name-container"]}>
                               Test runing:&nbsp; {currentRuningTests[testSuiteIdx].name}
@@ -97,7 +97,7 @@ return (
         </div>
          
         <DeletePopup handleDeletePopupClose={_events.handleDeletePopupClose.bind(_events)} 
-        itemAndCollectionName={itemAndCollectionNameToDelete} />
+        itemAndCollectionName={itemAndCollectionName} />
 
         <PlayerLiveViewModal handleLivePreviewModalClose={_events.handleLivePreviewModalClose.bind(_events)} 
         stopPlaying={stopLiveView} port={liveViewPort}/>

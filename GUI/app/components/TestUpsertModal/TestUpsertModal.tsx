@@ -18,7 +18,7 @@ export default function FullScreenDialog(props:any) {
   _events.setConstructor(state, setState, props)
 
   const { open, testName, pickedUserId, pickedUserAction, 
-          pickedUserActions, suite, suiteName, 
+          pickedUserActions, suite, name, 
           users, actions} = state;
   
   return open ? (
@@ -27,7 +27,7 @@ export default function FullScreenDialog(props:any) {
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
-              {suiteName ? `Edit suite: ${suiteName}` : "Create new test suite"}
+              {name ? `Edit suite: ${name}` : "Create new test suite"}
             </Typography>
             <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
                 Close
@@ -38,7 +38,7 @@ export default function FullScreenDialog(props:any) {
           <br/>
         <div className={styles["test-name-container-suite"]}>
             <TextField disabled={false}
-             value={suiteName} 
+             value={name} 
              onChange={_events.handleSuiteNameChange.bind(_events)} 
              label="Test suite name:" variant="outlined" style={{width:"100%", height:"45px"}} size="small"/>
              </div>
