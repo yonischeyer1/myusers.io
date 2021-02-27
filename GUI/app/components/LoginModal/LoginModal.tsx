@@ -19,7 +19,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props)
 
-  const {open, port, loading, stopRecord }  = state;
+  const {open, port, loading }  = state;
 
 
   const title = 'Login Account';
@@ -56,7 +56,7 @@ export default function FullScreenDialog(props:any) {
                    </div>
                  </div>
                   <div style={{width:"auto"}}> 
-                   {!port ? null : <VncViewerComponent mode="login" port={port}/>}
+                  <VncViewerComponent mode="login" port={port}/>
                  </div>
               </div>
              }

@@ -42,7 +42,7 @@ export default class RecordingModalEvents {
     }
  
     async init() {
-        let { open, currentUserPicked, accountName, loginURL, actionName } = this.props;
+        let { open, currentUserPicked, actionName } = this.props;
         if(!currentUserPicked.id) {
             currentUserPicked = createDummyUser(currentUserPicked.name)
         }
@@ -51,8 +51,6 @@ export default class RecordingModalEvents {
             actionName,
             open, 
             currentUserPicked, 
-            accountName, 
-            loginURL
         })
         await this.initRecorder(null);
     }

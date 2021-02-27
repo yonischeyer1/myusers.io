@@ -8,7 +8,6 @@ export const DEFAULT_COMPONENT_STATE = {
     open:false,
     port: null,
     loading:false,
-    stopRecord:false, 
     loginContainer:null,
     currentUserPicked:null,
     loginURL:'',

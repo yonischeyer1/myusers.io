@@ -40,11 +40,17 @@ export default class AccountUpsertModalEvents {
       }
   
     async init () {
-        const { pickedAccount, open } = this.props;
+        const { pickedAccount, open,  currentUserPicked} = this.props;
         if(pickedAccount) { 
-           await this.setState({...this.state, accountName:pickedAccount.name, loginURL:pickedAccount.loginURL, open})
+           await this.setState({
+            ...this.state, 
+            accountName:pickedAccount.name, 
+            loginURL:pickedAccount.loginURL, 
+            open, 
+            currentUserPicked
+          })
         } else {
-            await this.setState({...this.state, open})
+            await this.setState({...this.state, open, currentUserPicked})
         }
     }
 
@@ -62,22 +68,23 @@ export default class AccountUpsertModalEvents {
     }
     
     async handleAccountNameChange (e:any)  {
-        const key = "accountName"
         const newAccountName = e.target.value
-        await this.setState({...this.state, accountName:newAccountName})
-        serviceStore.upsertAppStateValue(key, newAccountName)
+        await this.setState({
+            ...this.state, 
+            accountName:{value:newAccountName, disabled:false}
+        })
     }
     
     async handleLoginUrlChange  (e:any)  {
-        const key = "loginURL"
         const newLoginUrl = e.target.value
-        await this.setState({...this.state, loginURL:newLoginUrl})
-        serviceStore.upsertAppStateValue(key, newLoginUrl)
+        await this.setState({
+            ...this.state, 
+            loginURL:{value:newLoginUrl, disabled:false}
+        })
       }
     
     async handleLoginClick (e:any)  {
-        serviceStore.upsertAppStateValue('isLoginMode', true)
-        await this.setState({...this.state, openRecordingModal:false});
+        await this.setState({...this.state, openRecordingModal:true});
     }
 
     async handleCancelBtnClick (e:any) {
