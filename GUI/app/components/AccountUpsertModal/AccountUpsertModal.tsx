@@ -62,8 +62,8 @@ export default function FullScreenDialog(props:any) {
       </Dialog>
       <LoginModal 
         currentUserPicked={currentUserPicked}
-        accountName={accountName}
-        loginURL={loginURL}
+        accountName={accountName.value}
+        loginURL={loginURL.value}
         open={openRecordingModal} 
         handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)}
       />

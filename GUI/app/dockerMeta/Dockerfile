@@ -1,7 +1,7 @@
 
     FROM amd64/debian:stable
 
-    RUN apt-get update && apt-get install -y curl unzip libgconf-2-4 scrot openjdk-11-jre-headless xvfb chromium x11vnc libxkbcommon-x11-0 ffmpeg procps gnupg 
+    RUN apt-get update && apt-get install -y curl unzip libgconf-2-4 scrot openjdk-11-jre-headless xvfb chromium iceweasel x11vnc libxkbcommon-x11-0 ffmpeg procps gnupg 
     COPY pin_nodesource /etc/apt/preferences.d/nodesource
     ADD xvfb-chromium /usr/bin/xvfb-chromium
     RUN ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome

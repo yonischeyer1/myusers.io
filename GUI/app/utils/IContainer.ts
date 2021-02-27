@@ -21,6 +21,14 @@ export async function startVnc(containerId:any, rfbport: any, processName:string
     return pid
 }
 
+export async function startIceweasel(containerId:any, processName:string, startUrl:string, userName = "users3") : Promise<any> {
+    const command = `Xvfb :1 -screen 0 1024x768x24 </dev/null & export DISPLAY=:1 && iceweasel ${startUrl} -P ${userName} & export DISPLAY=:1`
+    const response = await runContainerCMD(containerId, command, null, true);
+    console.log("startChormium response",response)
+    const pid = await getPidByName(containerId, processName);
+    return pid
+}
+
 export async function startChormium(containerId:any, processName:string, startUrl:string, userName = "users3") : Promise<any> {
     const command = `Xvfb :1 -screen 0 1024x768x24 </dev/null & export DISPLAY=:1 && chromium ${startUrl} --user-data-dir=${userName} --window-size=1024,768 --no-sandbox --disable-extensions --disable-translate &  export DISPLAY=:1`
     const response = await runContainerCMD(containerId, command, null, true);

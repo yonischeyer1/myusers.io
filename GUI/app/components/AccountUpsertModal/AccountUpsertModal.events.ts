@@ -81,7 +81,7 @@ export default class AccountUpsertModalEvents {
             ...this.state, 
             loginURL:{value:newLoginUrl, disabled:false}
         })
-      }
+    }
     
     async handleLoginClick (e:any)  {
         await this.setState({...this.state, openRecordingModal:true});
