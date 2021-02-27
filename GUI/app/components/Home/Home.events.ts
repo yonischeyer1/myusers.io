@@ -15,7 +15,7 @@ export const DEFAULT_COMPONENT_STATE = {
     currentTestPicked:null,
     stopLiveView:true,
     itemAndCollectionNameToDelete:null,
-    currentRuningTestName: {name:"",status:""},
+    currentRuningTests: [],
     testTroubleshootPick:false,
     optionsTest:[
       {label:'Play',disabled:false}, 
@@ -62,7 +62,8 @@ export default class HomeEvents {
    async init () {
        const tests = Object.values(serviceStore.readDocs('tests'));
        const users =  Object.values(serviceStore.readDocs('users'));
-       this.setState({...this.state, users, tests})
+       const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
+       this.setState({...this.state, users, tests, currentRuningTests})
    }
 
     //*** Modals Close events */
@@ -122,10 +123,10 @@ export default class HomeEvents {
     }
 
     async handleFailClick (testSuite:any) {
-        await this.setState({...this.state, openTroubleshootMenu:true, testTroubleshootPick:testSuite})
+        await this.setState({...this.state, testTroubleshootPick:testSuite})
     }
 
-    async handleTestMenuItemClick (test:any, option:any, testSuiteIdx:any) {
+    async handleTestMenuItemClick (test:any, testSuiteIdx:any, option:any) {
         switch (option.label) {
             case "Play":
               await this.playTestSuite(test, testSuiteIdx)
@@ -165,8 +166,13 @@ export default class HomeEvents {
 
     //*** Output handles */
 
-    async changeTestStatus (test:any, status:any ) {
-        await this.setState({...this.state, currentRuningTestName:{name:test.testName, status }})
+    async changeTestStatus (test:any, status:any, testSuiteIdx:any) {
+        let { currentRuningTests } = this.state
+        currentRuningTests[testSuiteIdx] = {name:test.testName, status};
+        await this.setState({
+          ...this.state, 
+          currentRuningTests
+        })
     }
 
     async editUser (user:any) {
@@ -194,14 +200,15 @@ export default class HomeEvents {
     }
 
     async saveTestFail (testResp:any, testSuiteIdx:any) { 
-        const tests = serviceStore.readDocs('tests');
+        const tests:any = Object.values(serviceStore.readDocs('tests'));
         tests[testSuiteIdx].lastFailResult = testResp;
         serviceStore.updateDocs('tests', tests)
+        await this.setState({...this.state, tests})
     }
 
     async playTest (test:any, testSuiteId:any, testIdx:any, testSuiteIdx:any) {
         const users = serviceStore.readDocs('users');
-        await this.changeTestStatus(test, TEST_STATUS.PLAYING)
+        await this.changeTestStatus(test, TEST_STATUS.PLAYING , testSuiteIdx)
         const actions = serviceStore.readDocs('actions');
         const user = users[test.userId];
         const action = actions[test.actionId]
@@ -210,11 +217,12 @@ export default class HomeEvents {
         await this.setState({...this.state, portsPlaying:{...this.state.portsPlaying, [testSuiteId]:playingContainerInstance._port}})
         const testResp:any = await (await playingContainerInstance.play(true, action)).json()
         if(testResp.success) {
-          await this.changeTestStatus(test, TEST_STATUS.SUCCESS)
+          await this.changeTestStatus(test, TEST_STATUS.SUCCESS, testSuiteIdx)
         } else {
           testResp.testIdx = testIdx;
+          debugger
           this.saveTestFail(testResp, testSuiteIdx)
-          await this.changeTestStatus(test, TEST_STATUS.FAIL)
+          await this.changeTestStatus(test, TEST_STATUS.FAIL, testSuiteIdx)
         }
         await this.setState({...this.state, portsPlaying:{...this.state.portsPlaying, [test.id]:false}})
     }

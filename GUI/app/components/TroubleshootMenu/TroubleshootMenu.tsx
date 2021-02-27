@@ -25,13 +25,13 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, _setState, props);
 
-  const {open, pickedTest, failedTag, 
+  const {pickedTest, failedTag, editFailedTag,
     dynamicSnapshotModalData} = state;
 
    //** HTML */
-  return open ? (
+  return !!pickedTest ? (
     <div>
-      <Dialog fullScreen open={open} TransitionComponent={Transition}>
+      <Dialog fullScreen open={!!pickedTest} TransitionComponent={Transition}>
         <AppBar className={styles["app-bar"]}>
           <Toolbar>
             <Typography variant="h6" className={styles["title"]}>
@@ -181,7 +181,7 @@ export default function FullScreenDialog(props:any) {
       </div><br/>
       </div>
       <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
-       handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={failedTag ? failedTag.tag : null}/>
+       handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={editFailedTag ? editFailedTag.tag : null}/>
       <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
       </Dialog>

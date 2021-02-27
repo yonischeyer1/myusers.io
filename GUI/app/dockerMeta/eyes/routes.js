@@ -105,9 +105,9 @@ async function isDistValid(res, actionId) {
     console.log("newCurrentTagHash", !!newCurrentTagHash)
     console.log("dynamicSnapHash", !!dynamicSnapHash)
     const dist = dynamicSnapHash ? distance(newCurrentTagHash,dynamicSnapHash) : distance(hashOfTag, frameHash)
-    console.log("currentTag.distances[0]",currentTag.distances[0])
-    console.log("dist",dist)
-    if(currentTag.distances.find(dist)) {
+    const findty = currentTag.distances.filter(x => dist <= x)
+    console.log("findty", findty)
+    if(findty.length > 0) {
         console.log("dist <= currentTag.distances[0]",currentTagIdx)
         currentTagIdx++;
         getTagDistanceAttemptIdx = 0;

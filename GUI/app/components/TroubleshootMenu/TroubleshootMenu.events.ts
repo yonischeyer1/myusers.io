@@ -7,6 +7,7 @@ export const DEFAULT_COMPONENT_STATE = {
     pickedTest:null,
     failedTag:null,
     dynamicSnapshotModalData:null,
+    editFailedTag:null
 }
 
 const serviceStore = new ServiceStore();
@@ -30,7 +31,7 @@ export default class TroubleshootMenuEvents {
         this.state = state;
         this.setState = setStatePromisifed.bind(null, setState);
         this.props = props;
-        if(!this.initFlag && this.props.open) {
+        if(!this.initFlag && this.props.pickedTest) {
            this.initFlag = true;
            await this.init();
         }
@@ -38,6 +39,7 @@ export default class TroubleshootMenuEvents {
 
     async init () {
         const { pickedTest } = this.props;
+        debugger
         const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
         const actions = serviceStore.readDocs('actions');
         const failedTag:any = {
@@ -48,7 +50,12 @@ export default class TroubleshootMenuEvents {
           test:pickedTest.suite[pickedTest.lastFailResult.testIdx],
           idx:pickedTest.lastFailResult.testIdx
         }
-        await this.setState({...this.state, pickedTest, failedTag: {...failedTag},failedTest: {...failedTest}})
+        await this.setState({
+            ...this.state, 
+            pickedTest, 
+            failedTag: {...failedTag},
+            failedTest: {...failedTest}
+        })
     }
 
     async handleClose  (e:any)  {
@@ -99,7 +106,8 @@ export default class TroubleshootMenuEvents {
     }
 
     async handleSetTagWaitTime (e:any) {
-        await this.setState({...this.state, openEditTagModal:true});
+        const { failedTag } = this.state;
+        await this.setState({...this.state, editFailedTag:failedTag});
     }
 
     async handleSkipTag (e:any) {

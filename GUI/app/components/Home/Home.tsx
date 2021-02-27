@@ -24,7 +24,7 @@ _events.setConstructor(state, setState, props);
 
 const {tests, users, tabIndex, openUpsertTestModal, openUpsertUserModal,
   liveViewPort, currentUserPicked, currentTestPicked,
-  stopLiveView, itemAndCollectionNameToDelete, currentRuningTestName,
+  stopLiveView, itemAndCollectionNameToDelete, currentRuningTests,
   testTroubleshootPick, optionsTest, optionsUser} = state;
 
 const disableTestAddFlag = tabIndex === 0 && Object.values(users).length === 0;
@@ -51,17 +51,15 @@ return (
                               Test suite name:&nbsp; {testSuite.suiteName}
                          </div>
                          <div className={styles["test-name-container"]}>
-                              Test runing:&nbsp; {currentRuningTestName.name}
+                              Test runing:&nbsp; {currentRuningTests[testSuiteIdx].name}
                          </div>
                          <div className={styles["test-name-container"]}>
                               Test status: &nbsp; 
-                              {currentRuningTestName.status !== "FAIL" ? currentRuningTestName.status :
-                                <Button variant="outlined" color="secondary" onClick={(e:any)=>{
-                                        _events.handleFailClick(testSuite)
-                                 }}>FAIL</Button>
+                              {currentRuningTests[testSuiteIdx].status !== "FAIL" ? currentRuningTests[testSuiteIdx].status :
+                                <Button variant="outlined" color="secondary" onClick={_events.handleFailClick.bind(_events, testSuite)}>FAIL</Button>
                               }
                          </div>
-                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events,testSuite)} />
+                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events,testSuite, testSuiteIdx)} />
                       </div>
                     )
                   }) 
