@@ -70,16 +70,34 @@ export default class UserUpsertModalEvents {
     }
     
     async handleDeletePopupClose  (e:any) {
-        await this.setState({...this.state, itemAndCollectionNameToDelete:null, openDeletePopup:false})
+      const accounts = this.readUserAccounts();
+      const actions =  this.readUserActions();
+      await this.setState({
+        ...this.state, 
+        itemAndCollectionNameToDelete:null, 
+        openDeletePopup:false,
+        accounts,
+        actions
+      })
     }
     
     async handleUpsertAccountModalClose  (e:any) {
-        await this.setState({...this.state, openUpsertAccountModal:false})
+        const accounts = this.readUserAccounts();
+        await this.setState({
+          ...this.state, 
+          openUpsertAccountModal:false,
+          accounts
+        })
         await this.handleClose(null);
     }
     
     async handleUpsertActionModalClose  (e:any) {
-        await this.setState({...this.state, openUpsertActionModal:false})
+        const actions =  this.readUserActions();
+        await this.setState({
+          ...this.state, 
+          openUpsertActionModal:false,
+          actions
+        })
         await this.handleClose(null);
     }
     
