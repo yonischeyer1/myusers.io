@@ -1,4 +1,3 @@
-import { User } from "../../models/User.model";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
