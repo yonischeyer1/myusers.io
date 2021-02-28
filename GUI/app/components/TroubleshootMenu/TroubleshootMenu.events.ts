@@ -39,7 +39,6 @@ export default class TroubleshootMenuEvents {
 
     async init () {
         const { pickedTest } = this.props;
-        debugger
         const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
         const actions = serviceStore.readDocs('actions');
         const failedTag:any = {

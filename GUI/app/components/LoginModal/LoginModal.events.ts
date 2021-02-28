@@ -2,7 +2,10 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import { setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 import { createAndSaveAccount } from '../../models/Account.model'
-import { createDummyUser } from '../../models/User.model'
+import { createDummyUser, saveUser } from '../../models/User.model'
+import ServiceStore from '../../services /store.service'
+
+const serviceStore = new ServiceStore();
 
 export const DEFAULT_COMPONENT_STATE = {
     open:false,
@@ -93,9 +96,13 @@ export default class LoginModalEvents {
     }
 
     async finishLogin (e:any) {
+        const users = serviceStore.readDocs('users');
         const { loginContainer, accountName, loginURL, currentUserPicked} = this.state;
-        const userId:any = await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
-        await loginContainer.finishLogin(currentUserPicked.id, userId);
+        if(!users[currentUserPicked.id]) {
+            await saveUser(currentUserPicked)
+        }
+        await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
+        await loginContainer.finishLogin(currentUserPicked.id);
         await removeContainerByName(loginContainer._containerName)
         this.handleClose(null)
     }
