@@ -76,6 +76,7 @@ export default class UserUpsertModalEvents {
     
     async handleUpsertAccountModalClose  (e:any) {
         await this.setState({...this.state, openUpsertAccountModal:false})
+        await this.handleClose(null);
     }
     
     async handleUpsertActionModalClose  (e:any) {

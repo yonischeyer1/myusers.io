@@ -62,9 +62,8 @@ export default class AccountUpsertModalEvents {
     }
     
     async handleRecordingModalClose () {
-        await this.setState({...this.state,openRecordingModal:false});
-        const {handleUpsertAccountModalClose} = this.props;
-        handleUpsertAccountModalClose(false);
+        await this.setState({...this.state, openRecordingModal:false});
+        this.handleClose(null);
     }
     
     async handleAccountNameChange (e:any)  {
