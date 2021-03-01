@@ -52,43 +52,77 @@ export default class ActionsDropdownEvents {
     
     async handleDeleteItemClick (e:any)  {
         const { collectionName, item, currentUserPicked } = this.props.itemAndCollectionName;
-        if(currentUserPicked) {
-          const users = serviceStore.readDocs('users')
-          const user = users[currentUserPicked.id]
-          if(collectionName === 'accounts') {
-              //TODO:Start login container with message for user to logout from the account manually when he hits finish delete 
-              user.accountsIds = user.accountsIds.filter(accountId => accountId !== item.id)
-          } else if (collectionName === 'actions') {
-              user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
-          }
-          serviceStore.updateDocs('users', users)
-          serviceStore.deleteDoc(collectionName, item)
-        } else {
-          if(collectionName === "tests") {
-            serviceStore.deleteDoc(collectionName, item)
-          } else if(collectionName === "users") {
-            const users = serviceStore.readDocs('users')
-            const user = users[item.id]
-            if(user.actionsIds.length > 0) {
-              const actions = serviceStore.readDocs('actions');
-              for(const actionId of user.actionsIds) {
-                delete actions[actionId];
-              }
-              serviceStore.updateDocs('actions',actions)
-            }
-            if(user.accountsIds.length > 0) {
-              const accounts = serviceStore.readDocs('accounts');
-              for(const accountId of user.accountsIds) {
-                delete accounts[accountId];
-              }
-              serviceStore.updateDocs('accounts',accounts)
-            }
-            serviceStore.deleteDoc(collectionName, item)
-            await removeUserSessionFolder(`${APP_CWD}sessions/${user.id}`.trim());
-          }
+        switch (collectionName) {
+          case 'accounts':
+            await deleteAccount(item, currentUserPicked);
+          break;
+
+          case 'actions':
+            await deleteAction(item, currentUserPicked);
+          break;
+
+          case 'tests':
+            await deleteTest(item);
+          break;
+
+          case 'users':
+            await deleteUser(item);
+          break;
+        
+          default:
+            break;
         }
         await this.handleClose(null)
       }
     
 }
 
+
+async function deleteAction(item:any, currentUserPicked:any) {
+  const users = serviceStore.readDocs('users')
+  const user = users[currentUserPicked.id]
+  user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
+  serviceStore.updateDocs('users', users)
+  serviceStore.deleteDoc('actions', item)
+}
+
+async function deleteAccount(item:any, currentUserPicked:any) {
+  const users = serviceStore.readDocs('users')
+  const user = users[currentUserPicked.id]
+  user.accountsIds = user.accountsIds.filter(accountId => accountId !== item.id)
+  serviceStore.updateDocs('users', users)
+  serviceStore.deleteDoc('accounts', item)
+}
+
+async function deleteTest (item:any) {
+  serviceStore.deleteDoc('tests', item)
+}
+
+async function deleteUser (item:any) {
+  const users = serviceStore.readDocs('users')
+  const user = users[item.id]
+  if(user.accountsIds.length > 0) {
+    await deleteAllUserAccounts(user);
+  }
+  if(user.accountsIds.length > 0) {
+    await deleteAllUserActions(user);
+  }
+  serviceStore.deleteDoc('users', item)
+  await removeUserSessionFolder(`${APP_CWD}sessions/${user.id}`.trim());
+}
+
+async function deleteAllUserActions(user:any) {
+    const actions = serviceStore.readDocs('actions');
+    for(const actionId of user.actionsIds) {
+      delete actions[actionId];
+    }
+    serviceStore.updateDocs('actions',actions)
+}
+
+async function deleteAllUserAccounts(user:any) {
+    const accounts = serviceStore.readDocs('accounts');
+    for(const accountId of user.accountsIds) {
+      delete accounts[accountId];
+    }
+    serviceStore.updateDocs('accounts',accounts)
+}
