@@ -59,7 +59,7 @@ return (
                                 <Button variant="outlined" color="secondary" onClick={_events.handleFailClick.bind(_events, testSuite)}>FAIL</Button>
                               }
                          </div>
-                         <ActionsDropdown options={optionsTest} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events,testSuite, testSuiteIdx)} />
+                         <ActionsDropdown options={optionsTest[testSuite.id]} handleMenuItemClick={_events.handleTestMenuItemClick.bind(_events,testSuite, testSuiteIdx)} />
                       </div>
                     )
                   }) 
@@ -78,7 +78,7 @@ return (
                        <div className={styles["test-name-container"]}>
                          name : {user.name}
                        </div>
-                       <ActionsDropdown options={optionsUser} 
+                       <ActionsDropdown options={optionsUser[user.id]} 
                        handleMenuItemClick={_events.handleUserMenuItemClick.bind(_events, user)} />
                     </div>)
                   }) 

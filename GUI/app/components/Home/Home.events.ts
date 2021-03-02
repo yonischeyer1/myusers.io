@@ -3,6 +3,19 @@ import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
+const DEFAULT_USER_ACTION_OPTIONS = [
+  {label:'Edit', disabled:false}, 
+  {label:'Delete', disabled:false}
+]
+
+const DEFAULT_TESTS_ACTION_OPTIONS = [
+  {label:'Play',disabled:false}, 
+  {label:'Live view', disabled:false}, 
+  {label:'Edit', disabled:false},  
+  {label:'Delete', disabled:false}, 
+  {label:'Export', disabled:false}
+]
+
 export const DEFAULT_COMPONENT_STATE = {
     tabIndex:0,
     openUpsertTestModal:false,
@@ -17,17 +30,8 @@ export const DEFAULT_COMPONENT_STATE = {
     itemAndCollectionName:null,
     currentRuningTests: [],
     testTroubleshootPick:false,
-    optionsTest:[
-      {label:'Play',disabled:false}, 
-      {label:'Live view', disabled:false}, 
-      {label:'Edit', disabled:false},  
-      {label:'Delete', disabled:false}, 
-      {label:'Export', disabled:false}
-    ],
-    optionsUser:[
-      {label:'Edit',disabled:false}, 
-      {label:'Delete', disabled:false}
-    ],
+    optionsTest:{},
+    optionsUser:{},
     tests:[],
     users:[]
 }
@@ -63,14 +67,26 @@ export default class HomeEvents {
        const tests = Object.values(serviceStore.readDocs('tests'));
        const users =  Object.values(serviceStore.readDocs('users'));
        const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
-       this.setState({...this.state, users, tests, currentRuningTests})
+       const optionsUser:any = {}
+       const optionsTest:any = {}
+       users.forEach((user:any) => {optionsUser[user.id] = [...DEFAULT_USER_ACTION_OPTIONS]}) 
+       tests.forEach((test:any) => {optionsTest[test.id] = [...DEFAULT_TESTS_ACTION_OPTIONS]}) 
+
+       await this.setState({
+         ...this.state, 
+         users, 
+         tests, 
+         currentRuningTests,
+         optionsUser,
+         optionsTest
+      })
    }
 
     //*** Modals Close events */
 
     async handleTroubleshootMenuClose () {
         await this.setState({...this.state, openTroubleshootMenu:false})
-    }
+    };
 
     async handleUpsertTestModalClose () {
         const tests = Object.values(serviceStore.readDocs('tests'));
@@ -201,12 +217,21 @@ export default class HomeEvents {
         await this.setState({...this.state, itemAndCollectionName:{collectionName:'tests', item:test}})
     }
 
-    async playTestSuite (testSuite:any, testSuiteIdx:any)  {
+    async playTestSuite (testSuite:any, testSuiteIdx:any)  { 
+        await this.disableUserActionsDropDown(testSuite, true);
         let testIdx = 0;
         for(const test of testSuite.suite) {
            await this.playTest(test, testSuite.id, testIdx, testSuiteIdx)
            testIdx++;
         }
+        await this.disableUserActionsDropDown(testSuite, false);
+    }
+
+    async disableUserActionsDropDown (testSuite:any, disabled:any) {
+        const { optionsUser } = this.state;
+        const userIdsInTest  = testSuite.suite.map(test => test.userId)
+        userIdsInTest.map((userId:any) => {optionsUser[userId] = optionsUser[userId].map((option:any) =>{ return {...option, disabled}})})
+        await this.setState({...this.state, optionsUser})
     }
 
     async saveTestFail (testResp:any, testSuiteIdx:any) { 
