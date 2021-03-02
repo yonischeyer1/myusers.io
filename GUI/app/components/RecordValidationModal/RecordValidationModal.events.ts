@@ -56,10 +56,10 @@ export default class RecordValidationModalEvents {
 
 
 
-    async handleClose  (e:any)  {
+    async handleClose  (close:any)  {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleModalClose} = this.props;
-        handleModalClose(false);
+        handleModalClose(close);
         this.initFlag = false;
     };
 
@@ -109,7 +109,7 @@ export default class RecordValidationModalEvents {
         })
         await this.saveTags();
         await removeContainerByName(recorderContainer._containerName)
-        await this.handleClose(null);
+        await this.handleClose(true);
       }
     
       async saveTags() {

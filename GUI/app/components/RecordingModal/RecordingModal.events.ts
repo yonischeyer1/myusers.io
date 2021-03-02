@@ -55,20 +55,19 @@ export default class RecordingModalEvents {
         await this.initRecorder(null);
     }
 
-    async handleClose (e:any) {
+    async handleClose (close:any) {
         await this.setState({...DEFAULT_COMPONENT_STATE})
-        const {handleRecordingModalClose} = this.props;
-        handleRecordingModalClose(false);
+        const { handleRecordingModalClose } = this.props;
+        handleRecordingModalClose(close);
         this.initFlag = false;
     };
 
-    async handleModalClosing (state?:any, recordAgain?:any) {
-        // if(recordAgain) {
-        //     await this.setState({...state, openModal:false})
-        //     this.initRecorder(null);
-        //     return
-        //   }
-        this.handleClose(null);
+    async handleModalClosing (close:any) {
+        if(close) {
+            await this.handleClose(close);
+        } else {
+            await this.setState({...this.state, openRecordValidationModal:false})
+        }
     }
 
 

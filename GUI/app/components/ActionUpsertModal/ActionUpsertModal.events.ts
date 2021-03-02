@@ -51,10 +51,10 @@ export default class ActionsUpsertModalEvents {
     }
   
 
-    async handleClose (e:any)  {
+    async handleClose (close:any, e:any)  {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleUpsertActionModalClose} = this.props;
-        handleUpsertActionModalClose(false);
+        handleUpsertActionModalClose(close);
         this.initFlag = false;
     }
 
@@ -68,9 +68,12 @@ export default class ActionsUpsertModalEvents {
         await this.setState({...this.state, openEditTagModal:false, zeTag:null})
     }
      
-    async handleRecordingModalClose () {
-        await this.setState({...this.state, openRecordingModal:false})
-        await this.handleClose(null)
+    async handleRecordingModalClose (close:any) {
+        if(close) {
+            await this.handleClose(close, null)
+        } else {
+            await this.setState({...this.state, openRecordingModal:false})
+        }
     }
     
     async handleRecordBtnClick  (e:any) {

@@ -42,7 +42,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Action Upsert 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events, false)}>
                 Close
               </Button>
             </Toolbar>

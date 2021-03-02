@@ -60,10 +60,10 @@ export default class LoginModalEvents {
         await this.startLogin(null)
     }
 
-    async handleClose (e:any) {
+    async handleClose (close:any) {
         await this.setState({...DEFAULT_COMPONENT_STATE})
-        const {handleRecordingModalClose} = this.props;
-        handleRecordingModalClose(false);
+        const {handleLoginModalClose} = this.props;
+        handleLoginModalClose(close);
         this.initFlag = false;
     }
 
@@ -73,10 +73,6 @@ export default class LoginModalEvents {
 
     async handleURLChange (e:any) {
         await this.setState({...this.state, startUrl: e.target.value})
-    }
-
-    async handleModalClosing (state?:any, recordAgain?:any) {
-          await this.setState({...state, openModal:false})
     }
 
     async startLogin (e:any)  {
@@ -104,7 +100,7 @@ export default class LoginModalEvents {
         await createAndSaveAccount(currentUserPicked, {accountName, loginURL}) 
         await loginContainer.finishLogin(currentUserPicked.id);
         await removeContainerByName(loginContainer._containerName)
-        this.handleClose(null)
+        this.handleClose(true)
     }
 
 }

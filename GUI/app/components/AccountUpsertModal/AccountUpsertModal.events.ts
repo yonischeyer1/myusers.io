@@ -1,4 +1,3 @@
-import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
 
@@ -10,8 +9,6 @@ export const DEFAULT_COMPONENT_STATE = {
     currentUserPicked:null
 }
 
-
-const serviceStore = new ServiceStore();
 
 let instance:any = null
 export default class AccountUpsertModalEvents {
@@ -54,16 +51,19 @@ export default class AccountUpsertModalEvents {
         }
     }
 
-    async handleClose (e:any)  {
+    async handleClose (close:any, e:null)  {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleUpsertAccountModalClose} = this.props;
-        handleUpsertAccountModalClose(false);
+        handleUpsertAccountModalClose(close);
         this.initFlag = false;
     }
     
-    async handleRecordingModalClose () {
-        await this.setState({...this.state, openRecordingModal:false});
-        this.handleClose(null);
+    async handleLoginModalClose (close:any) {
+        if(close) {
+            await this.handleClose(close, null);
+        } else {
+            await this.setState({...this.state, openRecordingModal:false});
+        }
     }
     
     async handleAccountNameChange (e:any)  {
@@ -87,7 +87,7 @@ export default class AccountUpsertModalEvents {
     }
 
     async handleCancelBtnClick (e:any) {
-        this.handleClose(false);
+        this.handleClose(false, null);
     }
 
     async handleDoneBtnClick (e:any) {

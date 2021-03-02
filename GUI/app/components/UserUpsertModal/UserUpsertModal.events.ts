@@ -81,24 +81,28 @@ export default class UserUpsertModalEvents {
       })
     }
     
-    async handleUpsertAccountModalClose  (e:any) {
+    async handleUpsertAccountModalClose  (close:any) {
         const accounts = this.readUserAccounts();
         await this.setState({
           ...this.state, 
           openUpsertAccountModal:false,
           accounts
         })
-        await this.handleClose(null);
+        if(close) {
+          await this.handleClose(null);
+        }
     }
     
-    async handleUpsertActionModalClose  (e:any) {
+    async handleUpsertActionModalClose  (close:any) {
         const actions =  this.readUserActions();
         await this.setState({
           ...this.state, 
           openUpsertActionModal:false,
           actions
         })
-        await this.handleClose(null);
+        if(close) {
+          await this.handleClose(null);
+        }
     }
     
     async handleChange  (event: React.ChangeEvent<{}>, newValue: number)  {

@@ -31,7 +31,7 @@ export default function FullScreenDialog(props:any) {
             <Typography variant="h6" className={styles["title"]}>
               Account Upsert 
             </Typography>
-            <Button color="inherit" onClick={_events.handleClose.bind(_events)}>
+            <Button color="inherit" onClick={_events.handleClose.bind(_events, false)}>
                 Close
               </Button>
             </Toolbar>
@@ -65,7 +65,7 @@ export default function FullScreenDialog(props:any) {
         accountName={accountName.value}
         loginURL={loginURL.value}
         open={openRecordingModal} 
-        handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)}
+        handleLoginModalClose={_events.handleLoginModalClose.bind(_events)}
       />
     </div>
   ) : <div></div>
