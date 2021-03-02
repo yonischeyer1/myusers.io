@@ -159,7 +159,7 @@ export default class UserUpsertModalEvents {
   }
   
   readUserActions () { 
-     const { currentUserPicked } = this.state;
+     const { currentUserPicked } = this.props;
      if(!currentUserPicked.id) {
       return [];
      }

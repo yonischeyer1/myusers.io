@@ -56,10 +56,7 @@ export default class Container {
     }
     async init(startUrl:any = null, userId:any = null) {
         try {
-            if (this._port && this._containerName) {
-                return;
-            }
-            else if(this._mode === CONTAINER_MODE.login) {
+            if(this._mode === CONTAINER_MODE.login) {
                 this._containerServicesPorts.vnc = await genaratePortNumber();  
                 let containerName = `${IMAGE_NAME}${this._mode}${this._containerServicesPorts.vnc}`
                 await runDockerImage(this._containerServicesPorts, containerName, IMAGE_NAME);
