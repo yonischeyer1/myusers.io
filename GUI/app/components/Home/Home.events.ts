@@ -91,6 +91,7 @@ export default class HomeEvents {
     async handleUpsertTestModalClose () {
       const { optionsUser, optionsTest } = this.state;
       const tests =  Object.values(serviceStore.readDocs('tests'));
+      const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
       tests.forEach((test:any) => {optionsTest[test.id] = [...DEFAULT_TESTS_ACTION_OPTIONS]})
         await this.setState({
           ...this.state, 
@@ -98,7 +99,8 @@ export default class HomeEvents {
           currentTestPicked:null, 
           openUpsertTestModal:false,
           optionsUser,
-          optionsTest
+          optionsTest,
+          currentRuningTests
         })
     }
 
