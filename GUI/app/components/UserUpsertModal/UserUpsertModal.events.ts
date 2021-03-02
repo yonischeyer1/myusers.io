@@ -128,14 +128,17 @@ export default class UserUpsertModalEvents {
     
     async handleFloatingButtonClick (e:any)  {
         if(this.state.tabIndex === 0) {
-          await this.setState({...this.state, openUpsertAccountModal: !this.state.openUpsertAccountModal, pickedAccount:null})
+          await this.setState({...this.state, openUpsertAccountModal: true, pickedAccount:null})
         } else {
-          await this.setState({...this.state, openUpsertActionModal: !this.state.openUpsertActionModal, pickedAction:null})
+          await this.setState({...this.state, openUpsertActionModal: true, pickedAction:null})
         }
     }
 
     readUserAccounts ()  {
-      const { currentUserPicked } = this.props;
+      const { currentUserPicked } = this.state;
+      if(!currentUserPicked.id) {
+        return [];
+      }
       const users = serviceStore.readDocs('users')
       const user = users[currentUserPicked.id]
       if(user.accountsIds.length > 0) {
@@ -152,19 +155,22 @@ export default class UserUpsertModalEvents {
   }
   
   readUserActions () { 
-      const { currentUserPicked } = this.props
-      const users = serviceStore.readDocs('users')
-      const user = users[currentUserPicked.id]
-      if(user.actionsIds.length > 0) {
-      const actions = serviceStore.readDocs('actions')
-      let temp = []
-      for(const actionId of user.actionsIds) {
-        temp.push(actions[actionId])
-      }
-      return temp;
-      } else {
-       return []
-      }
+     const { currentUserPicked } = this.state;
+     if(!currentUserPicked.id) {
+      return [];
+     }
+     const users = serviceStore.readDocs('users')
+     const user = users[currentUserPicked.id]
+     if(user.actionsIds.length > 0) {
+     const actions = serviceStore.readDocs('actions')
+     let temp = []
+     for(const actionId of user.actionsIds) {
+       temp.push(actions[actionId])
+     }
+     return temp;
+     } else {
+      return []
+     }
   }
 
 }
