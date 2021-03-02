@@ -89,23 +89,30 @@ export default class HomeEvents {
     };
 
     async handleUpsertTestModalClose () {
-        const tests = Object.values(serviceStore.readDocs('tests'));
-        //const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
+      const { optionsUser, optionsTest } = this.state;
+      const tests =  Object.values(serviceStore.readDocs('tests'));
+      tests.forEach((test:any) => {optionsTest[test.id] = [...DEFAULT_TESTS_ACTION_OPTIONS]})
         await this.setState({
           ...this.state, 
           tests,
           currentTestPicked:null, 
-          openUpsertTestModal:false
+          openUpsertTestModal:false,
+          optionsUser,
+          optionsTest
         })
     }
 
     async handleUpsertUserModalClose () {
+        const { optionsUser, optionsTest } = this.state;
         const users =  Object.values(serviceStore.readDocs('users'));
+        users.forEach((user:any) => {optionsUser[user.id] = [...DEFAULT_USER_ACTION_OPTIONS]}) 
         await this.setState({
           ...this.state, 
           openUpsertUserModal:false, 
           currentUserPicked:null, 
-          users
+          users,
+          optionsUser,
+          optionsTest
         })
     }
 
