@@ -85,16 +85,15 @@ export default class HomeEvents {
     //*** Modals Close events */
 
     async handleTroubleshootMenuClose () {
-        await this.setState({...this.state, openTroubleshootMenu:false})
+        await this.setState({...this.state, testTroubleshootPick:false})
     };
 
     async handleUpsertTestModalClose () {
         const tests = Object.values(serviceStore.readDocs('tests'));
-        const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
+        //const currentRuningTests = tests.map((test:any) => {return {name:"", status:""}})
         await this.setState({
           ...this.state, 
           tests,
-          currentRuningTests,
           currentTestPicked:null, 
           openUpsertTestModal:false
         })
