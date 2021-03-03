@@ -41,8 +41,8 @@ export default class AccountUpsertModalEvents {
         if(pickedAccount) { 
            await this.setState({
             ...this.state, 
-            accountName:pickedAccount.name, 
-            loginURL:pickedAccount.loginURL, 
+            accountName:{value:pickedAccount.name, disabled:false}, 
+            loginURL:{value:pickedAccount.loginURL, disabled:false}, 
             open, 
             currentUserPicked
           })
