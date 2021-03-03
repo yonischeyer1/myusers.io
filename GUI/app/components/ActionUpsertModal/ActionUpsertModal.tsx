@@ -21,7 +21,9 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
-  const { actionName,
+  const { 
+     actionName,
+     startUrl,
      open, 
      pickedAction, 
      actionsDropdownOptions, 
@@ -29,7 +31,7 @@ export default function FullScreenDialog(props:any) {
      dynamicSnapshotModalData,
      pickedTag,
      openRecordingModal,
-     currentUserPicked
+     currentUserPicked,
     } = state;
 
 
@@ -56,6 +58,7 @@ export default function FullScreenDialog(props:any) {
              <br/>
              
              <TextField 
+              value={startUrl}
               disabled={false} 
               onChange={_events.handleURLChange.bind(_events)} 
               label="URL:" 
@@ -82,7 +85,7 @@ export default function FullScreenDialog(props:any) {
               {
                  pickedAction.tags.map((tagItem:any, index:any)=>{
                   return (
-                  <div style={{display:'flex', marginTop:'20px'}}>
+                  <div style={{display:'flex', marginTop:'20px', justifyContent:"space-around"}}>
                     <div>
                        Tag name : {tagItem.name}
                     </div>

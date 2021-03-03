@@ -4,6 +4,7 @@ import { setStatePromisifed } from "../../utils/general";
 export const DEFAULT_COMPONENT_STATE = {
     open:false,
     actionName:'',
+    startUrl:'',
     openRecordingModal:false,
     dynamicSnapshotModalData:false,
     pickedTag:false,
@@ -47,7 +48,19 @@ export default class ActionsUpsertModalEvents {
   
     async init () {
        const { open, pickedAction, currentUserPicked } = this.props;
-       await this.setState({...this.state, open, pickedAction, currentUserPicked})
+       let actionName, startUrl = '';
+       if(pickedAction) {
+           actionName = pickedAction.name
+           startUrl = pickedAction.startUrl
+       }
+       await this.setState({
+           ...this.state, 
+           open, 
+           pickedAction, 
+           currentUserPicked,
+           actionName,
+           startUrl
+        })
     }
   
 

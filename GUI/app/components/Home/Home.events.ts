@@ -222,7 +222,6 @@ export default class HomeEvents {
     }
 
     async deleteTest (test:any) {
-        debugger
         await this.setState({...this.state, itemAndCollectionName:{collectionName:'tests', item:test}})
     }
 
@@ -253,7 +252,6 @@ export default class HomeEvents {
     }
 
     async playTest (test:any, testSuiteId:any, testIdx:any, testSuiteIdx:any) {
-        debugger
         const users = serviceStore.readDocs('users');
         await this.changeTestStatus(test, TEST_STATUS.PLAYING , testSuiteIdx)
         const actions = serviceStore.readDocs('actions');
