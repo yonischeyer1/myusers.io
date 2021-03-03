@@ -78,7 +78,7 @@ export default class ActionsUpsertModalEvents {
     }
     
     async handleEditTagModalClose (e:any) {
-        await this.setState({...this.state, openEditTagModal:false, zeTag:null})
+        await this.setState({...this.state, pickedTag:false})
     }
      
     async handleRecordingModalClose (close:any) {
@@ -111,7 +111,7 @@ export default class ActionsUpsertModalEvents {
     }
 
     async editTag (tag:any) {
-        await this.setState({...this.state, zeTag:tag, openEditTagModal:true})
+        await this.setState({...this.state, pickedTag:tag})
     }
 
     async deleteTag (collectionName:any, item:any) {
@@ -123,13 +123,13 @@ export default class ActionsUpsertModalEvents {
         })
     }
     
-    async handleTagMenuItemClick (e: any, index: number,tag:any)  {
-      switch (index) {
-        case 0:
-          this.editTag(tag);
+    async handleTagMenuItemClick (tag: any, option:any)  {
+      switch (option.label) {
+        case 'Edit':
+          await this.editTag(tag);
         break;
     
-        case 1:
+        case 'Delete':
           return;
           //deleteTag('users', user)
         break;

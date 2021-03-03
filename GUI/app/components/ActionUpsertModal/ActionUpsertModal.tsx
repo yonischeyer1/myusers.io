@@ -89,7 +89,8 @@ export default function FullScreenDialog(props:any) {
                     <div>
                        Tag name : {tagItem.name}
                     </div>
-                    <ActionsDropdown options={actionsDropdownOptions} handleMenuItemClick={_events.handleTagMenuItemClick.bind(_events)} />
+                    <ActionsDropdown options={actionsDropdownOptions} 
+                    handleMenuItemClick={_events.handleTagMenuItemClick.bind(_events, tagItem)} />
                   </div>
                   )})
             }
