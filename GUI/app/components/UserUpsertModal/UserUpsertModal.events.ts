@@ -139,7 +139,7 @@ export default class UserUpsertModalEvents {
     }
 
     readUserAccounts ()  {
-      const { currentUserPicked } = this.state;
+      const { currentUserPicked } = this.props;
       if(!currentUserPicked.id) {
         return [];
       }
