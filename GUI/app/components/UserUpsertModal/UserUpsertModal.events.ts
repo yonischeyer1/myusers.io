@@ -76,8 +76,8 @@ export default class UserUpsertModalEvents {
         ...this.state, 
         itemAndCollectionNameToDelete:null, 
         openDeletePopup:false,
-        accounts,
-        actions
+        accountsView:accounts, 
+        actionsView:actions
       })
     }
     
