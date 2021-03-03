@@ -222,17 +222,18 @@ export default class HomeEvents {
     }
 
     async deleteTest (test:any) {
+        debugger
         await this.setState({...this.state, itemAndCollectionName:{collectionName:'tests', item:test}})
     }
 
     async playTestSuite (testSuite:any, testSuiteIdx:any)  { 
-        await this.disableUserActionsDropDown(testSuite, true);
+        //await this.disableUserActionsDropDown(testSuite, true);
         let testIdx = 0;
         for(const test of testSuite.suite) {
            await this.playTest(test, testSuite.id, testIdx, testSuiteIdx)
            testIdx++;
         }
-        await this.disableUserActionsDropDown(testSuite, false);
+        //await this.disableUserActionsDropDown(testSuite, false);
     }
 
     async disableUserActionsDropDown (testSuite:any, disabled:any) {
@@ -243,13 +244,16 @@ export default class HomeEvents {
     }
 
     async saveTestFail (testResp:any, testSuiteIdx:any) { 
-        const tests:any = Object.values(serviceStore.readDocs('tests'));
-        tests[testSuiteIdx].lastFailResult = testResp;
-        serviceStore.updateDocs('tests', tests)
+        const testsModel = serviceStore.readDocs('tests')
+        let tests:any = Object.values(testsModel);
+        testsModel[tests[testSuiteIdx].id].lastFailResult = testResp;
+        serviceStore.updateDocs('tests', testsModel)
+        tests = Object.values(serviceStore.readDocs('tests'));
         await this.setState({...this.state, tests})
     }
 
     async playTest (test:any, testSuiteId:any, testIdx:any, testSuiteIdx:any) {
+        debugger
         const users = serviceStore.readDocs('users');
         await this.changeTestStatus(test, TEST_STATUS.PLAYING , testSuiteIdx)
         const actions = serviceStore.readDocs('actions');
