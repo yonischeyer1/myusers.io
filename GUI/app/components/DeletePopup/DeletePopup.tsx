@@ -15,7 +15,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
-  const { itemAndCollectionName } = state;
+  const { itemAndCollectionName, testSuitesFilterdTestsByItem } = state;
 
   const doOpen = !!itemAndCollectionName.item.name  && !!itemAndCollectionName.collectionName
 
@@ -38,6 +38,26 @@ export default function FullScreenDialog(props:any) {
                 Are you sure you want to delete 
                 {` ${itemAndCollectionName.item.name} `}  
                  From {itemAndCollectionName.collectionName} ? 
+                 {testSuitesFilterdTestsByItem.length === 0 ? null : <div>
+                  <br/>
+                   The follwing Test suites are using  
+                   The item { ` ${itemAndCollectionName.item.name} ` }
+                   <br/>
+                   This tests will be deleted if you will click the yes button.
+                   </div>}<br/> 
+                 {testSuitesFilterdTestsByItem.map((testSuite:any)=>{
+                    return  <div> 
+                      Test suite Name: {testSuite.name} 
+                      <ul>
+                        {testSuite.suite.map((test:any)=>{
+                          return <li>
+                             Test name: {test.testName}
+                          </li>
+                        })}
+                      </ul>
+                    </div>
+                  })
+                 }
             </div>
             <br/><br/><br/>
             <div>

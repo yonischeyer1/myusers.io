@@ -17,7 +17,7 @@ My users is a forever free web/os testing software based on electron and docker 
 
 5. Interact with tests when live actions required
 
-6. Automate tests on any environment that supports vnc.
+6. Automate tests on any environment/os that supports vnc and java.
 
 7. Automate Tests 3rd party websites
 
@@ -69,7 +69,7 @@ That will be composed from the automated tests results and reports.
   
  ## How it works  :
   Classic web testing depends on html selectors in order to intract with an element of a website
-  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been done correctly by:
+  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been executed correctly by:
   First sampling images from user validated recording session of intraction with the target website. 
   Second playing the recorded intractions on the targetd website checking every action (click or enter) image is matching the image of the current runing session.
   The image matching method has it share of quircks but to midigate we have an interactive troubleshoot menu that guides the user on what tool to use in order to fix the failed test or report a bug to the ticketing system, email or IM app. 
@@ -175,7 +175,7 @@ If there is a match the test will wait for live action input from the user and a
 Array of screenshots from a validated Action recording session.
 
 #### Eyes: 
-A server that runs inside the container and matches tags one by one against current screenshots at real time of playing the test.
+A server that runs inside the container and matches tags one by one against  screenshots of actions taken at real time of playing the test.
 
 #### Hands: 
 A server that runs inside the container that either records keyboard and mouse actions or plays them.

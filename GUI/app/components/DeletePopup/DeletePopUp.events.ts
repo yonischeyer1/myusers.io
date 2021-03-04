@@ -7,8 +7,9 @@ export const DEFAULT_COMPONENT_STATE = {
     item: {
       name:''
     },
-    collectionName: ''
- }
+    collectionName: '',
+ },
+ testSuitesFilterdTestsByItem:[]
 }
 
 const serviceStore = new ServiceStore();
@@ -39,8 +40,29 @@ export default class ActionsDropdownEvents {
     }
 
     async init () {
-      const { itemAndCollectionName } = this.props;
+       //TODO fetch test suite and test names that will be deleted if user will delete action
+       //TODO: and notify user about it  
+       const { itemAndCollectionName } = this.props;
+       await this.checkIfTestUsingItem(itemAndCollectionName);
        await this.setState({...this.state, itemAndCollectionName})
+    }
+
+    async checkIfTestUsingItem (itemAndCollectionName:any) { 
+       const {item, collectionName} = itemAndCollectionName;
+       if(collectionName === 'actions' || collectionName === 'users') {
+          const tests = Object.values(serviceStore.readDocs('tests'));
+          const testSuitesFilterdTestsByItem = tests.filter((testSuite:any) => {
+             const testsContainingItem = testSuite.suite.filter((test:any)=>{
+                 if(test.actionId === item.id || test.userId === item.id) {
+                    return test;
+                 }
+             })
+             if(testsContainingItem.length > 0) {
+               return {...testSuite, suite:testsContainingItem}
+             }
+          })
+          await this.setState({...this.state, testSuitesFilterdTestsByItem})
+       } 
     }
 
     async handleClose (e:any) {
@@ -77,6 +99,9 @@ export default class ActionsDropdownEvents {
     
 }
 
+async function deleteTest (item:any) {
+  serviceStore.deleteDoc('tests', item)
+}
 
 async function deleteAction(item:any, currentUserPicked:any) {
   const users = serviceStore.readDocs('users')
@@ -84,6 +109,9 @@ async function deleteAction(item:any, currentUserPicked:any) {
   user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
   serviceStore.updateDocs('users', users)
   serviceStore.deleteDoc('actions', item)
+  
+  //TODO: need to delete actionId from test if exsists 
+  //testSuitesFilterdTestsByItem
 }
 
 async function deleteAccount(item:any, currentUserPicked:any) {
@@ -92,10 +120,7 @@ async function deleteAccount(item:any, currentUserPicked:any) {
   user.accountsIds = user.accountsIds.filter(accountId => accountId !== item.id)
   serviceStore.updateDocs('users', users)
   serviceStore.deleteDoc('accounts', item)
-}
-
-async function deleteTest (item:any) {
-  serviceStore.deleteDoc('tests', item)
+  //TODO: need to delete accountID from test if exsists 
 }
 
 async function deleteUser (item:any) {
@@ -104,7 +129,7 @@ async function deleteUser (item:any) {
   if(user.accountsIds.length > 0) {
     await deleteAllUserAccounts(user);
   }
-  if(user.accountsIds.length > 0) {
+  if(user.actionsIds.length > 0) {
     await deleteAllUserActions(user);
   }
   serviceStore.deleteDoc('users', item)
