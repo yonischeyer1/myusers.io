@@ -106,6 +106,7 @@ export default class HomeEvents {
 
     async handleUpsertUserModalClose () {
         const { optionsUser, optionsTest } = this.state;
+        const tests = Object.values(serviceStore.readDocs('tests'));
         const users =  Object.values(serviceStore.readDocs('users'));
         users.forEach((user:any) => {optionsUser[user.id] = [...DEFAULT_USER_ACTION_OPTIONS]}) 
         await this.setState({
@@ -113,6 +114,7 @@ export default class HomeEvents {
           openUpsertUserModal:false, 
           currentUserPicked:null, 
           users,
+          tests,
           optionsUser,
           optionsTest
         })
