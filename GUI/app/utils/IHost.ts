@@ -163,9 +163,7 @@ export async function isPortUsed(port:any) {
 
 export async function genaratePortNumber() {
     const port = getRandomArbitrary(5000, 6000)
-    console.log("genrated port number ",  port)
     const isPortUsedFlag = await isPortUsed(port)
-    console.log("isPortUsed: ",isPortUsedFlag)
 
     if(isPortUsedFlag) {
         return genaratePortNumber();

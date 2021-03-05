@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import fs from 'fs'
 import { APP_CWD, getRandomId } from '../utils/general'
 import EventEmitter from 'events'
