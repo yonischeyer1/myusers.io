@@ -1,6 +1,6 @@
 import { Test, TestModel, TEST_STATUS } from "../../models/Test.model";
 import ServiceStore from "../../services /store.service";
-import { setStatePromisifed } from "../../utils/general";
+import { getRandomId, setStatePromisifed } from "../../utils/general";
 
 
 export const DEFAULT_COMPONENT_STATE = {
@@ -116,10 +116,12 @@ export default class TestUpsertModalEvents {
   }
     
   async addTestToSuite (e:any) {
+        const {testName, pickedUserId, pickedUserAction} = this.state;
         const test:TestModel = {
-          testName:this.state.testName,
-          userId:this.state.pickedUserId,
-          actionId:this.state.pickedUserAction,
+          id: getRandomId(),
+          testName,
+          userId:pickedUserId,
+          actionId:pickedUserAction,
           schedule:{},
           status:TEST_STATUS.IDLE
         }
@@ -134,7 +136,7 @@ export default class TestUpsertModalEvents {
   }
 
   async deleteTestFromSuite (test:any) {
-        const newSuite = this.state.suite.filter(item => item.testName !== test.testName)
+        const newSuite = this.state.suite.filter(item => item.id !== test.id)
         await this.setState({...this.state, suite:newSuite})
   }
 }

@@ -73,6 +73,7 @@ export default class ActionsDropdownEvents {
     };
     
     async handleDeleteItemClick (e:any)  {
+        await deleteTestsUsedByItem (this.state.testSuitesFilterdTestsByItem);
         const { collectionName, item, currentUserPicked } = this.props.itemAndCollectionName;
         switch (collectionName) {
           case 'accounts':
@@ -99,6 +100,24 @@ export default class ActionsDropdownEvents {
     
 }
 
+async function deleteTestsUsedByItem (testSuitesFilterdTestsByItem:any) {
+  const tests = serviceStore.readDocs('tests')
+  for (const testSuiteToDelete of testSuitesFilterdTestsByItem) {
+       const filterdSuite = tests[testSuiteToDelete.id].suite.filter((item:any) => {
+            const x = testSuiteToDelete.suite.filter(testItemToDelete => item.id === testItemToDelete.id);
+            if(x.length === 0) {
+              return item;
+            }
+       });
+       if(filterdSuite.length === 0) {
+          deleteTest(testSuiteToDelete);
+       } else {
+        tests[testSuiteToDelete.id] = filterdSuite;
+        serviceStore.updateDocs('tests', tests);
+       }
+  }
+}
+
 async function deleteTest (item:any) {
   serviceStore.deleteDoc('tests', item)
 }
@@ -109,7 +128,6 @@ async function deleteAction(item:any, currentUserPicked:any) {
   user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
   serviceStore.updateDocs('users', users)
   serviceStore.deleteDoc('actions', item)
-  
   //TODO: need to delete actionId from test if exsists 
   //testSuitesFilterdTestsByItem
 }

@@ -6,6 +6,7 @@ export enum TEST_STATUS {
 }
 
 export interface TestModel {
+    id:any
     schedule?:{}
     testName:string
     userId:string
