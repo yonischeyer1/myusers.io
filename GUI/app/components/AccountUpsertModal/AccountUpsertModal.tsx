@@ -20,7 +20,7 @@ export default function FullScreenDialog(props:any) {
 
   _events.setConstructor(state, setState, props);
 
-  const { open, accountName, loginURL, openRecordingModal, currentUserPicked } = state;
+  const { open, accountName, loginURL, openLoginModal, currentUserPicked } = state;
 
 
   return open ? (
@@ -64,7 +64,7 @@ export default function FullScreenDialog(props:any) {
         currentUserPicked={currentUserPicked}
         accountName={accountName.value}
         loginURL={loginURL.value}
-        open={openRecordingModal} 
+        open={openLoginModal} 
         handleLoginModalClose={_events.handleLoginModalClose.bind(_events)}
       />
     </div>

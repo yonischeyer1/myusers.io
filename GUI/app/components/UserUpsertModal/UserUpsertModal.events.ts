@@ -86,7 +86,8 @@ export default class UserUpsertModalEvents {
         await this.setState({
           ...this.state, 
           openUpsertAccountModal:false,
-          accounts
+          accounts,
+          pickedAccount:null
         })
         if(close) {
           await this.handleClose(null);
@@ -140,7 +141,7 @@ export default class UserUpsertModalEvents {
 
     readUserAccounts ()  {
       const { currentUserPicked } = this.props;
-      if(!currentUserPicked.id) {
+      if(!currentUserPicked || !currentUserPicked.id) {
         return [];
       }
       const users = serviceStore.readDocs('users')
@@ -160,7 +161,7 @@ export default class UserUpsertModalEvents {
   
   readUserActions () { 
      const { currentUserPicked } = this.props;
-     if(!currentUserPicked.id) {
+     if(!currentUserPicked || !currentUserPicked.id) {
       return [];
      }
      const users = serviceStore.readDocs('users')

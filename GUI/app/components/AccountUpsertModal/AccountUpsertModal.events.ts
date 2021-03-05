@@ -3,7 +3,7 @@ import { setStatePromisifed } from "../../utils/general";
 
 export const DEFAULT_COMPONENT_STATE = {
     open:false,
-    openRecordingModal:false,
+    openLoginModal:false,
     accountName:{value:'', disabled:false},
     loginURL:{value:'', disabled:false},
     currentUserPicked:null
@@ -51,7 +51,7 @@ export default class AccountUpsertModalEvents {
         }
     }
 
-    async handleClose (close:any, e:null)  {
+    async handleClose (close:any, e:any)  {
         await this.setState({...DEFAULT_COMPONENT_STATE})
         const {handleUpsertAccountModalClose} = this.props;
         handleUpsertAccountModalClose(close);
@@ -62,7 +62,7 @@ export default class AccountUpsertModalEvents {
         if(close) {
             await this.handleClose(close, null);
         } else {
-            await this.setState({...this.state, openRecordingModal:false});
+            await this.setState({...this.state, openLoginModal:false});
         }
     }
     
@@ -83,7 +83,7 @@ export default class AccountUpsertModalEvents {
     }
     
     async handleLoginClick (e:any)  {
-        await this.setState({...this.state, openRecordingModal:true});
+        await this.setState({...this.state, openLoginModal:true});
     }
 
     async handleCancelBtnClick (e:any) {
