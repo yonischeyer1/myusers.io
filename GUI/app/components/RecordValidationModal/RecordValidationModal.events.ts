@@ -44,13 +44,14 @@ export default class RecordValidationModalEvents {
     }
  
     async init() {
-      const { open, recorderContainer, currentUserPicked, actionName } = this.props;
+      const { open, recorderContainer, currentUserPicked, actionName, startUrl } = this.props;
       await this.setState({
         ...this.state, 
         open, 
         recorderContainer, 
         currentUserPicked, 
-        actionName
+        actionName,
+        startUrl
       })
     }
 

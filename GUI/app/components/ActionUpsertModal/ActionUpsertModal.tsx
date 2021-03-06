@@ -122,6 +122,7 @@ export default function FullScreenDialog(props:any) {
        handleRecordingModalClose={_events.handleRecordingModalClose.bind(_events)} 
        open={openRecordingModal}
        currentUserPicked={currentUserPicked}
+       startUrl={startUrl}
       />
       </Dialog>
     </div>
