@@ -37,7 +37,7 @@ export default function FullScreenDialog(props:any) {
           </AppBar>
            <div className={styles["modal-content-container"]}>
             <div>
-             <TextField disabled={tag.skip} 
+             <TextField onChange={_events.handleTagNameChange.bind(_events)} value={tag.name} disabled={tag.skip} 
               label="Tag name:" variant="outlined" style={{width:"80%", height:"45px"}} size="small"/>
                 &nbsp; Skip: 
                <Checkbox
@@ -66,7 +66,10 @@ export default function FullScreenDialog(props:any) {
                  <h3>Set wait time until Fail:</h3>
                  <FormControl component="fieldset" disabled={tag.skip}>
                  <FormLabel component="legend"></FormLabel>
-                 <RadioGroup  aria-label="waitTime" name="gender1" value={tag.waitTime.label} onChange={_events.handleSetTimeoutChange.bind(_events)}>
+                 <RadioGroup  aria-label="waitTime" name="gender1" 
+                   value={tag.waitTime.label} 
+                   onChange={_events.handleSetTimeoutChange.bind(_events)
+                 }>
                    <FormControlLabel value="forever" control={<Radio />} label="forever" />
                    <FormControlLabel value="custom" control={<Radio />} label="custom" />
                  </RadioGroup>
@@ -75,12 +78,12 @@ export default function FullScreenDialog(props:any) {
                      tag.waitTime.label !== "custom" ? null : 
                      <div>
                         <TextField type="number" disabled={false} value={tag.waitTime.value} onChange={_events.handleCustomWaitTimeChange.bind(_events)}
-                        label="Insert wait time(seconds):" variant="outlined" style={{width:"0px", height:"45px"}} size="small"/> 
+                        label="Insert wait time(seconds):" variant="outlined" className={styles["wait-time-text-field"]}  size="small"/> 
                     </div>
                  }
              </div>
             <br/><br/><br/>
-            <div>
+            <div className={styles["cancel-save-buttons"]}>
             <Button size="small" variant="outlined" color="primary" onClick={_events.handleClose.bind(_events)}>cancel</Button>
             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
             <Button size="small" variant="outlined" color="primary" onClick={_events.save.bind(_events)}>Save</Button>

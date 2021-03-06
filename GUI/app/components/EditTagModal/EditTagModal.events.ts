@@ -57,7 +57,7 @@ export default class EditTagModalEvents {
           const tag = this.state.tag
           tag.waitTime.label = label;
           await this.setState({...this.state, tag})
-      };
+    };
     
     async handleCustomWaitTimeChange (e:any)  {
         const value = e.target.value
@@ -70,6 +70,13 @@ export default class EditTagModalEvents {
         const skip = e.target.checked
         const tag = this.state.tag
         tag.skip = skip
+        await this.setState({...this.state, tag})
+    }
+
+    async handleTagNameChange (e:any) {
+        const { tag } = this.state;
+        const newTagName = e.target.value;
+        tag.name = newTagName;
         await this.setState({...this.state, tag})
     }
 

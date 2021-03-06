@@ -86,7 +86,10 @@ export default class RecordValidationModalEvents {
              type: TagType.NOROMAL,
              originalReferenceSnapshotURI: "",
              distances:[0],
-             waitTime: -1,
+             waitTime: {
+              label: "forever",
+              value: -1
+            },
              hash:"",
              skip:false,
              name:`tag-${bbb}`
