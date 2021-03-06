@@ -126,6 +126,7 @@ async function deleteAction(item:any, currentUserPicked:any) {
   const users = serviceStore.readDocs('users')
   const user = users[currentUserPicked.id]
   user.actionsIds = user.actionsIds.filter(actionId => actionId !== item.id)
+  users[user.id] = user;
   serviceStore.updateDocs('users', users)
   serviceStore.deleteDoc('actions', item)
   //TODO: need to delete actionId from test if exsists 
@@ -136,6 +137,7 @@ async function deleteAccount(item:any, currentUserPicked:any) {
   const users = serviceStore.readDocs('users')
   const user = users[currentUserPicked.id]
   user.accountsIds = user.accountsIds.filter(accountId => accountId !== item.id)
+  users[user.id] = user;
   serviceStore.updateDocs('users', users)
   serviceStore.deleteDoc('accounts', item)
   //TODO: need to delete accountID from test if exsists 

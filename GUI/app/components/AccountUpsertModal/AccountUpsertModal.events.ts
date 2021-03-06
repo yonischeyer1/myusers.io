@@ -1,3 +1,4 @@
+import { saveUpdatedAccount } from "../../models/Account.model";
 import { setStatePromisifed } from "../../utils/general";
 
 
@@ -6,7 +7,8 @@ export const DEFAULT_COMPONENT_STATE = {
     openLoginModal:false,
     accountName:{value:'', disabled:false},
     loginURL:{value:'', disabled:false},
-    currentUserPicked:null
+    currentUserPicked:null,
+    pickedAccount:null,
 }
 
 
@@ -44,7 +46,8 @@ export default class AccountUpsertModalEvents {
             accountName:{value:pickedAccount.name, disabled:false}, 
             loginURL:{value:pickedAccount.loginURL, disabled:false}, 
             open, 
-            currentUserPicked
+            currentUserPicked,
+            pickedAccount
           })
         } else {
             await this.setState({...this.state, open, currentUserPicked})
@@ -90,8 +93,10 @@ export default class AccountUpsertModalEvents {
         this.handleClose(false, null);
     }
 
-    async handleDoneBtnClick (e:any) {
-        
+    async handleSaveBtnClick (e:any) {
+        const { pickedAccount } = this.state;
+        saveUpdatedAccount(pickedAccount);
+        this.handleClose(false, null);
     }
     
 }

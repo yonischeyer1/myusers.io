@@ -56,7 +56,7 @@ export default function FullScreenDialog(props:any) {
          <div className={styles["done-cancel-btns"]}>
          <Button size="small" variant="outlined" color="secondary" onClick={_events.handleCancelBtnClick.bind(_events)}>Cancel</Button>
          &nbsp;&nbsp;
-         <Button size="small" variant="outlined" color="primary" onClick={_events.handleDoneBtnClick.bind(_events)}>Done</Button>
+         <Button size="small" variant="outlined" color="primary" onClick={_events.handleSaveBtnClick.bind(_events)}>Save</Button>
          </div>
       </div>
       </Dialog>
