@@ -86,7 +86,7 @@ export default class UserUpsertModalEvents {
         await this.setState({
           ...this.state, 
           openUpsertAccountModal:false,
-          accounts,
+          accountsView:accounts,
           pickedAccount:null
         })
         if(close) {
@@ -99,7 +99,7 @@ export default class UserUpsertModalEvents {
         await this.setState({
           ...this.state, 
           openUpsertActionModal:false,
-          actions
+          actionsView:actions
         })
         if(close) {
           await this.handleClose(null);

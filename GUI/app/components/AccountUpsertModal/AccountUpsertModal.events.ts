@@ -94,8 +94,8 @@ export default class AccountUpsertModalEvents {
     }
 
     async handleSaveBtnClick (e:any) {
-        const { pickedAccount } = this.state;
-        saveUpdatedAccount(pickedAccount);
+        const { pickedAccount, accountName, loginURL } = this.state;
+        saveUpdatedAccount({id:pickedAccount.id, name:accountName.value, loginURL:loginURL.value});
         this.handleClose(false, null);
     }
     
