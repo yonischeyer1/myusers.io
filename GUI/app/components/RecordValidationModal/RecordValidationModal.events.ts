@@ -14,7 +14,8 @@ export const DEFAULT_COMPONENT_STATE = {
   currentUserPicked:null,
   actionName:'',
   startUrl:'',
-  loading:false
+  loading:false,
+  pickedAction:null
 }
 
 
@@ -44,14 +45,15 @@ export default class RecordValidationModalEvents {
     }
  
     async init() {
-      const { open, recorderContainer, currentUserPicked, actionName, startUrl } = this.props;
+      const { open, recorderContainer, currentUserPicked, actionName, startUrl, pickedAction } = this.props;
       await this.setState({
         ...this.state, 
         open, 
         recorderContainer, 
         currentUserPicked, 
         actionName,
-        startUrl
+        startUrl,
+        pickedAction
       })
     }
 
@@ -114,19 +116,25 @@ export default class RecordValidationModalEvents {
       }
     
       async saveTags() {
-        const {actionName, currentUserPicked, saveThis, startUrl} = this.state;
+        const {actionName, currentUserPicked, saveThis, startUrl, pickedAction} = this.state;
         const {ioActions, tags} = saveThis;
         const users = serviceStore.readDocs('users');
         if(!users[currentUserPicked.id]) {
           await saveUser(currentUserPicked)
         }
-        const actionToInsert:Action = {
-          name: actionName,
-          ioActions,
-          tags,
-          startUrl
+        if(pickedAction) {
+          const actions = serviceStore.readDocs('actions');
+          actions[pickedAction.id] = {...pickedAction, startUrl, ioActions, tags}
+          serviceStore.updateDocs('actions', actions);
+        } else {
+          const actionToInsert:Action = {
+            name: actionName,
+            ioActions,
+            tags,
+            startUrl
+          }
+          await createAction(currentUserPicked, actionToInsert); 
         }
-        await createAction(currentUserPicked, actionToInsert); 
     }
 }
 

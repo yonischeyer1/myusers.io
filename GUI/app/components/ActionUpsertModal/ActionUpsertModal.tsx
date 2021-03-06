@@ -99,7 +99,7 @@ export default function FullScreenDialog(props:any) {
          }
          <br/><br/>
          <div className={styles["done-cancel-btns"]}>
-         <Button size="small" variant="outlined" color="secondary" onClick={()=>{}}>Cancel</Button>
+         <Button size="small" variant="outlined" color="secondary" onClick={_events.handleClose.bind(_events, false)}>Cancel</Button>
          &nbsp;&nbsp;
          <Button size="small" variant="outlined" color="primary" onClick={_events.saveCurrentActionTags.bind(_events)}>Save</Button>
          </div>
@@ -123,6 +123,7 @@ export default function FullScreenDialog(props:any) {
        open={openRecordingModal}
        currentUserPicked={currentUserPicked}
        startUrl={startUrl}
+       pickedAction={pickedAction}
       />
       </Dialog>
     </div>

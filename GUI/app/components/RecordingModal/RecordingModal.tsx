@@ -21,7 +21,7 @@ export default function FullScreenDialog(props:any) {
   _events.setConstructor(state, setState, props)
 
   const {open, port, loading, openRecordValidationModal, recorderContainer,
-    stopButtonDisable, currentUserPicked, actionName, startUrl }  = state;
+    stopButtonDisable, currentUserPicked, actionName, startUrl, pickedAction }  = state;
 
 
   const title = ' Recording wizard '
@@ -70,6 +70,7 @@ export default function FullScreenDialog(props:any) {
             }
            </div>
            <RecordValidationModal
+            pickedAction={pickedAction}
             startUrl={startUrl}
             actionName={actionName}
             currentUserPicked={currentUserPicked} 
