@@ -140,10 +140,14 @@ export default class ActionsUpsertModalEvents {
     };
 
     async saveCurrentActionTags (e:any) {
+        const { actionName, startUrl } = this.state;
         const { pickedAction } = this.props;
+        pickedAction.name = actionName;
+        pickedAction.startUrl = startUrl;
         const actions = serviceStore.readDocs('actions')
-        actions[pickedAction.id].tags = pickedAction.tags;
+        actions[pickedAction.id] = pickedAction;
         serviceStore.updateDocs('actions', actions);
+        this.handleClose(false, null);
     }
     
 }
