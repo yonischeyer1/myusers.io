@@ -1,6 +1,6 @@
 # MyUsers.io - web/os testing software [WIP]
 
-My users is a forever free web/os testing software based on electron and docker that aims to automate tests on websites in the most relible, easy and user friendly way.
+My users studio is a free web/os testing software based on electron and docker that aims to automate tests on websites in the most relible, easy and user friendly way.
 
   
   
@@ -19,11 +19,11 @@ My users is a forever free web/os testing software based on electron and docker 
 
 6. Automate tests on any environment/os that supports vnc and java.
 
-7. Automate Tests 3rd party websites
+7. Automate Tests on 3rd party websites
 
 8. You can record intractions with any website and play it later multiple times one after the other and in parallel (dependes on host resources).
 
-9. export tests as files and play them programmatically via sdk or with this software  
+9. export tests as files and play them programmatically via sdk or import them to myusers studio   
 
 ## GOALS:
 
