@@ -1,4 +1,7 @@
 import { setStatePromisifed } from "../../utils/general";
+import ServiceStore from '../../services /store.service'
+
+const serviceStore = new ServiceStore();
 
 export const DEFAULT_COMPONENT_STATE = {
     tag: {
@@ -12,6 +15,7 @@ export const DEFAULT_COMPONENT_STATE = {
         skip:false
       },
       dynamicSnapshotModalData: false,
+      pickedAction:null
 }
 
 
@@ -41,8 +45,8 @@ export default class EditTagModalEvents {
    }
 
    async init () {
-    const { tag } = this.props;
-    await this.setState({...this.state, tag})
+    const { tag, pickedAction } = this.props;
+    await this.setState({...this.state, tag, pickedAction})
    }
 
     async handleClose (e:any)  {
@@ -93,8 +97,13 @@ export default class EditTagModalEvents {
     }
 
     async save (e:any) {
-        const { handleEditTagSave } = this.props
-        handleEditTagSave(this.state);
+        const { tag, pickedAction } = this.state
+        const actions = serviceStore.readDocs('actions');
+        actions[pickedAction.id].tags = actions[pickedAction.id].tags.map((tagItem:any)=>{ 
+            if(tagItem.id === tag.id) return tag;
+            return tagItem;
+        })
+        serviceStore.updateDocs('actions', actions);
     }
     
 }

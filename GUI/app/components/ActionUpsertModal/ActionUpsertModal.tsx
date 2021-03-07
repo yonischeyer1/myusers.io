@@ -105,6 +105,7 @@ export default function FullScreenDialog(props:any) {
          </div>
      </div>
      <EditTagModal 
+      pickedAction={pickedAction}
       handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
       tag={pickedTag}
      />
