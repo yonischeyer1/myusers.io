@@ -104,6 +104,7 @@ export default class EditTagModalEvents {
             return tagItem;
         })
         serviceStore.updateDocs('actions', actions);
+        this.handleClose(false)
     }
     
 }

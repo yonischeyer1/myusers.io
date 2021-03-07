@@ -14,7 +14,6 @@ export const DEFAULT_COMPONENT_STATE = {
     },
     actionsDropdownOptions: [
         {label:'Edit', disabled:false},
-        {label:'Delete', disabled:false}
     ],
     currentUserPicked:null
 }
