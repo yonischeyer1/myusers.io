@@ -188,7 +188,7 @@ You need docker to be installed on the host
 ### Build iocore jar
 ```bash
 
-Open io-core folder with intellij
+Open java-core folder with intellij
 Create artifact (make sure you save manifest in resources folder)
 Build artifact and copy the jar file output to dockerMeta folder in GUI/app/dockerMeta
 ```
