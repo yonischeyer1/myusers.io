@@ -70,7 +70,7 @@ export default class TroubleshootMenuEvents {
     }
     
     async handleEditTagModalClose  (e:any)  {
-        await this.setState({...this.state, openEditTagModal:false})
+        await this.setState({...this.state, openEditTagModal:false, editFailedTag:null})
     }
     
     async handleOpenMaksingWizard (e:any)  {
