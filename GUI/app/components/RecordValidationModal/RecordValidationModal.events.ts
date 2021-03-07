@@ -1,7 +1,7 @@
 import { Action, createAction, Tag, TagType } from "../../models/Action.model";
 import { saveUser } from "../../models/User.model";
 import ServiceStore from "../../services /store.service";
-import { setStatePromisifed } from "../../utils/general";
+import { getRandomId, setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 
 const serviceStore = new ServiceStore();
@@ -83,6 +83,7 @@ export default class RecordValidationModalEvents {
          const tags: Tag[] = [];
          for(let bbb = 0; bbb < timeStamps; bbb++) {
            tags.push({
+             id:getRandomId(),
              type: TagType.NOROMAL,
              originalReferenceSnapshotURI: "",
              distances:[0],

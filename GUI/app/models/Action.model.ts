@@ -16,6 +16,7 @@ export enum TagType {
 }
 
 export interface Tag {
+    id:any
     dynamic?:any
     skip:boolean
     name:string
