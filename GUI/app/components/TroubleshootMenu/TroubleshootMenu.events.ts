@@ -1,4 +1,5 @@
 
+import { imageURIToHash } from "../../dockerMeta/eyes/eyes.core";
 import ServiceStore from "../../services /store.service";
 import { setStatePromisifed } from "../../utils/general";
 
@@ -90,6 +91,7 @@ export default class TroubleshootMenuEvents {
         const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
         const actions = serviceStore.readDocs('actions')
         actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].originalReferenceSnapshotURI = pickedTest.lastFailResult.uri;
+        actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx].hash = await imageURIToHash(pickedTest.lastFailResult.uri)
         serviceStore.updateDocs('actions', actions);
         this.handleClose(false)
     }
