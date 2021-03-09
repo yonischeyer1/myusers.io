@@ -27,6 +27,11 @@ My users studio is a free web/os testing software based on electron and docker t
 
 ## GOALS:
 
+### SINGULARITY AND BEETER ACCESABILLTY 
+
+The tests files can be used in a group to create my users testing applications.
+That can improve accessibility for users by recoerding complex functions and make it work with just a single button or interface.
+Or it can group togther multiple 3rd party websites functionalties into the same interface.
   
 
 ### Manual QA booster :
@@ -66,11 +71,6 @@ If every website owner starts using this testing software we can accumulate a sc
 
 That will be composed from the automated tests results and reports
 
-### SINGULARITY AND BEETER ACCESABILLTY 
-
-The tests files can be used in a group to create my users testing applications.
-That can improve accessibility for users by recoerding complex functions and make it work with just a single button or interface.
-Or it can group togther multiple 3rd party websites functionalties into the same interface.
   
  ## How it works  :
   Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and images from the recorded website and checking if the actions has been executed correctly by:
