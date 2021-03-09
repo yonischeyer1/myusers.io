@@ -73,10 +73,7 @@ That will be composed from the automated tests results and reports
 
   
  ## How it works  :
-  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and images from the recorded website and checking if the actions has been executed correctly by:
-  First sampling images from user validated recording session of intraction with the target website. 
-  Second playing the recorded intractions on the targetd website checking every action (click or enter) image is matching the image of the current runing session.
-  The image matching method has it share of quircks but to midigate we have an interactive troubleshoot menu that guides the user on what tool to use in order to fix the failed test or report a bug to the ticketing system, email or IM app. 
+  Myusers.io studio is using image matching as its validation mechnasim, it records mouse and keyboard intercations and images from the recorded targetd website and when playing this intractions on the targeted website the software checks if there was a match between the image in the time of the recoerding and the image that in now presented in the playing session.
 
 
 ## Detailed :
