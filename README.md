@@ -64,12 +64,16 @@ I presume the tests reports can improve and give more detailed info like :
 
 If every website owner starts using this testing software we can accumulate a score for each website that will give us some kind of “R&D” score
 
-That will be composed from the automated tests results and reports.
+That will be composed from the automated tests results and reports
 
+### SINGULARITY AND BEETER ACCESABILLTY 
+
+The tests files can be used in a group to create my users testing applications.
+That can improve accessibility for users by recoerding complex functions and make it work with just a single button or interface.
+Or it can group togther multiple 3rd party websites functionalties into the same interface.
   
  ## How it works  :
-  Classic web testing depends on html selectors in order to intract with an element of a website
-  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been executed correctly by:
+  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and images from the recorded website and checking if the actions has been executed correctly by:
   First sampling images from user validated recording session of intraction with the target website. 
   Second playing the recorded intractions on the targetd website checking every action (click or enter) image is matching the image of the current runing session.
   The image matching method has it share of quircks but to midigate we have an interactive troubleshoot menu that guides the user on what tool to use in order to fix the failed test or report a bug to the ticketing system, email or IM app. 
