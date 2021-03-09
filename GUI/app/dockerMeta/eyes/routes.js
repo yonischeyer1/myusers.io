@@ -37,17 +37,9 @@ router.post('/playAction', async (req, res) => {
 router.post('/playRecorderAction', async (req, res) => {
     req.setTimeout(0)
     const action = req.body;
-    if(action.tagHashFillFlag) {
-        tagHashFillFlag = true;
-    }
-    recorderActionsPlaying = action;
     const ihands = new IHands();
     await ihands.startPlayerKeyboardMouse(action.ioActions, action.id);
-    tagHashFillFlag = false;
-    for (let index = 0; index < currentTagIdx; index++) {
-        await removeScreenShot(index)
-    }
-    currentTagIdx = 0
+    await _eyesController.removeAllScreenShots();
     res.status(200).send(recorderActionsPlaying) 
 });
 

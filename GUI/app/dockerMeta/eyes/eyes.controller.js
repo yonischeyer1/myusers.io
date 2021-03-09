@@ -113,7 +113,13 @@ class EyesController {
         })()
         return;
     }
-    
+
+    async removeAllScreenShots () {
+        for (let index = 0; index < this.currentTagIdx; index++) {
+            await removeScreenShot(index)
+        }
+        this.currentTagIdx = 0
+    }    
 }
 
 
