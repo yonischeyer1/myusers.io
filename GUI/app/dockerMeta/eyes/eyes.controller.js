@@ -1,6 +1,8 @@
 const { distance } = require('fastest-levenshtein')
 const { takeScreenshotOfDesktop, removeScreenShot } = require('./frameStream');
-const { frameToHash, imageToHash, imageToHashAndURI, drawOnImageAndReturnHashNODEJS, imageURIToHash } = require('./eyes.core');
+const { frameToHash, imageToHash, imageToHashAndURI, 
+    drawOnImageAndReturnHashNODEJS, imageURIToHash } = require('./eyes.core');
+const { IHands } = require('./ihands')
 
 const MAX_ATTEMPTS = 5 
 const ATTEMPT_DELAY = 1500
@@ -8,12 +10,11 @@ const ATTEMPT_DELAY = 1500
 
 let instance = null
 class EyesController {
-    actionsPlaying = {}
-    recorderActionsPlaying = null
-    currentTagIdx = 0
-    getTagDistanceAttemptIdx = 0
-    tagHashFillFlag = false;
-    faildTestDataResp = null
+    _currentAction = null
+    _currentTagIdx = 0
+    _getTagDistanceAttemptIdx = 0
+    _faildTestDataResp = null
+    
 
     constructor(){
         if(instance) {
@@ -23,45 +24,62 @@ class EyesController {
         return this;
     }
 
-    async isDistValid(res, actionId) {
-        const currentTag = await this.getCurrentTag(actionId);
-        await this.captureScreenAndConvertToHash(currentTag);
+    async setCurrentAction (action) {
+        this._currentAction = action;
+    }
+
+    async playAction() {
+        const action = this._currentAction;
+        const ihands = new IHands();
+        const testSuccess = await (await ihands.startPlayerKeyboardMouse(action.ioActions, action.id)).json();
+        return testSuccess;
+    }
+
+    async playRecorderAction() {
+        const action = this._currentAction;
+        const ihands = new IHands();
+        await ihands.startPlayerKeyboardMouse(action.ioActions, action.id);
+        await this.removeAllScreenShots();
+        return;
+    }
+
+    async isDistValid(res) {
+        const currentTag = await this.getCurrentTag();
+        const {frameHash, hashOfTag, frameURI} = await this.captureScreenAndConvertToHash(currentTag);
         const dynamicData = await this.isDynamic(currentTag);
-        const isMatching = await this.foundMatchingScreenshot(dynamicData)
+        const isMatching = await this.foundMatchingScreenshot(dynamicData, {frameHash, hashOfTag})
         if(!isMatching) {
-            const isFailedTest =  await this.failTest(); 
+            const isFailedTest =  await this.failTest(res, frameURI); 
             if(!isFailedTest) {
-                return this.retryMatching();
+                return this.retryMatching(res);
             }
         }
     }
 
     async fillTagHashAndURI (res) {
-        const tags = recorderActionsPlaying.tags
-        const currentTag = tags[currentTagIdx]
-        await takeScreenshotOfDesktop(currentTagIdx);
-        const filePath = `${process.cwd()}/screenshot${currentTagIdx}.jpg`
+        const _currentTagIdx = this._currentAction;
+        const currentTag = this.getCurrentTag()
+        await takeScreenshotOfDesktop(_currentAction);
+        const filePath = `${process.cwd()}/screenshot${_currentAction}.jpg`
         const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
         currentTag.hash = frameHash;
         currentTag.originalReferenceSnapshotURI = frameURI;
         currentTag.distances = [0]
-        currentTagIdx++;
+        this._currentAction++;
         res.status(200).send(true) 
     }
 
-    async getCurrentTag (actionId) {
-        const relaventAction = actionsPlaying[actionId]
-        const tags = relaventAction.tags
-        const currentTag = tags[currentTagIdx]
-        return currentTag;
+    async getCurrentTag () {
+        const tags = this._currentAction.tags
+        return tags[this._currentAction]
     }
 
     async captureScreenAndConvertToHash (currentTag) {
         const hashOfTag = currentTag.hash;
-        await takeScreenshotOfDesktop(currentTagIdx);
-        const filePath = `${process.cwd()}/screenshot${currentTagIdx}.jpg`
+        await takeScreenshotOfDesktop(this._currentAction);
+        const filePath = `${process.cwd()}/screenshot${this._currentTagIdx}.jpg`
         const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
-        return {frameHash, frameURI}
+        return {hashOfTag, frameHash, frameURI}
     }
 
     async isDynamic(currentTag) {
@@ -75,23 +93,25 @@ class EyesController {
         return {dynamicSnapHash:null, newCurrentTagHash:null};
     }
 
-    async foundMatchingScreenshot (res, dynamicData) {
-        const  {dynamicSnapHash, newCurrentTagHash} = dynamicData
+    async foundMatchingScreenshot (res, dynamicData, tagData) {
+        const {frameHash, hashOfTag} = tagData;
+        const {dynamicSnapHash, newCurrentTagHash} = dynamicData
         const dist = dynamicSnapHash ? distance(newCurrentTagHash,dynamicSnapHash) : distance(hashOfTag, frameHash)
         const matchingDistances = currentTag.distances.filter(x => dist <= x) 
         if(matchingDistances.length > 0) {
-            currentTagIdx++;
-            getTagDistanceAttemptIdx = 0;
+            this._currentTagIdx++;
+            this._getTagDistanceAttemptIdx = 0;
             res.status(200).send(true) 
             return true;
         }
         return;
     }
 
-    async failTest() {
-        if(getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
-            getTagDistanceAttemptIdx = 0;
-            faildTestDataResp = {success:false, dist, uri:frameURI , currentTagIdx}
+    async failTest(res, dist, frameURI) {
+        if(this._getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
+            this._getTagDistanceAttemptIdx = 0;
+            this._faildTestDataResp = {success:false, dist, uri:frameURI, 
+                currentTagIdx:this._currentTagIdx}
             res.status(200).send(false) 
             return true;
         }
@@ -100,9 +120,9 @@ class EyesController {
 
     async retryMatching() {
         await removeScreenShot(currentTagIdx);
-        getTagDistanceAttemptIdx++;
+        this.getTagDistanceAttemptIdx++;
         await delay();
-        await isDistValid (res, actionId)
+        await this.isDistValid(res, actionId)
     }
 
     async delay () {
