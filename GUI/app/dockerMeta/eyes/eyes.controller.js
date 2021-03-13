@@ -1,8 +1,12 @@
+const { IHands } = require('./ihands')
+
 const { distance } = require('fastest-levenshtein')
+
 const { takeScreenshotOfDesktop, removeScreenShot } = require('./frameStream');
+
 const { frameToHash, imageToHash, imageToHashAndURI, 
     drawOnImageAndReturnHashNODEJS, imageURIToHash } = require('./eyes.core');
-const { IHands } = require('./ihands')
+
 
 const MAX_ATTEMPTS = 5 
 const ATTEMPT_DELAY = 1500
@@ -10,8 +14,8 @@ const ATTEMPT_DELAY = 1500
 
 let instance = null
 class EyesController {
-    _currentAction = null
-    _currentTagIdx = 0
+    _action = null
+    _tagIdx = 0
     _getTagDistanceAttemptIdx = 0
     _faildTestDataResp = null
     
@@ -25,20 +29,20 @@ class EyesController {
     }
 
     async setCurrentAction (action) {
-        this._currentAction = action;
+        this._action = action;
     }
 
     async playAction() {
-        const action = this._currentAction;
+        const action = this._action;
         const ihands = new IHands();
         const testSuccess = await (await ihands.startPlayerKeyboardMouse(action.ioActions, action.id)).json();
         return testSuccess;
     }
 
     async playRecorderAction() {
-        const action = this._currentAction;
+        const {ioActions, id} = this._action;
         const ihands = new IHands();
-        await ihands.startPlayerKeyboardMouse(action.ioActions, action.id);
+        await ihands.startPlayerKeyboardMouse(ioActions, id);
         await this.removeAllScreenShots();
         return;
     }
@@ -57,27 +61,26 @@ class EyesController {
     }
 
     async fillTagHashAndURI (res) {
-        const _currentTagIdx = this._currentAction;
         const currentTag = this.getCurrentTag()
-        await takeScreenshotOfDesktop(_currentAction);
-        const filePath = `${process.cwd()}/screenshot${_currentAction}.jpg`
+        await takeScreenshotOfDesktop(this._tagIdx);
+        const filePath = `${process.cwd()}/screenshot${this._tagIdx}.jpg`
         const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
         currentTag.hash = frameHash;
         currentTag.originalReferenceSnapshotURI = frameURI;
         currentTag.distances = [0]
-        this._currentAction++;
+        this._tagIdx++;
         res.status(200).send(true) 
     }
 
     async getCurrentTag () {
-        const tags = this._currentAction.tags
-        return tags[this._currentAction]
+        const tags = this._action.tags
+        return tags[this._tagIdx]
     }
 
     async captureScreenAndConvertToHash (currentTag) {
         const hashOfTag = currentTag.hash;
-        await takeScreenshotOfDesktop(this._currentAction);
-        const filePath = `${process.cwd()}/screenshot${this._currentTagIdx}.jpg`
+        await takeScreenshotOfDesktop(this._tagIdx);
+        const filePath = `${process.cwd()}/screenshot${this._tagIdx}.jpg`
         const {frameHash, frameURI} =  await imageToHashAndURI(filePath);
         return {hashOfTag, frameHash, frameURI}
     }
@@ -99,23 +102,23 @@ class EyesController {
         const dist = dynamicSnapHash ? distance(newCurrentTagHash,dynamicSnapHash) : distance(hashOfTag, frameHash)
         const matchingDistances = currentTag.distances.filter(x => dist <= x) 
         if(matchingDistances.length > 0) {
-            this._currentTagIdx++;
+            this._tagIdx++;
             this._getTagDistanceAttemptIdx = 0;
             res.status(200).send(true) 
             return true;
         }
-        return;
+        return false;
     }
 
     async failTest(res, dist, frameURI) {
         if(this._getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
             this._getTagDistanceAttemptIdx = 0;
             this._faildTestDataResp = {success:false, dist, uri:frameURI, 
-                currentTagIdx:this._currentTagIdx}
+                currentTagIdx:this._tagIdx}
             res.status(200).send(false) 
             return true;
         }
-        return;
+        return false;
     }
 
     async retryMatching() {
