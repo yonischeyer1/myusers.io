@@ -87,11 +87,6 @@ export default class EditTagModalEvents {
     async handleTagImageClick (tag:any) {
         await this.setState({...this.state, dynamicSnapshotOpen:true, dynamicSnapshotModalData:tag})
     }
-
-    async handleDynamicSnapshotModalSave ({tag, coords, drawURI}) {
-        tag["dynamic"] = {coords, drawURI}
-
-    }
     
     async handleDynamicSnapshotModalClose (e:any)  {
         await this.setState({...this.state, dynamicSnapshotModalData:false}) 

@@ -89,7 +89,7 @@ export default function FullScreenDialog(props:any) {
             <Button size="small" variant="outlined" color="primary" onClick={_events.save.bind(_events)}>Save</Button>
             </div>
        </div>
-       <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+       <StaticMaskingWizard 
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}
         pickedAction={pickedAction}/>
       </Dialog>
