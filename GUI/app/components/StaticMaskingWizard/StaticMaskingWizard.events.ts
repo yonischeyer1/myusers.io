@@ -1,4 +1,7 @@
 import { setStatePromisifed } from "../../utils/general";
+import ServiceStore from '../../services /store.service'
+
+const serviceStore = new ServiceStore();
 
 const DEFAULT_BRUSH_SIZE = 4
 
@@ -42,8 +45,8 @@ export default class StaticMaskingWizardEvents {
     }
 
     async init () {
-        const { tag } = this.props;
-        await this.setState({...this.state, tag})
+        const { tag, pickedAction } = this.props;
+        await this.setState({...this.state, tag, pickedAction})
         this.handleClear(null)
     }
 
@@ -69,10 +72,15 @@ export default class StaticMaskingWizardEvents {
     }
     
     async handleSave  (e:any)  {
-        const { tag } = this.state;
+        const { tag, pickedAction } = this.state;
         const drawURI = canvas.toDataURL('image/jpeg')
-        const {handleDynamicSnapshotModalSave} = this.props;
-        handleDynamicSnapshotModalSave({tag,coords, drawURI})
+        tag["dynamic"] = {coords, drawURI}
+        const actions = serviceStore.readDocs('actions');
+        actions[pickedAction.id].tags = actions[pickedAction.id].tags.map((tagItem:any)=>{ 
+            if(tagItem.id === tag.id) return tag;
+            return tagItem;
+        })
+        serviceStore.updateDocs('actions', actions);
         this.handleClear(null)
         this.handleClose(null)
     }
@@ -80,18 +88,19 @@ export default class StaticMaskingWizardEvents {
     async point(x:any, y:any, zeBrushSize:any) {
         ctx.fillStyle="red";
         ctx.strokeStyle = "red";
-        ctx.fillRect(x-2,y-2, zeBrushSize,zeBrushSize);
+        ctx.fillRect(x-2,y-2, zeBrushSize, zeBrushSize);
         ctx.moveTo(x,y);
     } 
     
     async point_it(event:any) {
         startDrawing = true;
+        const { brushSize } = this.state;
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        const cord = {clientX:event.clientX, clientY:event.clientY, left:rect.left, top:rect.top, brushSize:state.brushSize}
+        const cord = {clientX:event.clientX, clientY:event.clientY, left:rect.left, top:rect.top, brushSize}
         coords.push(cord)
-        perimeter.push({'x':x,'y':y, brushSize:this.state.brushSize});
+        perimeter.push({'x':x,'y':y, brushSize});
         this.draw(false);
         return false;
     }
