@@ -203,7 +203,7 @@ yarn run dev
 ```
 
 ## ROADMAP
-1. Add option to create a mask preset ex : there are changing parts in the browser itself that can cause a test to fail. we can create preset browser default mask to cover address bar and route display at the bottom of the page that way we make sure the browser itself won’t break the test.
+1. Add option to create a mask preset ex : there are changing parts in the browser itself that can cause a test to fail. we can create preset browser default mask to cover address bar and route display (and blinking cursor at search bar) at the bottom of the page that way we make sure the browser itself won’t break the test.
 2. Add random mouse movement when recording user not moving its mouse for x ms.
 3. Add test total time is test list row 
 4. Profit 
