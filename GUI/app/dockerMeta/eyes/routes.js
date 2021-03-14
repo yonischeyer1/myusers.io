@@ -23,20 +23,15 @@ router.post('/playAction', async (req, res) => {
         req.setTimeout(0)
         const action = req.body;
         _eyesController.setCurrentAction(action)
-        const testSuccess = await _eyesController.playAction(action)
-        if(testSuccess) {
-           res.status(200).send({success:true}) 
-        } else {
-            res.status(200).send(testSuccess) 
-        }
+        _eyesController.playAction(res)
 });
 
 router.post('/playRecorderAction', async (req, res) => {
     req.setTimeout(0)
     const action = req.body;
+    _eyesController.setCurrentAction(action)
     playRecorderAction = true;
-    await _eyesController.playRecorderAction(action)
-    res.status(200).send(recorderActionsPlaying) 
+    await _eyesController.playRecorderAction(res)
 });
 
 

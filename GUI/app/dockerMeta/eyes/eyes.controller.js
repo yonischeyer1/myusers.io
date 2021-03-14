@@ -32,26 +32,30 @@ class EyesController {
         this._action = action;
     }
 
-    async playAction() {
-        const action = this._action;
+    async playAction(res) {
+        const {ioActions, id} = this._action;
         const ihands = new IHands();
-        const testSuccess = await (await ihands.startPlayerKeyboardMouse(action.ioActions, action.id)).json();
-        return testSuccess;
+        const testSuccess = await (await ihands.startPlayerKeyboardMouse(ioActions, id)).json();
+        if(testSuccess) {
+           res.status(200).send({success:true}) 
+        } else {
+           res.status(200).send(this._faildTestDataResp) 
+       }
     }
 
-    async playRecorderAction() {
+    async playRecorderAction(res) {
         const {ioActions, id} = this._action;
         const ihands = new IHands();
         await ihands.startPlayerKeyboardMouse(ioActions, id);
         await this.removeAllScreenShots();
-        return;
+        res.status(200).send(resp) 
     }
 
     async isDistValid(res) {
         const currentTag = await this.getCurrentTag();
         const {frameHash, hashOfTag, frameURI} = await this.captureScreenAndConvertToHash(currentTag);
         const dynamicData = await this.isDynamic(currentTag);
-        const isMatching = await this.foundMatchingScreenshot(dynamicData, {frameHash, hashOfTag})
+        const isMatching = await this.foundMatchingScreenshot(res, dynamicData, {frameHash, hashOfTag})
         if(!isMatching) {
             const isFailedTest =  await this.failTest(res, frameURI); 
             if(!isFailedTest) {
@@ -113,8 +117,7 @@ class EyesController {
     async failTest(res, dist, frameURI) {
         if(this._getTagDistanceAttemptIdx > MAX_ATTEMPTS) {
             this._getTagDistanceAttemptIdx = 0;
-            this._faildTestDataResp = {success:false, dist, uri:frameURI, 
-                currentTagIdx:this._tagIdx}
+            this._faildTestDataResp = {success:false, dist, uri:frameURI, currentTagIdx:this._tagIdx}
             res.status(200).send(false) 
             return true;
         }
@@ -122,8 +125,8 @@ class EyesController {
     }
 
     async retryMatching() {
-        await removeScreenShot(currentTagIdx);
-        this.getTagDistanceAttemptIdx++;
+        await removeScreenShot(this._tagIdx);
+        this._getTagDistanceAttemptIdx++;
         await delay();
         await this.isDistValid(res, actionId)
     }
