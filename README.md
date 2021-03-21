@@ -185,6 +185,10 @@ A server that runs inside the container that either records keyboard and mouse a
 
 ## Install
 You need docker to be installed on the host
+Add ’sessions’ folder inside the app folder
+Add DB folder with all entities - 
+accounts.json, actions.json, tests.json, users.json, settings.json
+Each file should contain empty brackets {}
 
 
 ### Build iocore jar
@@ -202,6 +206,11 @@ yarn
 yarn run dev
 
 ```
+If the following error shows - 
+“failed to solve with frontend dockerfile.v0: failed to create LLB definition: failed to do request: context canceled”
+run the following commands in the Terminal
+export DOCKER_BUILDKIT=0
+export COMPOSE_DOCKER_CLI_BUILD=0
 
 ## ROADMAP
 1. Add option to create a mask preset ex : there are changing parts in the browser itself that can cause a test to fail. we can create preset browser default mask to cover address bar and route display (and blinking cursor at search bar) at the bottom of the page that way we make sure the browser itself won’t break the test.
