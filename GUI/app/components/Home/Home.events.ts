@@ -267,7 +267,7 @@ export default class HomeEvents {
           await this.changeTestStatus(test, TEST_STATUS.SUCCESS, testSuiteIdx)
         } else {
           testResp.testIdx = testIdx;
-          this.saveTestFail(testResp, testSuiteIdx)
+          await this.saveTestFail(testResp, testSuiteIdx)
           await this.changeTestStatus(test, TEST_STATUS.FAIL, testSuiteIdx)
         }
         await this.setState({...this.state, portsPlaying:{...this.state.portsPlaying, [test.id]:false}})
