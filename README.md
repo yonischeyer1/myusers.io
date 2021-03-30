@@ -5,7 +5,8 @@ My users studio is a free web/os testing software based on electron and docker t
 ## link to video showcasing 
    https://www.youtube.com/watch?v=_btkOUCMOok  
   
-
+## Trello 
+   https://trello.com/myusersio
 ## Myusers allows you to :
 
 1. Automate Tests on your website without the need to know how to code.
