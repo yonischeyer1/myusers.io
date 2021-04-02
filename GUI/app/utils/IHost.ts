@@ -108,7 +108,9 @@ export async function copyFileToContainer(containerId:string, fileLocalOSPath:st
 
 export async function removeContainerByName(containerName:any) {
     const command = `docker rm -f ${containerName}`
-    const response = await runLocalCMD(command);
+    await runLocalCMD(command);
+    const command2 = "docker container prune -f"
+    const response = await runLocalCMD(command2);
     return response;
 }
 
