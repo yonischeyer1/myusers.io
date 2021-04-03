@@ -93,7 +93,8 @@ export default class RecordValidationModalEvents {
             },
              hash:"",
              skip:false,
-             name:`tag-${bbb}`
+             name:`tag-${bbb}`,
+             moreSnapshots:[]
            })
          }
          return tags;

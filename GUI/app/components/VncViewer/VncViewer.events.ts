@@ -74,7 +74,9 @@ export default class VncViewerEvents {
 
     connectToContainerVnc() {
     const { port } = this.state;
-    return new Promise(async (resolve)=>{
+    return new Promise((resolve)=>{
+    setTimeout(()=>{
+        (async()=>{
             const host = "localhost"
             const password = this.readQueryVariable('password',"");
             const path = this.readQueryVariable('path', 'websockify');
@@ -98,6 +100,8 @@ export default class VncViewerEvents {
             rfb.scaleViewport = this.readQueryVariable('scale', false);
             await this.setState({...this.state, rfb})
             resolve(null);
+        })()
+       }, 0)
       })
     }
 }

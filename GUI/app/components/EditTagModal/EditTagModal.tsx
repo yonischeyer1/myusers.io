@@ -16,7 +16,7 @@ export default function FullScreenDialog(props:any) {
 
   const [state, setState] = React.useState({...DEFAULT_COMPONENT_STATE});
 
-  const { tag, dynamicSnapshotModalData } = state;
+  const { tag, dynamicSnapshotModalData, pickedAction } = state;
 
   _events.setConstructor(state, setState, props);
 
@@ -89,8 +89,9 @@ export default function FullScreenDialog(props:any) {
             <Button size="small" variant="outlined" color="primary" onClick={_events.save.bind(_events)}>Save</Button>
             </div>
        </div>
-       <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
-        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}/>
+       <StaticMaskingWizard 
+        handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)}  tag={dynamicSnapshotModalData}
+        pickedAction={pickedAction}/>
       </Dialog>
     </div>
   ) : <div></div>;

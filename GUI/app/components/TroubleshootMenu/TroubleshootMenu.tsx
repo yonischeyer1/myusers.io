@@ -26,7 +26,7 @@ export default function FullScreenDialog(props:any) {
   _events.setConstructor(state, _setState, props);
 
   const {pickedTest, failedTag, editFailedTag,
-    dynamicSnapshotModalData} = state;
+    dynamicSnapshotModalData, pickedAction} = state;
 
    //** HTML */
   return !!pickedTest ? (
@@ -182,7 +182,7 @@ export default function FullScreenDialog(props:any) {
       </div>
       <EditTagModal handleEditTagModalClose={_events.handleEditTagModalClose.bind(_events)} 
        handleEditTagSave={_events.handleEditTagSave.bind(_events)} tag={editFailedTag ? editFailedTag.tag : null}/>
-      <StaticMaskingWizard handleDynamicSnapshotModalSave={_events.handleDynamicSnapshotModalSave.bind(_events)}
+      <StaticMaskingWizard pickedAction={pickedAction}
         handleDynamicSnapshotModalClose={_events.handleDynamicSnapshotModalClose.bind(_events)} tag={dynamicSnapshotModalData}/>
       </Dialog>
     </div>

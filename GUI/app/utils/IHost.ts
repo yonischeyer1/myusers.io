@@ -62,9 +62,9 @@ export async function runContainerCMD(containerId:string ,containerCMD: string, 
 export async function buildDockerImage(imageName:string) {
  let cmd = ''
  if(isWindows()) {
-     cmd = `cd ${APP_DOCKER_META_PATH} && docker build -t ${imageName} .`
+     cmd = `cd ${APP_DOCKER_META_PATH} && docker build --rm -t ${imageName} .`
  } else {
-     cmd = `docker build -t ${IMAGE_NAME} ${APP_DOCKER_META_PATH}`
+     cmd = `docker build --rm -t ${IMAGE_NAME} ${APP_DOCKER_META_PATH}`
  }
  const response = await runLocalCMD(cmd,(data: string)=>{
      return data.indexOf("Successfully tagged") > -1;
@@ -83,7 +83,7 @@ export async function isDockerImageBuilt(imageName: string) {
 }
 
 export async function runDockerImage(ports:any, containerName:string ,imageName: string, devPort?:any) {
-    const cmd = `docker run --shm-size=1g --name ${containerName} -d -p ${ports.vnc}:${config.CONTAINER_VNC_PORT} -p ${ports.hands}:${config.CONTAINER_IOCORE_PORT} -p ${ports.eyes}:${config.CONTAINER_VIDEO_ANALYZER_PORT} -p ${ports.devCustom}:${config.CONTAINER_DEV_CUSTOM_PORT} ${imageName} `
+    const cmd = `docker run --log-driver none --shm-size=1g --name ${containerName} -d -p ${ports.vnc}:${config.CONTAINER_VNC_PORT} -p ${ports.hands}:${config.CONTAINER_IOCORE_PORT} -p ${ports.eyes}:${config.CONTAINER_VIDEO_ANALYZER_PORT} -p ${ports.devCustom}:${config.CONTAINER_DEV_CUSTOM_PORT} ${imageName} `
     const response = await runLocalCMD(cmd);
     return response;
 }
@@ -108,7 +108,9 @@ export async function copyFileToContainer(containerId:string, fileLocalOSPath:st
 
 export async function removeContainerByName(containerName:any) {
     const command = `docker rm -f ${containerName}`
-    const response = await runLocalCMD(command);
+    await runLocalCMD(command);
+    const command2 = " docker system prune -a --volumes --filter label=repo=ioroboto --filter label=repo=amd64/debian -f"
+    const response = await runLocalCMD(command2);
     return response;
 }
 

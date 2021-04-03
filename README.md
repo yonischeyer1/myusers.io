@@ -2,9 +2,11 @@
 
 My users studio is a free web/os testing software based on electron and docker that aims to automate tests on websites in the most relible, easy and user friendly way.
 
+## link to video showcasing 
+   https://www.youtube.com/watch?v=_btkOUCMOok  
   
-  
-
+## Trello 
+   https://trello.com/myusersio
 ## Myusers allows you to :
 
 1. Automate Tests on your website without the need to know how to code.
@@ -27,6 +29,11 @@ My users studio is a free web/os testing software based on electron and docker t
 
 ## GOALS:
 
+### SINGULARITY AND BEETER ACCESABILLTY 
+
+The tests files can be used in a group to create my users testing applications.
+That can improve accessibility for users by recoerding complex functions and make it work with just a single button or interface.
+Or it can group togther multiple 3rd party websites functionalties into the same interface.
   
 
 ### Manual QA booster :
@@ -64,15 +71,11 @@ I presume the tests reports can improve and give more detailed info like :
 
 If every website owner starts using this testing software we can accumulate a score for each website that will give us some kind of “R&D” score
 
-That will be composed from the automated tests results and reports.
+That will be composed from the automated tests results and reports
 
   
  ## How it works  :
-  Classic web testing depends on html selectors in order to intract with an element of a website
-  Myusers uses image matching as its validation mechnasim, it records mouse and keyboard intercations and checking if the actions has been executed correctly by:
-  First sampling images from user validated recording session of intraction with the target website. 
-  Second playing the recorded intractions on the targetd website checking every action (click or enter) image is matching the image of the current runing session.
-  The image matching method has it share of quircks but to midigate we have an interactive troubleshoot menu that guides the user on what tool to use in order to fix the failed test or report a bug to the ticketing system, email or IM app. 
+  Myusers.io studio is using image matching as its validation mechnasim, it records mouse and keyboard intercations and images from the recorded targetd website and when playing this intractions on the targeted website the software checks if there was a match between the image in the time of the recoerding and the image that in now presented in the playing session.
 
 
 ## Detailed :
@@ -185,6 +188,19 @@ A server that runs inside the container that either records keyboard and mouse a
 You need docker to be installed on the host
 
 
+Add ’sessions’ folder inside the app folder
+Add DB folder with all entities - 
+accounts.json, actions.json, tests.json, users.json, settings.json
+Each file should contain empty brackets {}
+
+## Important !
+
+on mac os each time a container runs is takes up much space from the system 
+to mitigate make sure your docker daemon disk image size is set to the minimum :
+
+![Mac docker daemon prefrence menu](dockermindiskimage.png)
+
+
 ### Build iocore jar
 ```bash
 
@@ -200,7 +216,17 @@ yarn
 yarn run dev
 
 ```
+If the following error shows - 
+“failed to solve with frontend dockerfile.v0: failed to create LLB definition: failed to do request: context canceled”
+run the following commands in the Terminal
+export DOCKER_BUILDKIT=0
+export COMPOSE_DOCKER_CLI_BUILD=0
 
+## ROADMAP
+1. Add option to create a mask preset ex : there are changing parts in the browser itself that can cause a test to fail. we can create preset browser default mask to cover address bar and route display (and blinking cursor at search bar) at the bottom of the page that way we make sure the browser itself won’t break the test.
+2. Add random mouse movement when recording user not moving its mouse for x ms.
+3. Add test total time is test list row 
+4. Profit 
 ## Docs
 
   
@@ -214,6 +240,7 @@ To be published
   
 
 - [Yoni.s](https://github.com/yonischeyer1)
+- [DanaShak](https://github.com/DanaShak)
 
   
 
@@ -222,3 +249,4 @@ To be published
   
 
 GPL-V3
+
