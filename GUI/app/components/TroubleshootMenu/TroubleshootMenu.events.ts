@@ -8,7 +8,8 @@ export const DEFAULT_COMPONENT_STATE = {
     pickedTest:null,
     failedTag:null,
     dynamicSnapshotModalData:null,
-    editFailedTag:null
+    editFailedTag:null,
+    pickedAction:null
 }
 
 const serviceStore = new ServiceStore();
@@ -42,8 +43,9 @@ export default class TroubleshootMenuEvents {
         const { pickedTest } = this.props;
         const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
         const actions = serviceStore.readDocs('actions');
+        const pickedAction = actions[actionId]
         const failedTag:any = {
-          tag:actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx],
+          tag:pickedAction.tags[pickedTest.lastFailResult.currentTagIdx],
           idx:pickedTest.lastFailResult.currentTagIdx
         }
         const failedTest:any = {
@@ -54,7 +56,8 @@ export default class TroubleshootMenuEvents {
             ...this.state, 
             pickedTest, 
             failedTag: {...failedTag},
-            failedTest: {...failedTest}
+            failedTest: {...failedTest},
+            pickedAction
         })
     }
 
@@ -66,7 +69,7 @@ export default class TroubleshootMenuEvents {
     }
     
     async handleDynamicSnapshotModalClose (e:any) {
-        await this.setState({...this.state, dynamicSnapshotOpen:false})
+        await this.setState({...this.state, dynamicSnapshotModalData:null, pickedAction:null})
     }
     
     async handleEditTagModalClose  (e:any)  {
@@ -74,16 +77,7 @@ export default class TroubleshootMenuEvents {
     }
     
     async handleOpenMaksingWizard (e:any)  {
-        await this.setState({...this.state, dynamicSnapshotModalData:this.state.failedTag.tag, dynamicSnapshotOpen:true})
-    }
-
-    async handleDynamicSnapshotModalSave({tag, coords, drawURI}) {
-        const pickedTest = this.props.pickedTest;
-        tag["dynamic"] = {coords, drawURI}
-        const actionId = pickedTest.suite[pickedTest.lastFailResult.testIdx].actionId
-        const actions = serviceStore.readDocs('actions')
-        actions[actionId].tags[pickedTest.lastFailResult.currentTagIdx] = tag;
-        serviceStore.updateDocs('actions', actions);
+        await this.setState({...this.state, dynamicSnapshotModalData:this.state.failedTag.tag})
     }
 
     async handleUIChange (e:any) {
