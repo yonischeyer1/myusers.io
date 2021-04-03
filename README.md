@@ -186,10 +186,19 @@ A server that runs inside the container that either records keyboard and mouse a
 
 ## Install
 You need docker to be installed on the host
+
+
 Add ’sessions’ folder inside the app folder
 Add DB folder with all entities - 
 accounts.json, actions.json, tests.json, users.json, settings.json
 Each file should contain empty brackets {}
+
+## Important !
+
+on mac os each time a container runs is takes up much space from the system 
+to mitigate make sure your docker daemon disk image size is set to the minimum :
+
+![Mac docker daemon prefrence menu](dockermindiskimage.png)
 
 
 ### Build iocore jar
