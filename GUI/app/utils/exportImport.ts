@@ -69,11 +69,9 @@ export async function compress(testSuiteName: any, sessionsFoldersToCompress: an
 
         archive.pipe(output);
         const stringfiredJson = JSON.stringify(newTestSuitePopulatedWithActions)
-        debugger
         archive.append(Buffer.from(JSON.stringify(stringfiredJson)), { name: `${testSuiteName}.json` });
-        debugger
         for (const sessionFolderPath of sessionsFoldersToCompress) {
-            archive.directory(sessionFolderPath.path, false)
+            archive.directory(sessionFolderPath.path, sessionFolderPath.name)
         }
         archive.finalize();
     })
