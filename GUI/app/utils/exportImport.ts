@@ -9,7 +9,7 @@ const serviceStore = new ServiceStore();
 
 export async function exportTestSuite (testSuite:any) {
     const newTestSuitePopulatedWithActions = await populateTestSuiteWithActions(testSuite);
-    const sessionsFoldersToCompress = testSuite.suite.map(test => `${APP_CWD}sessions/${test.userId}`.trim())
+    const sessionsFoldersToCompress = testSuite.suite.map((test:any) => { return {path:`${APP_CWD}sessions/${test.userId}`.trim(), name:test.userId}})
     await compress(testSuite.name, sessionsFoldersToCompress, newTestSuitePopulatedWithActions);
 
 }
@@ -45,7 +45,7 @@ export async function compress (testSuiteName:any, sessionsFoldersToCompress:any
     archive.pipe(output);
     archive.append(newTestSuitePopulatedWithActions, { name: `${testSuiteName}.json` });
     for(const sessionFolderPath of sessionsFoldersToCompress) {
-        archive.directory(sessionFolderPath)
+        archive.directory(sessionFolderPath.path, sessionFolderPath.name)
     }
     archive.finalize();
 }
