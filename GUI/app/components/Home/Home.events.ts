@@ -1,6 +1,7 @@
 import { TEST_STATUS } from "../../models/Test.model";
 import Container, { CONTAINER_MODE } from "../../services /container.service";
 import ServiceStore from "../../services /store.service";
+import { exportTestSuite } from "../../utils/exportImport";
 import { setStatePromisifed } from "../../utils/general";
 
 const DEFAULT_USER_ACTION_OPTIONS = [
@@ -178,6 +179,12 @@ export default class HomeEvents {
         
             case "Delete":
               await this.deleteTest(test)
+            break;
+
+            case "Export":
+              console.log("before export");
+              await exportTestSuite(test);
+              console.log("after export");
             break;
           
             default:
