@@ -1,7 +1,7 @@
 import ServiceStore from '../services /store.service'
 import { APP_CWD } from './general';
 import fs from 'fs';
-import archiver from 'archiver';
+const archiver = require('archiver');
 
 
 
@@ -32,24 +32,50 @@ export async function importTestSuite(pathToGzipTestSuite: string) {
 export async function compress(testSuiteName: any, sessionsFoldersToCompress: any, newTestSuitePopulatedWithActions: any) {
     return new Promise((resolve, reject) => {
         const archive = archiver('zip', {
-            gzip: true,
             zlib: { level: 9 } // Sets the compression level.
         });
 
-        const output = fs.createWriteStream(`./${testSuiteName}.gzip`);
+        const output = fs.createWriteStream(`./${testSuiteName}.zip`);
 
-        archive.on('error', function (err) {
-            console.log("compress err", err);
-            reject(err)
+        // 'close' event is fired only when a file descriptor is involved
+        output.on('close', function () {
+            console.log(archive.pointer() + ' total bytes');
+            console.log('archiver has been finalized and the output file descriptor has closed.');
+            resolve(null)
         });
 
+        // This event is fired when the data source is drained no matter what was the data source.
+        // It is not part of this library but rather from the NodeJS Stream API.
+        // @see: https://nodejs.org/api/stream.html#stream_event_end
+        output.on('end', function () {
+            console.log('Data has been drained');
+        });
+
+        // good practice to catch warnings (ie stat failures and other non-blocking errors)
+        archive.on('warning', function (err:any) {
+            if (err.code === 'ENOENT') {
+                // log warning
+            } else {
+                // throw error
+                throw err;
+            }
+        });
+
+        // good practice to catch this error explicitly
+        archive.on('error', function (err:any) {
+            throw err;
+        });
+
+
         archive.pipe(output);
-        archive.append(newTestSuitePopulatedWithActions, { name: `${testSuiteName}.json` });
+        const stringfiredJson = JSON.stringify(newTestSuitePopulatedWithActions)
+        debugger
+        archive.append(Buffer.from(JSON.stringify(stringfiredJson)), { name: `${testSuiteName}.json` });
+        debugger
         for (const sessionFolderPath of sessionsFoldersToCompress) {
-            archive.directory(sessionFolderPath.path, sessionFolderPath.name)
+            archive.directory(sessionFolderPath.path, false)
         }
         archive.finalize();
-        resolve(null)
     })
 }
 
@@ -57,3 +83,6 @@ export async function compress(testSuiteName: any, sessionsFoldersToCompress: an
 export async function decompress() {
 
 }
+
+
+//fs.createReadStream(Buffer.from(JSON.stringify(newTestSuitePopulatedWithActions))

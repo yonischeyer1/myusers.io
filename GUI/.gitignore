@@ -4,6 +4,8 @@ logs
 *.jar
 *.mp4
 *.jpg
+*.zip
+*.gzip
 *.io.json
 app/DB
 # Runtime data

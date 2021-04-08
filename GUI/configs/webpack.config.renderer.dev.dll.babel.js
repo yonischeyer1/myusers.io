@@ -22,7 +22,7 @@ export default merge.smart(baseConfig, {
 
   target: 'electron-renderer',
 
-  externals: ['fsevents', 'crypto-browserify'],
+  externals: ['fsevents', 'crypto-browserify', 'archiver'],
 
   /**
    * Use `module` from `webpack.config.renderer.dev.js`
