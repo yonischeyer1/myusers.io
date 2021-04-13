@@ -1,4 +1,4 @@
-import ServiceStore from '../services /store.service'
+import ServiceStore from '../services/store.service'
 export interface Account {
     id?:string
     name:string,

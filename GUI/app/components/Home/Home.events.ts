@@ -1,6 +1,6 @@
 import { TEST_STATUS } from "../../models/Test.model";
-import Container, { CONTAINER_MODE } from "../../services /container.service";
-import ServiceStore from "../../services /store.service";
+import Container, { CONTAINER_MODE } from "../../services/container.service";
+import ServiceStore from "../../services/store.service";
 import { exportTestSuite } from "../../utils/exportImport";
 import { setStatePromisifed } from "../../utils/general";
 

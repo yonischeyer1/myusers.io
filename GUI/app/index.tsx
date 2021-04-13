@@ -4,8 +4,8 @@ import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './Root';
 import './app.global.css';
 import { buildDockerImage, isDockerImageBuilt } from './utils/IHost';
-import { IMAGE_NAME } from './services /container.service';
-import ServiceStore from './services /store.service'
+import { IMAGE_NAME } from '../app/services/container.service';
+import ServiceStore from '../app/services/store.service'
 
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;

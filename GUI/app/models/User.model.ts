@@ -1,4 +1,4 @@
-import ServiceStore from "../services /store.service";
+import ServiceStore from "../services/store.service";
 import { getRandomId } from "../utils/general";
 export interface User {
     id?:string

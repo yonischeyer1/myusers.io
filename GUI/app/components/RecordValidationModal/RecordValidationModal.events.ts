@@ -1,6 +1,6 @@
 import { Action, createAction, Tag, TagType } from "../../models/Action.model";
 import { saveUser } from "../../models/User.model";
-import ServiceStore from "../../services /store.service";
+import ServiceStore from "../../services/store.service";
 import { getRandomId, setStatePromisifed } from "../../utils/general";
 import { removeContainerByName } from "../../utils/IHost";
 

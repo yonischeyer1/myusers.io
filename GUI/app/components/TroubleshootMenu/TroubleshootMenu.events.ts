@@ -1,6 +1,6 @@
 
 import { imageURIToHash } from "../../dockerMeta/eyes/eyes.core";
-import ServiceStore from "../../services /store.service";
+import ServiceStore from "../../services/store.service";
 import { setStatePromisifed } from "../../utils/general";
 
 export const DEFAULT_COMPONENT_STATE = {

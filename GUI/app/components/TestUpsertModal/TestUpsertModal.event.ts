@@ -1,5 +1,5 @@
 import { Test, TestModel, TEST_STATUS } from "../../models/Test.model";
-import ServiceStore from "../../services /store.service";
+import ServiceStore from "../../services/store.service";
 import { getRandomId, setStatePromisifed } from "../../utils/general";
 
 

@@ -1,4 +1,4 @@
-import ServiceStore from '../services /store.service'
+import ServiceStore from '../services/store.service'
 
 const serviceStore = new ServiceStore();
 export interface Action {
