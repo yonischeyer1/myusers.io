@@ -1,5 +1,5 @@
 import { APP_CWD, isWindows, getRandomArbitrary, APP_DOCKER_META_PATH, ExtractFrames } from "./general";
-import { IMAGE_NAME } from "../services /container.service";
+import { IMAGE_NAME } from "../services/container.service";
 const { spawn } = require("child_process");
 import config from '../config'
 

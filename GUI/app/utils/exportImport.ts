@@ -1,4 +1,4 @@
-import ServiceStore from '../services /store.service'
+import ServiceStore from '../services/store.service'
 import { APP_CWD } from './general';
 import fs from 'fs';
 const archiver = require('archiver');

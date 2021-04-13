@@ -1,4 +1,4 @@
-import Container, { CONTAINER_MODE } from "../../services /container.service";
+import Container, { CONTAINER_MODE } from "../../services/container.service";
 import { setStatePromisifed } from "../../utils/general";
 import { createDummyUser } from '../../models/User.model'
 

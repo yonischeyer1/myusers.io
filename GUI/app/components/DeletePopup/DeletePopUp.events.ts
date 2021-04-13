@@ -1,4 +1,4 @@
-import ServiceStore from "../../services /store.service";
+import ServiceStore from "../../services/store.service";
 import { APP_CWD, setStatePromisifed } from "../../utils/general";
 import { removeUserSessionFolder } from "../../utils/IHost";
 
