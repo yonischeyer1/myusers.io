@@ -1,19 +1,27 @@
 
-    FROM amd64/debian:stable
+    FROM arm64v8/debian:latest
 
-    RUN apt-get update && apt-get install -y curl unzip libgconf-2-4 scrot openjdk-11-jre-headless xvfb chromium iceweasel x11vnc libxkbcommon-x11-0 ffmpeg procps gnupg 
+    RUN apt-get update && apt-get install -y curl unzip libgconf-2-4 scrot openjdk-11-jre-headless xvfb chromium x11vnc libxkbcommon-x11-0 ffmpeg procps gnupg build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev libvips libc6 
     COPY pin_nodesource /etc/apt/preferences.d/nodesource
     ADD xvfb-chromium /usr/bin/xvfb-chromium
     RUN ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome
     RUN ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browser 
-    RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
-    RUN apt-get -y install nodejs
+
+   RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash -
+   RUN apt-get install -y nodejs
+    
+    # # install chrome
+    # RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_arm64.deb
+    # RUN dpkg -i google-chrome-stable_current_arm64.deb; apt-get -fy install
     
     WORKDIR /usr/src/app
     COPY iocore.jar iocore.jar
     COPY eyes eyes
     WORKDIR /usr/src/app/eyes
-    RUN npm install
+    RUN rm -rf node_modules
+    RUN node -v
+    RUN npm install -g npm@7.10.0
+    RUN npm install 
     WORKDIR /usr/src/app
     
     # 5945 is the VNC PORT 
