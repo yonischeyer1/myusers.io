@@ -213,9 +213,11 @@ Build artifact and copy the jar file output to dockerMeta folder in GUI/app/dock
 ```
 ### GUI
 ```bash
-
+cd GUI
 yarn
-
+cd app
+yarn 
+cd ..
 yarn run dev
 
 ```
