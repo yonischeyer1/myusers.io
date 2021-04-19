@@ -208,6 +208,7 @@ to mitigate make sure your docker daemon disk image size is set to the minimum :
 
 Note ! if your developing on arm64 you need to download the latest jnativehook and add it manually from :
   https://oss.sonatype.org/content/repositories/snapshots/com/github/kwhat/jnativehook/2.2-SNAPSHOT/
+and use branch m1_adjust_for_dev dockerfile
 ```bash
 
 Open java-core folder with intellij
