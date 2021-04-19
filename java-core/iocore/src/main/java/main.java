@@ -1,5 +1,5 @@
+import com.github.kwhat.jnativehook.NativeHookException;
 import com.google.gson.Gson;
-import org.jnativehook.NativeHookException;
 import spark.Request;
 import spark.Response;
 import spark.Route;
