@@ -205,6 +205,9 @@ to mitigate make sure your docker daemon disk image size is set to the minimum :
 
 
 ### Build iocore jar
+
+Note ! if your developing on arm64 you need to download the latest jnativehook and add it manually from :
+  https://oss.sonatype.org/content/repositories/snapshots/com/github/kwhat/jnativehook/2.2-SNAPSHOT/
 ```bash
 
 Open java-core folder with intellij
