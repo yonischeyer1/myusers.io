@@ -30,7 +30,7 @@ yarn.lock
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 .eslintcachex
-
+build
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
@@ -57,3 +57,4 @@ npm-debug.log.*
 *.d.ts
 *.sass.d.ts
 *.scss.d.ts
+*.txt
