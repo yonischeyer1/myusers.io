@@ -26,6 +26,8 @@ module.exports = api => {
       [require('@babel/preset-react'), { development }]
     ],
     plugins: [
+      require("@babel/plugin-transform-runtime"),
+      require("@babel/plugin-transform-typescript"),
       // Stage 0
       require('@babel/plugin-proposal-function-bind'),
 
