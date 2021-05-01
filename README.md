@@ -204,6 +204,13 @@ to mitigate make sure your docker daemon disk image size is set to the minimum :
 ![Mac docker daemon prefrence menu](dockermindiskimage.png)
 
 
+## Must install packages on arm64 (raspberry pi / m1 chip)
+
+```bash 
+$ sudo apt-get update 
+$ sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+```
+
 ### Build iocore jar
 
 Note ! if your developing on arm64 you need to download the latest jnativehook and add it manually from :
