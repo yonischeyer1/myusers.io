@@ -204,12 +204,19 @@ to mitigate make sure your docker daemon disk image size is set to the minimum :
 ![Mac docker daemon prefrence menu](dockermindiskimage.png)
 
 
-## Must install packages on arm64 (raspberry pi / m1 chip)
+## Must install packages 
 
+### Raspberry pi 
 ```bash 
 $ sudo apt-get update 
 $ sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
+### Apple m1 chip 
+
+```bash 
+$ brew install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+```
+
 
 ### Build iocore jar
 
