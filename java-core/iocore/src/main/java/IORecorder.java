@@ -1,11 +1,13 @@
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
-import org.jnativehook.mouse.NativeMouseEvent;
-import org.jnativehook.mouse.NativeMouseInputListener;
-import org.jnativehook.mouse.NativeMouseWheelEvent;
-import org.jnativehook.mouse.NativeMouseWheelListener;
+
+
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
+import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
+import com.github.kwhat.jnativehook.mouse.NativeMouseWheelEvent;
+import com.github.kwhat.jnativehook.mouse.NativeMouseWheelListener;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -29,12 +31,16 @@ public class IORecorder implements NativeKeyListener, NativeMouseInputListener, 
         return single_instance;
     }
 
-    public void startRecording() throws NativeHookException {
-        GlobalScreen.registerNativeHook();
-        GlobalScreen.addNativeKeyListener(this);
-        GlobalScreen.addNativeMouseListener(this);
-        GlobalScreen.addNativeMouseMotionListener(this);
-        GlobalScreen.addNativeMouseWheelListener(this);
+    public void startRecording() {
+        try {
+            GlobalScreen.registerNativeHook();
+            GlobalScreen.addNativeKeyListener(this);
+            GlobalScreen.addNativeMouseListener(this);
+            GlobalScreen.addNativeMouseMotionListener(this);
+            GlobalScreen.addNativeMouseWheelListener(this);
+        } catch (Exception exception) {
+            System.out.println("ERROR IN startRecording" + exception);
+        }
 //        this.ioPlaybackFile.startRecording();
 }
 
