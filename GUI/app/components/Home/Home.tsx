@@ -4,11 +4,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AddIcon from '@material-ui/icons/Add';
 import { Fab, Button } from '@material-ui/core';
-import TestUpsertModal from '../TestUpsertModal/TestUpsertModal'
-import UserUpsertModal from '../UserUpsertModal/userUpsertModal'
-import TroubleshootMenu from '../TroubleshootMenu/TroubleshootMenu'
-import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView'
-import DeletePopup from '../DeletePopup/DeletePopup'
+import TestUpsertModal from '../TestUpsertModal/TestUpsertModal';
+import UserUpsertModal from '../UserUpsertModal/UserUpsertModal';
+import TroubleshootMenu from '../TroubleshootMenu/TroubleshootMenu';
+import PlayerLiveViewModal from '../PlayerLiveViewModal/PlayerLiveView';
+import DeletePopup from '../DeletePopup/DeletePopup';
 import styles from './Home.css';
 import { a11yProps, TabPanel } from '../../utils/general';
 import ActionsDropdown from '../ActionsDropdown/ActionsDropdown';

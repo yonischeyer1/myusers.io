@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import VncViewerComponent from '../VncViewer/vncViewer.component';
+import VncViewerComponent from '../VncViewer/VncViewer.component';
 import styles from './PlayerLiveViewModal.css'
 import { Transition } from '../../utils/general';
 import PlayerLiveViewModalEvents, {DEFAULT_COMPONENT_STATE} from './PlayerLiveViewModal.events';

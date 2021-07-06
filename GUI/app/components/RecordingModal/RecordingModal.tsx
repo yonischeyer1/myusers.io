@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { CircularProgress } from '@material-ui/core';
-import VncViewerComponent from '../VncViewer/vncViewer.component';
+import VncViewerComponent from '../VncViewer/VncViewer.component';
 import RecordValidationModal from '../RecordValidationModal/RecordValidationModal';
 import styles from './RecordingModal.css'
 import { Transition } from '../../utils/general';
